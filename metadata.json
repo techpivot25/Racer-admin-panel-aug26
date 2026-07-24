@@ -1,0 +1,10 @@
+{
+  "name": "Remix: Racer - Admin Panel-1",
+  "description": "An elegant, responsive dark/light admin analytics dashboard supporting multiple languages (English, French, Spanish) with dynamic charts, reports, and audience insights.",
+  "requestFramePermissions": [
+    "camera"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

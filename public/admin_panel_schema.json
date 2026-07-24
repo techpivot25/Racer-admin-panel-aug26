@@ -1,0 +1,144 @@
+{
+  "appName": "RACER Admin Control Panel",
+  "version": "1.4.0",
+  "lastUpdated": "2026-07-09T06:44:00Z",
+  "author": "Sarah Connor",
+  "entities": {
+    "AdminUser": {
+      "description": "System operators, billing specialists, and customer-level support administrators.",
+      "fields": {
+        "uuid": { "type": "UUID/String", "pk": true, "nullable": false, "description": "Unique record identifier" },
+        "firstName": { "type": "Varchar(100)", "nullable": false, "description": "First name" },
+        "lastName": { "type": "Varchar(100)", "nullable": false, "description": "Last name" },
+        "title": { "type": "Varchar(150)", "nullable": true, "description": "Business title" },
+        "phone": { "type": "Varchar(40)", "nullable": true, "description": "E.164 phone string" },
+        "email": { "type": "Varchar(255)", "unique": true, "nullable": false, "description": "Used for SSO and authentication key" },
+        "customerId": { "type": "String", "fk": "Customer.id", "nullable": false, "description": "Associated company identifier" },
+        "customerName": { "type": "Varchar(255)", "nullable": false, "description": "Denormalized company name" },
+        "customerTier": { "type": "String", "nullable": true, "description": "Customer service agreement level (e.g., Gold)" },
+        "createDate": { "type": "ISO-8601 Date", "nullable": false, "description": "Creation timestamp" },
+        "isAdminUser": { "type": "Boolean", "nullable": false, "description": "Differentiates platform-level Super Admins from customer portal accounts" },
+        "adminRole": { "type": "Enum", "nullable": true, "options": ["Super Admin", "Billing Specialist", "Support Specialist", "User Admin", "Customer Operator"] },
+        "authMethod": { "type": "Enum", "nullable": false, "options": ["local", "sso"] },
+        "ssoProvider": { "type": "Varchar(100)", "nullable": true }
+      }
+    },
+    "Customer": {
+      "description": "Enterprise tenants and licensed corporate consumers of binary distributions.",
+      "fields": {
+        "id": { "type": "String", "pk": true, "nullable": false, "description": "Format: CUST-XXX" },
+        "name": { "type": "Varchar(255)", "unique": true, "nullable": false },
+        "address": { "type": "Text", "nullable": false, "description": "Main corporate office location" },
+        "primaryContactName": { "type": "Varchar(150)", "nullable": false },
+        "primaryContactEmail": { "type": "Varchar(255)", "nullable": false },
+        "billingContactName": { "type": "Varchar(150)", "nullable": false },
+        "billingContactEmail": { "type": "Varchar(255)", "nullable": false },
+        "supportTier": { "type": "Enum", "nullable": false, "options": ["Gold Support Model", "Standard Support Model"] },
+        "supportContactName": { "type": "Varchar(150)", "nullable": false },
+        "supportContactEmail": { "type": "Varchar(255)", "nullable": false },
+        "status": { "type": "Enum", "nullable": false, "options": ["Active", "Blocked"], "description": "System-wide override to block localized client node checks" },
+        "parentId": { "type": "String", "fk": "Customer.id", "nullable": true, "description": "Parent entity ID for organizational hierarchy routing" },
+        "ssoEnabled": { "type": "Boolean", "nullable": false },
+        "ssoProvider": { "type": "Varchar(100)", "nullable": true },
+        "ssoProtocol": { "type": "Enum", "nullable": true, "options": ["SAML2", "OIDC", "WS-Fed"] },
+        "ssoDomain": { "type": "Varchar(255)", "nullable": true, "description": "Verified email domain suffix used for routing to SSO gateway" }
+      }
+    },
+    "Product": {
+      "description": "Primary repository of available binary packages, software modules, and services.",
+      "fields": {
+        "id": { "type": "String", "pk": true, "nullable": false },
+        "name": { "type": "Varchar(200)", "nullable": false },
+        "description": { "type": "Text", "nullable": true },
+        "sku": { "type": "Varchar(100)", "unique": true, "nullable": false, "description": "Global distribution identifier" },
+        "unitPrice": { "type": "Decimal(12,2)", "nullable": false, "description": "Base catalog list rate" },
+        "family": { "type": "Varchar(150)", "nullable": false, "description": "Compute, Security, Auditing, Compliance" },
+        "customerIds": { "type": "Array[String]", "nullable": false, "description": "Customer list holding active authorizations" }
+      }
+    },
+    "Contract": {
+      "description": "Procurement contracts, mapping volume commitments and durations.",
+      "fields": {
+        "id": { "type": "String", "pk": true, "nullable": false },
+        "name": { "type": "Varchar(255)", "nullable": false },
+        "customerId": { "type": "String", "fk": "Customer.id", "nullable": false },
+        "productSku": { "type": "Varchar(100)", "fk": "Product.sku", "nullable": false },
+        "unitPrice": { "type": "Decimal(12,2)", "nullable": false, "description": "Negotiated contract unit price" },
+        "purchasedUnits": { "type": "Integer", "nullable": false },
+        "activeUnits": { "type": "Integer", "nullable": false },
+        "startDate": { "type": "ISO-8601 Date", "nullable": false },
+        "endDate": { "type": "ISO-8601 Date", "nullable": false }
+      }
+    },
+    "License": {
+      "description": "Generated cryptographic authentication structures to allow local RACER Node startup.",
+      "fields": {
+        "id": { "type": "String", "pk": true, "nullable": false },
+        "companyId": { "type": "String", "fk": "Customer.id", "nullable": false },
+        "companyName": { "type": "Varchar(255)", "nullable": false },
+        "licenseKey": { "type": "Varchar(512)", "unique": true, "nullable": false },
+        "sku": { "type": "Varchar(100)", "fk": "Product.sku", "nullable": false },
+        "renewalDate": { "type": "ISO-8601 Date", "nullable": false },
+        "isActive": { "type": "Boolean", "nullable": false }
+      }
+    },
+    "DocItem": {
+      "description": "Associated manuals and handbooks targeting global users or customer segments.",
+      "fields": {
+        "id": { "type": "String", "pk": true, "nullable": false },
+        "title": { "type": "Varchar(255)", "nullable": false },
+        "category": { "type": "Enum", "nullable": false, "options": ["Product Documentation", "Support Documentation"] },
+        "associatedProducts": { "type": "Array[String]", "fk": "Product.sku", "nullable": false },
+        "isPublished": { "type": "Boolean", "nullable": false },
+        "fileSize": { "type": "Varchar(50)", "nullable": false },
+        "targetCustomerIds": { "type": "Array[String]", "fk": "Customer.id", "nullable": true, "description": "Optional limit on user scope visibility" }
+      }
+    },
+    "ProductBinary": {
+      "description": "Compiled distribution files and binaries for local node setup.",
+      "fields": {
+        "id": { "type": "String", "pk": true, "nullable": false },
+        "fileName": { "type": "Varchar(255)", "nullable": false },
+        "version": { "type": "Varchar(30)", "nullable": false },
+        "productSku": { "type": "Varchar(100)", "fk": "Product.sku", "nullable": false },
+        "md5Checksum": { "type": "Char(32)", "nullable": false }
+      }
+    },
+    "SupportTierInfo": {
+      "description": "SLA performance targets and escalation channels.",
+      "fields": {
+        "id": { "type": "String", "pk": true, "nullable": false },
+        "name": { "type": "Varchar(100)", "unique": true, "nullable": false },
+        "responseTime": { "type": "Varchar(100)", "nullable": false },
+        "coverageHours": { "type": "Varchar(100)", "nullable": false },
+        "channels": { "type": "Array[String]", "nullable": false }
+      }
+    },
+    "ProductSupportRecord": {
+      "description": "Detailed support contacts, severities, and workflows mapped per-product.",
+      "fields": {
+        "id": { "type": "String", "pk": true, "nullable": false },
+        "productId": { "type": "String", "fk": "Product.id", "nullable": false },
+        "productSku": { "type": "Varchar(100)", "fk": "Product.sku", "nullable": false },
+        "sloDetails": { "type": "Text", "nullable": false },
+        "supportContactName": { "type": "Varchar(150)", "nullable": false },
+        "supportContactPhone": { "type": "Varchar(40)", "nullable": false },
+        "supportContactEmail": { "type": "Varchar(255)", "nullable": false },
+        "supportWorkflow": { "type": "Array[String]", "nullable": false },
+        "customerIds": { "type": "Array[String]", "fk": "Customer.id", "nullable": false },
+        "severityLevel": { "type": "Enum", "nullable": false, "options": ["P1 - Critical", "P2 - High", "P3 - Medium", "P4 - Low"] }
+      }
+    },
+    "AuditRecord": {
+      "description": "Immutable security logs of admin panel state changes.",
+      "fields": {
+        "id": { "type": "String", "pk": true, "nullable": false },
+        "timestamp": { "type": "ISO-8601 Date", "nullable": false },
+        "action": { "type": "Varchar(255)", "nullable": false },
+        "user": { "type": "Varchar(255)", "nullable": false, "description": "Admin email who triggered the record" },
+        "details": { "type": "Text", "nullable": false },
+        "screen": { "type": "Enum", "nullable": false, "options": ["Users", "Customers", "Products", "General", "Licenses", "Support"] }
+      }
+    }
+  }
+}
