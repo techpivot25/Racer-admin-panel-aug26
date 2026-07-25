@@ -69,6 +69,7 @@ export interface Customer {
 
 export interface ContractProductLineItem {
   id: string;
+  contractId?: string;
   productId: string;
   productName: string;
   productSku: string;

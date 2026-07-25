@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { CustomSelect } from './CustomSelect';
+import { TypeaheadSelect } from './TypeaheadSelect';
 import { 
   Search, 
   Plus, 
@@ -14,6 +15,7 @@ import {
   RefreshCw,
   FileText,
   DollarSign,
+  Package,
   ArrowRight,
   ArrowLeft,
   LayoutGrid,
@@ -59,16 +61,21 @@ const calculateEndDate = (startDateStr: string, months: number): string => {
 };
 
 const calculateDiffInMonths = (startDateStr: string, endDateStr: string): number => {
-  if (!startDateStr || !endDateStr) return 0;
+  if (!startDateStr || !endDateStr) return 1;
   const start = new Date(startDateStr + 'T00:00:00');
   const end = new Date(endDateStr + 'T00:00:00');
-  if (isNaN(start.getTime()) || isNaN(end.getTime())) return 0;
+  if (isNaN(start.getTime()) || isNaN(end.getTime())) return 1;
+  if (end <= start) return 0;
   
-  const yearsDiff = end.getFullYear() - start.getFullYear();
-  const monthsDiff = end.getMonth() - start.getMonth();
-  const totalMonths = yearsDiff * 12 + monthsDiff;
-  
-  return totalMonths > 0 ? totalMonths : 0;
+  let months = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
+  if (end.getDate() < start.getDate()) {
+    months -= 1;
+  }
+  const daysInMonth = new Date(start.getFullYear(), start.getMonth() + 1, 0).getDate();
+  const dayFraction = (end.getDate() - start.getDate()) / daysInMonth;
+  const exactMonths = Math.round(months + dayFraction);
+
+  return Math.max(1, exactMonths);
 };
 
 export default function LicensesTab({
@@ -155,13 +162,28 @@ export default function LicensesTab({
     return customers.filter(c => c.name.toLowerCase().includes(q) || c.id.toLowerCase().includes(q));
   }, [customers, customerSearchInput]);
 
+  // Associated SKUs for selected Product
+  const availableSkusForProduct = useMemo(() => {
+    if (!lineProductId) return products.map(p => p.sku);
+    const selectedProd = products.find(p => p.id === lineProductId);
+    if (!selectedProd) return products.map(p => p.sku);
+
+    const matchingProds = products.filter(
+      p => p.id === lineProductId || p.name === selectedProd.name || p.family === selectedProd.family
+    );
+    const skus = Array.from(new Set(matchingProds.map(p => p.sku)));
+    return skus.length > 0 ? skus : [selectedProd.sku];
+  }, [lineProductId, products]);
+
   // Line Item Helper Functions
   const handleLineProductSelect = (productId: string) => {
     setLineProductId(productId);
     const prod = products.find(p => p.id === productId);
     if (prod) {
       setLineProductName(prod.name);
-      setLineProductSku(prod.sku);
+      // Reset SKU so user must select SKU in Step 2, keeping remaining form fields hidden
+      setLineProductSku('');
+
       setLineDefaultPrice(prod.unitPrice);
 
       let price = prod.unitPrice;
@@ -172,12 +194,15 @@ export default function LicensesTab({
         if (map) price = map.customerUnitPrice;
       }
       setLineContractedPrice(price);
+    } else {
+      setLineProductName('');
+      setLineProductSku('');
     }
   };
 
   const handleLineSkuSelect = (sku: string) => {
     setLineProductSku(sku);
-    const prod = products.find(p => p.sku === sku);
+    const prod = products.find(p => p.id === lineProductId && p.sku === sku) || products.find(p => p.sku === sku);
     if (prod) {
       setLineProductId(prod.id);
       setLineProductName(prod.name);
@@ -191,6 +216,43 @@ export default function LicensesTab({
         if (map) price = map.customerUnitPrice;
       }
       setLineContractedPrice(price);
+    }
+  };
+
+  const minEndDate = useMemo(() => {
+    if (!lineStartDate) return undefined;
+    const d = new Date(lineStartDate + 'T00:00:00');
+    if (isNaN(d.getTime())) return undefined;
+    d.setDate(d.getDate() + 1);
+    return d.toISOString().split('T')[0];
+  }, [lineStartDate]);
+
+  const handleLineStartDateChange = (val: string) => {
+    setLineStartDate(val);
+    if (val && lineEndDate) {
+      if (lineEndDate <= val) {
+        const d = new Date(val + 'T00:00:00');
+        d.setDate(d.getDate() + 1);
+        const newEnd = d.toISOString().split('T')[0];
+        setLineEndDate(newEnd);
+        setLineDurationMonths(calculateDiffInMonths(val, newEnd));
+      } else {
+        setLineDurationMonths(calculateDiffInMonths(val, lineEndDate));
+      }
+    }
+  };
+
+  const handleLineEndDateChange = (val: string) => {
+    setLineEndDate(val);
+    if (lineStartDate && val) {
+      setLineDurationMonths(calculateDiffInMonths(lineStartDate, val));
+    }
+  };
+
+  const handleLineDurationMonthsChange = (months: number) => {
+    setLineDurationMonths(months);
+    if (lineStartDate && months > 0) {
+      setLineEndDate(calculateEndDate(lineStartDate, months));
     }
   };
 
@@ -209,6 +271,17 @@ export default function LicensesTab({
       units: lineUnits || 1
     };
     setLineItems(prev => [...prev, newItem]);
+
+    // Reset fields so only "Choose a Product" drop down is visible again
+    setLineProductId('');
+    setLineProductName('');
+    setLineProductSku('');
+    setLineDefaultPrice(0);
+    setLineContractedPrice(0);
+    setLineUnits(10);
+    setLineStartDate('');
+    setLineEndDate('');
+    setLineDurationMonths(12);
   };
 
   const handleRemoveLineItem = (id: string) => {
@@ -893,110 +966,233 @@ export default function LicensesTab({
         </div>
 
         {/* Configure Product Line Item Controls */}
-        <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200'} space-y-4`}>
-          <div className="text-xs font-bold text-[rgb(14,145,145)] uppercase tracking-wider">
-            Configure Product Line Item
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
-            <div>
-              <label className="block font-bold text-slate-500 dark:text-gray-400 mb-1">Product Name</label>
-              <CustomSelect
-                value={lineProductId}
-                onChange={handleLineProductSelect}
-                options={products.map(p => ({ value: p.id, label: p.name }))}
-                isDark={isDark}
-              />
+        <div className={`p-5 rounded-xl border shadow-xs ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200'} space-y-5`}>
+          {/* Header Bar */}
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b pb-3 dark:border-[#2D333D] border-slate-200">
+            <div className="flex items-center gap-2">
+              <div className="p-1.5 rounded-lg bg-[rgb(14,145,145)]/10 text-[rgb(14,145,145)]">
+                <Layers className="w-4 h-4" />
+              </div>
+              <div>
+                <h4 className="text-xs font-bold text-slate-800 dark:text-white uppercase tracking-wider">
+                  Configure Product Line Item
+                </h4>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                  Specify product, SKU, custom contracted pricing, and licensing timeframe.
+                </p>
+              </div>
             </div>
-
-            <div>
-              <label className="block font-bold text-slate-500 dark:text-gray-400 mb-1">Product SKU</label>
-              <CustomSelect
-                value={lineProductSku}
-                onChange={handleLineSkuSelect}
-                options={products.map(p => ({ value: p.sku, label: p.sku }))}
-                isDark={isDark}
-              />
-            </div>
-
-            <div>
-              <label className="block font-bold text-slate-500 dark:text-gray-400 mb-1">License Start Date</label>
-              <input 
-                type="date" 
-                value={lineStartDate}
-                onChange={(e) => {
-                  setLineStartDate(e.target.value);
-                  setLineDurationMonths(calculateDiffInMonths(e.target.value, lineEndDate));
-                }}
-                className={`w-full px-3 py-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D] text-white' : 'bg-white border-slate-200'}`}
-              />
-            </div>
-
-            <div>
-              <label className="block font-bold text-slate-500 dark:text-gray-400 mb-1">License End Date</label>
-              <input 
-                type="date" 
-                value={lineEndDate}
-                onChange={(e) => {
-                  setLineEndDate(e.target.value);
-                  setLineDurationMonths(calculateDiffInMonths(lineStartDate, e.target.value));
-                }}
-                className={`w-full px-3 py-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D] text-white' : 'bg-white border-slate-200'}`}
-              />
+            
+            <div className="flex items-center gap-2 bg-slate-50 dark:bg-[#0F1115] px-3 py-1.5 rounded-lg border border-slate-200 dark:border-[#2D333D]">
+              <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">Line Subtotal:</span>
+              <span className="text-xs font-mono font-bold text-[rgb(14,145,145)]">
+                ${(lineContractedPrice * lineUnits).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </span>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+          {/* Form Fields Layout */}
+          <div className="space-y-4">
+            {/* Group 1: Product & SKU Selection */}
             <div>
-              <label className="block font-bold text-slate-500 dark:text-gray-400 mb-1">License Duration (Months)</label>
-              <input 
-                type="number" 
-                value={lineDurationMonths}
-                readOnly
-                className={`w-full px-3 py-2 rounded-lg border outline-hidden font-bold ${isDark ? 'bg-[#0F1115] border-[#2D333D] text-emerald-400' : 'bg-slate-100 border-slate-200 text-emerald-700'}`}
-              />
+              <div className="text-[10px] font-bold text-[rgb(14,145,145)] uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                <Package className="w-3.5 h-3.5" />
+                <span>Product & SKU Selection</span>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+                {/* Step 1: Choose a Product Typeahead */}
+                <div>
+                  <TypeaheadSelect
+                    label="Choose a Product"
+                    value={lineProductId}
+                    onChange={handleLineProductSelect}
+                    options={products.map(p => ({
+                      value: p.id,
+                      label: p.name,
+                      subLabel: `ID: ${p.id}`
+                    }))}
+                    isDark={isDark}
+                    placeholder="Type product name..."
+                  />
+                </div>
+
+                {/* Step 2: Product SKU (Visible when Product is chosen) */}
+                {Boolean(lineProductId) && (
+                  <div>
+                    <TypeaheadSelect
+                      label="Choose Product SKU"
+                      value={lineProductSku}
+                      onChange={handleLineSkuSelect}
+                      options={availableSkusForProduct.map(s => ({ value: s, label: s }))}
+                      isDark={isDark}
+                      placeholder="Type or select SKU..."
+                    />
+                  </div>
+                )}
+
+                {/* Captured Product ID (Visible when SKU is chosen) */}
+                {Boolean(lineProductId && lineProductSku) && (
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-700 dark:text-gray-200 mb-1">
+                      Product ID (Captured)
+                    </label>
+                    <input 
+                      type="text"
+                      value={lineProductId}
+                      readOnly
+                      placeholder="Auto-captured ID"
+                      className={`w-full px-3 py-2 rounded-lg border text-xs font-mono font-bold outline-hidden ${
+                        isDark 
+                          ? 'bg-[#0F1115] border-[#2D333D] text-emerald-400 placeholder-slate-600' 
+                          : 'bg-slate-100 border-slate-200 text-emerald-700 placeholder-slate-400'
+                      }`}
+                    />
+                  </div>
+                )}
+              </div>
             </div>
 
-            <div>
-              <label className="block font-bold text-slate-500 dark:text-gray-400 mb-1">Default Product Price ($)</label>
-              <input 
-                type="number" 
-                value={lineDefaultPrice}
-                readOnly
-                className={`w-full px-3 py-2 rounded-lg border outline-hidden font-mono ${isDark ? 'bg-[#0F1115] border-[#2D333D] text-slate-400' : 'bg-slate-100 border-slate-200 text-slate-500'}`}
-              />
-            </div>
+            {/* Groups 2 & 3: Visible ONLY when Product and SKU are selected */}
+            {Boolean(lineProductId && lineProductSku) && (
+              <>
+                {/* Group 2: Pricing & Volume */}
+                <div>
+                  <div className="text-[10px] font-bold text-[rgb(14,145,145)] uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                    <DollarSign className="w-3.5 h-3.5" />
+                    <span>Pricing & License Units</span>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-700 dark:text-gray-200 mb-1">
+                        Default Price ($)
+                      </label>
+                      <input 
+                        type="number"
+                        value={lineDefaultPrice}
+                        readOnly
+                        className={`w-full px-3 py-2 rounded-lg border text-xs font-mono font-bold outline-hidden ${
+                          isDark 
+                            ? 'bg-[#0F1115] border-[#2D333D] text-slate-400' 
+                            : 'bg-slate-100 border-slate-200 text-slate-600'
+                        }`}
+                      />
+                    </div>
 
-            <div>
-              <label className="block font-bold text-slate-500 dark:text-gray-400 mb-1">Contracted Product Price ($)</label>
-              <input 
-                type="number" 
-                value={lineContractedPrice}
-                onChange={(e) => setLineContractedPrice(Number(e.target.value))}
-                className={`w-full px-3 py-2 rounded-lg border outline-hidden font-mono font-bold ${isDark ? 'bg-[#0F1115] border-[#2D333D] text-white' : 'bg-white border-slate-200 text-slate-900'}`}
-              />
-            </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-700 dark:text-gray-200 mb-1">
+                        Contracted Price ($)
+                      </label>
+                      <input 
+                        type="number"
+                        value={lineContractedPrice}
+                        onChange={(e) => setLineContractedPrice(Number(e.target.value))}
+                        className={`w-full px-3 py-2 rounded-lg border text-xs font-mono font-bold outline-hidden focus:ring-2 focus:ring-[rgb(14,145,145)]/40 ${
+                          isDark 
+                            ? 'bg-[#0F1115] border-[#2D333D] text-white' 
+                            : 'bg-white border-slate-300 text-slate-900'
+                        }`}
+                      />
+                    </div>
 
-            <div>
-              <label className="block font-bold text-slate-500 dark:text-gray-400 mb-1">Product License Units</label>
-              <input 
-                type="number" 
-                value={lineUnits}
-                onChange={(e) => setLineUnits(Number(e.target.value))}
-                className={`w-full px-3 py-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D] text-white' : 'bg-white border-slate-200'}`}
-              />
-            </div>
-          </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-700 dark:text-gray-200 mb-1">
+                        Product License Units
+                      </label>
+                      <input 
+                        type="number"
+                        value={lineUnits}
+                        onChange={(e) => setLineUnits(Number(e.target.value))}
+                        min={1}
+                        className={`w-full px-3 py-2 rounded-lg border text-xs font-bold outline-hidden focus:ring-2 focus:ring-[rgb(14,145,145)]/40 ${
+                          isDark 
+                            ? 'bg-[#0F1115] border-[#2D333D] text-white' 
+                            : 'bg-white border-slate-300 text-slate-900'
+                        }`}
+                      />
+                    </div>
+                  </div>
+                </div>
 
-          <div className="flex justify-end pt-2">
-            <button
-              type="button"
-              onClick={handleAddLineItem}
-              className="px-4 py-2 bg-[rgb(14,145,145)] hover:bg-[rgb(12,125,125)] text-white font-bold rounded-lg flex items-center gap-2 cursor-pointer shadow-xs transition-all"
-            >
-              <Plus className="w-4 h-4" />
-              <span>Add Product to Contract</span>
-            </button>
+                {/* Group 3: Duration & Term */}
+                <div>
+                  <div className="text-[10px] font-bold text-[rgb(14,145,145)] uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                    <Calendar className="w-3.5 h-3.5" />
+                    <span>Contract Duration & Validity</span>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-700 dark:text-gray-200 mb-1">
+                        Contract Start Date
+                      </label>
+                      <input 
+                        type="date"
+                        value={lineStartDate}
+                        max={lineEndDate || undefined}
+                        onChange={(e) => handleLineStartDateChange(e.target.value)}
+                        className={`w-full px-3 py-2 rounded-lg border text-xs outline-hidden focus:ring-2 focus:ring-[rgb(14,145,145)]/40 ${
+                          isDark 
+                            ? 'bg-[#0F1115] border-[#2D333D] text-white' 
+                            : 'bg-white border-slate-300 text-slate-900'
+                        }`}
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-700 dark:text-gray-200 mb-1">
+                        Contract End Date
+                      </label>
+                      <input 
+                        type="date"
+                        value={lineEndDate}
+                        min={minEndDate}
+                        onChange={(e) => handleLineEndDateChange(e.target.value)}
+                        className={`w-full px-3 py-2 rounded-lg border text-xs outline-hidden focus:ring-2 focus:ring-[rgb(14,145,145)]/40 ${
+                          isDark 
+                            ? 'bg-[#0F1115] border-[#2D333D] text-white' 
+                            : 'bg-white border-slate-300 text-slate-900'
+                        }`}
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-700 dark:text-gray-200 mb-1">
+                        Contract Duration (months)
+                      </label>
+                      <input 
+                        type="number"
+                        value={lineDurationMonths}
+                        readOnly
+                        placeholder="Auto-calculated"
+                        className={`w-full px-3 py-2 rounded-lg border text-xs font-bold outline-hidden ${
+                          isDark 
+                            ? 'bg-[#0F1115] border-[#2D333D] text-emerald-400' 
+                            : 'bg-slate-100 border-slate-200 text-emerald-700'
+                        }`}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Save Action Footer */}
+                <div className="flex items-center justify-between pt-3 border-t dark:border-[#2D333D] border-slate-200">
+                  <div className="text-xs text-slate-500 dark:text-gray-400 flex items-center gap-1.5">
+                    <span>Calculated Line Subtotal:</span>
+                    <span className="font-mono font-bold text-slate-900 dark:text-white">
+                      ${(lineContractedPrice * lineUnits).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </span>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={handleAddLineItem}
+                    className="px-4 py-2 bg-[rgb(14,145,145)] hover:bg-[rgb(12,125,125)] text-white font-bold text-xs rounded-lg flex items-center gap-2 cursor-pointer shadow-xs hover:shadow-md transition-all active:scale-[0.98]"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span>Add Product to Contract</span>
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         </div>
 
@@ -1010,6 +1206,7 @@ export default function LicensesTab({
             <table className="w-full text-left text-xs">
               <thead className={`font-bold uppercase tracking-wider ${isDark ? 'bg-[#1A1D23] text-gray-400 border-b border-[#2D333D]' : 'bg-slate-100 text-slate-600 border-b border-slate-200'}`}>
                 <tr>
+                  <th className="p-3">Product ID</th>
                   <th className="p-3">Product Name & SKU</th>
                   <th className="p-3">License Period</th>
                   <th className="p-3">Duration</th>
@@ -1025,6 +1222,9 @@ export default function LicensesTab({
                   const subtotal = item.contractedPrice * item.units;
                   return (
                     <tr key={item.id || idx} className={`${isDark ? 'hover:bg-slate-900/50' : 'hover:bg-slate-50'}`}>
+                      <td className="p-3 font-mono font-bold text-emerald-600 dark:text-emerald-400">
+                        {item.productId || 'N/A'}
+                      </td>
                       <td className="p-3">
                         <div className="font-bold text-slate-900 dark:text-white">{item.productName}</div>
                         <div className="text-[10px] font-mono text-slate-400">{item.productSku}</div>
@@ -2242,77 +2442,125 @@ export default function LicensesTab({
 
       {/* MODAL 2: CUSTOM MAPPING MODAL */}
       {isMappingModalOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-fade-in">
-          <div className={`w-full max-w-md rounded-2xl shadow-2xl p-6 ${isDark ? 'bg-[#1A1D23] border border-[#2D333D] text-white' : 'bg-white border text-slate-800'}`}>
-            <div className="flex items-center justify-between border-b pb-4 mb-4 dark:border-[#2D333D] border-slate-100">
-              <h3 className="font-extrabold text-base flex items-center gap-2">
-                <Layers className="w-5 h-5 text-[rgb(14,145,145)]" />
-                <span>{editingMapping ? 'Modify Negotiated Rate' : 'Associate Client to Product'}</span>
-              </h3>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-50 p-4 animate-fade-in">
+          <div className={`w-full max-w-2xl rounded-2xl shadow-2xl p-7 border transition-all ${isDark ? 'bg-[#1A1D23] border-[#2D333D] text-white' : 'bg-white border-slate-200 text-slate-800'}`}>
+            <div className="flex items-center justify-between border-b pb-4 mb-5 dark:border-[#2D333D] border-slate-100">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-xl bg-[rgb(14,145,145)]/10 text-[rgb(14,145,145)]">
+                  <Layers className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-extrabold text-base tracking-tight text-slate-900 dark:text-white">
+                    {editingMapping ? 'Modify Negotiated Rate' : 'Associate Client to Product'}
+                  </h3>
+                  <p className="text-[11px] text-slate-500 dark:text-gray-400 font-medium">
+                    Map corporate clients to software modules and set custom contracted rates.
+                  </p>
+                </div>
+              </div>
               <button 
                 onClick={() => setIsMappingModalOpen(false)}
-                className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-gray-800 text-slate-400 hover:text-slate-600 cursor-pointer"
+                className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-gray-800 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <form onSubmit={handleMappingFormSubmit} className="space-y-4 text-xs font-medium">
-              <div>
-                <label className="block font-bold text-gray-400 uppercase tracking-wider mb-1">Customer</label>
-                <CustomSelect
-                  value={String(mapCustomerId)}
-                  onChange={handleMappingCustomerChange}
-                  options={customers.map(c => ({ value: String(parseInt(c.id.replace(/\D/g, ''), 10)), label: c.name }))}
-                  isDark={isDark}
-                />
-              </div>
-
-              <div>
-                <label className="block font-bold text-gray-400 uppercase tracking-wider mb-1">Product Module</label>
-                <CustomSelect
-                  value={String(mapProductId)}
-                  onChange={handleMappingProductChange}
-                  options={products.map(p => ({ value: String(parseInt(p.id.replace(/\D/g, ''), 10)), label: `${p.name} (${p.sku})` }))}
-                  isDark={isDark}
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
+            <form onSubmit={handleMappingFormSubmit} className="space-y-5 text-xs font-medium">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div>
-                  <label className="block font-bold text-gray-400 uppercase tracking-wider mb-1">Standard List Price</label>
+                  <label className="block font-bold text-slate-700 dark:text-gray-200 mb-1.5">
+                    Select Customer
+                  </label>
+                  <CustomSelect
+                    value={String(mapCustomerId)}
+                    onChange={handleMappingCustomerChange}
+                    options={customers.map(c => ({ value: String(parseInt(c.id.replace(/\D/g, ''), 10)), label: c.name }))}
+                    isDark={isDark}
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-bold text-slate-700 dark:text-gray-200 mb-1.5">
+                    Select Product Module
+                  </label>
+                  <CustomSelect
+                    value={String(mapProductId)}
+                    onChange={handleMappingProductChange}
+                    options={products.map(p => ({ value: String(parseInt(p.id.replace(/\D/g, ''), 10)), label: `${p.name} (${p.sku})` }))}
+                    isDark={isDark}
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 rounded-xl border dark:border-[#2D333D] border-slate-100 bg-slate-50/50 dark:bg-[#0F1115]/30">
+                <div>
+                  <label className="block font-bold text-slate-500 dark:text-gray-400 text-[11px] mb-1.5">
+                    Product SKU
+                  </label>
+                  <input 
+                    type="text" 
+                    value={mapProductSku || '-'}
+                    readOnly
+                    className={`w-full px-3 py-2 rounded-lg border font-mono font-bold outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D] text-slate-400' : 'bg-slate-100 border-slate-200 text-slate-600'}`}
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-bold text-slate-500 dark:text-gray-400 text-[11px] mb-1.5">
+                    Standard List Price
+                  </label>
                   <input 
                     type="text" 
                     value={`$${mapProductPrice.toFixed(2)}`}
-                    className={`w-full px-3 py-2 rounded-lg border outline-hidden cursor-not-allowed ${isDark ? 'bg-[#0F1115] border-[#2D333D] text-gray-500' : 'bg-slate-50 border-slate-200 text-slate-500'}`}
-                    disabled
+                    readOnly
+                    className={`w-full px-3 py-2 rounded-lg border font-mono font-bold outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D] text-slate-400' : 'bg-slate-100 border-slate-200 text-slate-600'}`}
                   />
                 </div>
+
                 <div>
-                  <label className="block font-bold text-gray-400 uppercase tracking-wider mb-1">Negotiated Customer Price</label>
+                  <label className="block font-bold text-slate-700 dark:text-gray-200 text-[11px] mb-1.5">
+                    Negotiated Rate ($)
+                  </label>
                   <input 
                     type="number" 
                     value={mapCustomerPrice}
                     onChange={(e) => setMapCustomerPrice(Number(e.target.value))}
-                    className={`w-full px-3 py-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D] text-white' : 'bg-white border-slate-200'}`}
+                    step="0.01"
+                    min="0"
+                    className={`w-full px-3 py-2 rounded-lg border font-mono font-bold outline-hidden focus:ring-2 focus:ring-[rgb(14,145,145)]/40 ${isDark ? 'bg-[#0F1115] border-[#2D333D] text-emerald-400' : 'bg-white border-slate-300 text-emerald-700'}`}
                     required
                   />
                 </div>
               </div>
 
-              <div className="flex justify-end gap-2 border-t pt-4 dark:border-[#2D333D]">
+              {/* Price Variance Summary Badge */}
+              {mapProductPrice > 0 && (
+                <div className="flex items-center justify-between text-xs px-3.5 py-2.5 rounded-lg border dark:border-[#2D333D] border-slate-100 bg-slate-50 dark:bg-slate-900/40">
+                  <span className="text-slate-500 dark:text-slate-400 font-semibold">Price Variance relative to List:</span>
+                  <span className={`font-bold font-mono ${mapCustomerPrice < mapProductPrice ? 'text-emerald-500' : mapCustomerPrice > mapProductPrice ? 'text-amber-500' : 'text-slate-400'}`}>
+                    {mapCustomerPrice < mapProductPrice 
+                      ? `-$${(mapProductPrice - mapCustomerPrice).toFixed(2)} (${(((mapProductPrice - mapCustomerPrice) / mapProductPrice) * 100).toFixed(1)}% Discount)`
+                      : mapCustomerPrice > mapProductPrice
+                      ? `+$${(mapCustomerPrice - mapProductPrice).toFixed(2)} (${(((mapCustomerPrice - mapProductPrice) / mapProductPrice) * 100).toFixed(1)}% Premium)`
+                      : 'Standard List Price (0% variance)'}
+                  </span>
+                </div>
+              )}
+
+              <div className="flex items-center justify-end gap-3 border-t pt-4 dark:border-[#2D333D] border-slate-100">
                 <button 
                   type="button" 
                   onClick={() => setIsMappingModalOpen(false)}
-                  className={`px-4 py-2 rounded-lg cursor-pointer ${isDark ? 'bg-slate-800 text-white' : 'bg-slate-100 text-slate-800'}`}
+                  className={`px-5 py-2 rounded-lg cursor-pointer font-bold ${isDark ? 'bg-slate-800 text-white hover:bg-slate-700' : 'bg-slate-100 text-slate-800 hover:bg-slate-200'}`}
                 >
                   Cancel
                 </button>
                 <button 
                   type="submit" 
-                  className="px-4 py-2 bg-[rgb(14,145,145)] text-white rounded-lg cursor-pointer font-bold"
+                  className="px-6 py-2 bg-[rgb(14,145,145)] hover:bg-[rgb(12,125,125)] text-white rounded-lg cursor-pointer font-extrabold shadow-md shadow-[rgb(14,145,145)]/20 transition-all"
                 >
-                  Save Association Pricing
+                  {editingMapping ? 'Save Rate Modifications' : 'Save Client Association'}
                 </button>
               </div>
             </form>
