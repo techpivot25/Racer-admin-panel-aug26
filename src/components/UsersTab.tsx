@@ -822,18 +822,19 @@ export default function UsersTab({
                     title="Select / Deselect all on this page"
                   />
                 </th>
-                <th className="p-4 w-12 text-center">S.No.</th>
-                <th className="p-4">User Details</th>
-                <th className="p-4">Title & Role Level</th>
-                <th className="p-4">Assigned Access</th>
-                <th className="p-4">Customer Account</th>
-                <th className="p-4 text-right">Actions</th>
+                <th className="px-3 py-3.5 w-10 text-center">S.No.</th>
+                <th className="px-3 py-3.5">User Details</th>
+                <th className="px-3 py-3.5">Title</th>
+                <th className="px-3 py-3.5">User Type</th>
+                <th className="px-3 py-3.5">Assigned Access</th>
+                <th className="px-3 py-3.5">Customer Account</th>
+                <th className="px-3 py-3.5 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-gray-800/60 font-medium">
               {filteredUsers.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="p-8 text-center text-gray-400 font-bold">
+                  <td colSpan={8} className="p-8 text-center text-gray-400 font-bold">
                     No users matching search filters found.
                   </td>
                 </tr>
@@ -860,12 +861,12 @@ export default function UsersTab({
                           className="w-4 h-4 rounded text-purple-600 focus:ring-purple-500 accent-purple-600 cursor-pointer"
                         />
                       </td>
-                      <td className="p-4 text-center font-bold text-gray-500 dark:text-gray-400 font-mono text-xs">
+                      <td className="px-3 py-3 text-center font-normal text-gray-500 dark:text-gray-400 font-mono text-xs">
                         {serialNumber}
                       </td>
-                      <td className="p-4">
+                      <td className="px-3 py-3">
                         <div className="flex items-center gap-2">
-                          <span className="font-extrabold text-sm text-slate-900 dark:text-white">
+                          <span className="font-medium text-xs sm:text-sm text-slate-900 dark:text-white">
                             {user.firstName} {user.lastName}
                           </span>
                           {isSuperAdminUser && (
@@ -874,50 +875,44 @@ export default function UsersTab({
                             </span>
                           )}
                           {user.isBlocked && (
-                            <span className="px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-700 dark:text-rose-300 border border-rose-500/40 text-[9px] font-black uppercase flex items-center gap-1">
+                            <span className="px-1.5 py-0.5 rounded-full bg-rose-500/20 text-rose-700 dark:text-rose-300 border border-rose-500/40 text-[9px] font-semibold uppercase flex items-center gap-1">
                               <Ban className="w-2.5 h-2.5" /> Blocked
                             </span>
                           )}
                         </div>
-                        <div className="flex flex-col gap-0.5 mt-1 text-gray-500 font-mono text-[10px]">
+                        <div className="flex flex-col gap-0.5 mt-0.5 text-gray-500 font-mono text-[11px] font-normal">
                           <span className="flex items-center gap-1"><Mail className="w-3 h-3 text-gray-400" /> {user.email}</span>
                           <span className="flex items-center gap-1"><Phone className="w-3 h-3 text-gray-400" /> {user.phone || '+1 (555) 019-2831'}</span>
                         </div>
                       </td>
-                      <td className="p-4">
-                        <div className="flex items-center gap-1.5 font-bold">
-                          <Briefcase className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400" />
+                      <td className="px-3 py-3">
+                        <div className="flex items-center gap-1.5 font-normal text-xs text-slate-700 dark:text-slate-300">
+                          <Briefcase className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500 shrink-0" />
                           <span>{user.title || 'Administrator'}</span>
                         </div>
-                        <div className="mt-1.5">
-                          <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${
-                            user.adminRole === 'Super Admin' 
-                              ? 'bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/40' 
-                              : user.adminRole === 'Admin'
-                              ? 'bg-purple-500/20 text-purple-700 dark:text-purple-300 border border-purple-500/40'
-                              : 'bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-500/40'
-                          }`}>
-                            {user.adminRole || 'Sub Admin'}
-                          </span>
-                        </div>
                       </td>
-                      <td className="p-4">
-                        <div className="flex items-center gap-1.5">
-                          <Key className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400" />
-                          <span className="font-extrabold text-slate-800 dark:text-slate-200">
+                      <td className="px-3 py-3">
+                        <span className="text-xs font-normal text-slate-700 dark:text-slate-300">
+                          {user.adminRole || 'Sub Admin'}
+                        </span>
+                      </td>
+                      <td className="px-3 py-3">
+                        <div className="flex items-center gap-1.5 font-normal text-xs text-slate-700 dark:text-slate-300">
+                          <Key className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500 shrink-0" />
+                          <span>
                             {user.permissions ? `${user.permissions.length} Modules` : 'Full Access'}
                           </span>
                         </div>
                       </td>
-                      <td className="p-4">
-                        <div className="font-bold text-slate-900 dark:text-slate-100">{user.customerName || 'Cyberdyne Systems'}</div>
-                        <div className="text-[10px] text-gray-500 font-mono">ID: {user.customerId || 'c-1'}</div>
+                      <td className="px-3 py-3">
+                        <div className="font-normal text-xs text-slate-800 dark:text-slate-200">{user.customerName || 'Cyberdyne Systems'}</div>
+                        <div className="text-[10px] text-gray-500 font-mono font-normal">ID: {user.customerId || 'c-1'}</div>
                       </td>
-                      <td className="p-4 text-right">
-                        <div className="flex justify-end items-center gap-1">
+                      <td className="px-3 py-3 text-right">
+                        <div className="flex justify-end items-center gap-0.5">
                           {isProtectedFromCurrentActor ? (
                             <span 
-                              className="px-2 py-1 rounded bg-rose-500/10 text-rose-500 border border-rose-500/20 font-bold text-[10px] flex items-center gap-1 cursor-not-allowed"
+                              className="px-2 py-0.5 rounded bg-rose-500/10 text-rose-500 border border-rose-500/20 font-medium text-[10px] flex items-center gap-1 cursor-not-allowed"
                               title="Protected: Only Platform Owner (Super Admin) can modify Super Admin accounts."
                             >
                               <Lock className="w-3 h-3" /> Protected
@@ -927,12 +922,12 @@ export default function UsersTab({
                               {/* Send / Compose Email Button */}
                               <button
                                 onClick={() => openEmailComposer(user)}
-                                className="relative p-2 rounded-lg hover:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 transition-colors cursor-pointer"
+                                className="relative p-1.5 rounded-lg hover:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 transition-colors cursor-pointer"
                                 title="Compose & Trigger Email (sender: techpivot25@gmail.com)"
                               >
-                                <Mail className="w-4 h-4" />
+                                <Mail className="w-3.5 h-3.5" />
                                 {user.communicationLogs && user.communicationLogs.length > 0 && (
-                                  <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-emerald-600 text-white text-[9px] font-black flex items-center justify-center">
+                                  <span className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-emerald-600 text-white text-[8px] font-bold flex items-center justify-center">
                                     {user.communicationLogs.length}
                                   </span>
                                 )}
@@ -941,50 +936,50 @@ export default function UsersTab({
                               {/* View Communication History Logs */}
                               <button
                                 onClick={() => openCommLogs(user)}
-                                className="p-2 rounded-lg hover:bg-blue-500/10 text-blue-600 dark:text-blue-400 transition-colors cursor-pointer"
+                                className="p-1.5 rounded-lg hover:bg-blue-500/10 text-blue-600 dark:text-blue-400 transition-colors cursor-pointer"
                                 title="View Sent Email Communication History Logs"
                               >
-                                <MessageSquare className="w-4 h-4" />
+                                <MessageSquare className="w-3.5 h-3.5" />
                               </button>
 
                               {/* Change Password Icon */}
                               <button
                                 onClick={() => openPasswordModal(user)}
-                                className="p-2 rounded-lg hover:bg-amber-500/10 text-amber-600 dark:text-amber-400 transition-colors cursor-pointer"
+                                className="p-1.5 rounded-lg hover:bg-amber-500/10 text-amber-600 dark:text-amber-400 transition-colors cursor-pointer"
                                 title="Change / Update User Password"
                               >
-                                <Key className="w-4 h-4" />
+                                <Key className="w-3.5 h-3.5" />
                               </button>
 
                               {/* Block / Unblock Icon */}
                               <button
                                 onClick={() => setBlockModalUser(user)}
-                                className={`p-2 rounded-lg transition-colors cursor-pointer ${
+                                className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
                                   user.isBlocked
                                     ? 'hover:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
                                     : 'hover:bg-rose-500/10 text-rose-600 dark:text-rose-400'
                                 }`}
                                 title={user.isBlocked ? "Unblock User Account" : "Block User Account"}
                               >
-                                {user.isBlocked ? <UserCheck className="w-4 h-4" /> : <Ban className="w-4 h-4" />}
+                                {user.isBlocked ? <UserCheck className="w-3.5 h-3.5" /> : <Ban className="w-3.5 h-3.5" />}
                               </button>
 
                               {/* Edit User Details */}
                               <button
                                 onClick={() => openEditModal(user)}
-                                className="p-2 rounded-lg hover:bg-purple-500/10 text-purple-600 dark:text-purple-400 transition-colors cursor-pointer"
+                                className="p-1.5 rounded-lg hover:bg-purple-500/10 text-purple-600 dark:text-purple-400 transition-colors cursor-pointer"
                                 title="Modify User & Permissions"
                               >
-                                <Edit3 className="w-4 h-4" />
+                                <Edit3 className="w-3.5 h-3.5" />
                               </button>
 
                               {/* Delete User */}
                               <button
                                 onClick={() => requestDeleteUser(user)}
-                                className="p-2 rounded-lg hover:bg-rose-500/10 text-rose-600 dark:text-rose-400 transition-colors cursor-pointer"
+                                className="p-1.5 rounded-lg hover:bg-rose-500/10 text-rose-600 dark:text-rose-400 transition-colors cursor-pointer"
                                 title="Delete User Account"
                               >
-                                <Trash2 className="w-4 h-4" />
+                                <Trash2 className="w-3.5 h-3.5" />
                               </button>
                             </>
                           )}

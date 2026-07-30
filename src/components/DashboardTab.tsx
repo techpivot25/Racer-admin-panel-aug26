@@ -504,7 +504,7 @@ export default function DashboardTab({ isDark, t }: DashboardTabProps) {
                   <span className="text-emerald-500 font-bold flex items-center bg-emerald-500/10 px-1 rounded">
                     <ArrowUpRight className="w-3 h-3" /> +8.5%
                   </span>
-                  <span className="text-[10px] font-bold text-purple-600 flex items-center gap-0.5 opacity-80 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all">
+                  <span className="text-[10px] font-normal text-slate-500 dark:text-gray-400 flex items-center gap-0.5 opacity-80 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all">
                     View Details <ChevronRight className="w-3 h-3" />
                   </span>
                 </div>
@@ -534,7 +534,7 @@ export default function DashboardTab({ isDark, t }: DashboardTabProps) {
                   <span className="text-rose-500 font-bold flex items-center bg-rose-500/10 px-1 rounded">
                     <ArrowDownRight className="w-3 h-3" /> -12.3%
                   </span>
-                  <span className="text-[10px] font-bold text-purple-600 flex items-center gap-0.5 opacity-80 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all">
+                  <span className="text-[10px] font-normal text-slate-500 dark:text-gray-400 flex items-center gap-0.5 opacity-80 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all">
                     View Details <ChevronRight className="w-3 h-3" />
                   </span>
                 </div>
@@ -564,7 +564,7 @@ export default function DashboardTab({ isDark, t }: DashboardTabProps) {
                   <span className="text-rose-500 font-bold flex items-center bg-rose-500/10 px-1 rounded">
                     <ArrowDownRight className="w-3 h-3" /> -3.2%
                   </span>
-                  <span className="text-[10px] font-bold text-purple-600 flex items-center gap-0.5 opacity-80 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all">
+                  <span className="text-[10px] font-normal text-slate-500 dark:text-gray-400 flex items-center gap-0.5 opacity-80 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all">
                     View Details <ChevronRight className="w-3 h-3" />
                   </span>
                 </div>
@@ -594,7 +594,7 @@ export default function DashboardTab({ isDark, t }: DashboardTabProps) {
                   <span className="text-emerald-500 font-bold flex items-center bg-emerald-500/10 px-1 rounded">
                     <ArrowUpRight className="w-3 h-3" /> +5.8%
                   </span>
-                  <span className="text-[10px] font-bold text-purple-600 flex items-center gap-0.5 opacity-80 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all">
+                  <span className="text-[10px] font-normal text-slate-500 dark:text-gray-400 flex items-center gap-0.5 opacity-80 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all">
                     View Details <ChevronRight className="w-3 h-3" />
                   </span>
                 </div>
