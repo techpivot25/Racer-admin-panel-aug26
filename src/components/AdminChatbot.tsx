@@ -190,22 +190,22 @@ export default function AdminChatbot({ isOpen, onClose, panelData, isDark }: Adm
     <div 
       className={`fixed inset-y-0 right-0 z-50 w-full sm:w-[480px] md:w-[540px] shadow-2xl flex flex-col border-l transition-transform duration-300 transform translate-x-0 ${
         isDark 
-          ? 'bg-[#0F1115] border-[#2D333D] text-gray-100' 
+          ? 'bg-[#020617] border-[rgb(30, 41, 59)] text-gray-100' 
           : 'bg-white border-slate-200 text-slate-800'
       }`}
     >
       {/* CHAT HEADER */}
       <div className={`p-4 border-b flex items-center justify-between ${
-        isDark ? 'border-[#2D333D] bg-[#161920]' : 'border-slate-100 bg-slate-50'
+        isDark ? 'border-[rgb(30, 41, 59)] bg-[#0f172a]' : 'border-slate-100 bg-slate-50'
       }`}>
         <div className="flex items-center gap-2.5">
-          <div className="p-2 rounded-xl bg-[rgb(14,145,145)]/10 text-[rgb(14,145,145)] dark:text-[rgb(14,145,145)] animate-pulse">
+          <div className="p-2 rounded-xl bg-purple-600/10 text-purple-600 dark:text-purple-600 animate-pulse">
             <Bot className="w-5 h-5" />
           </div>
           <div>
             <h3 className="font-extrabold text-sm tracking-tight flex items-center gap-1.5">
               B&J AI Assistant
-              <span className="px-1.5 py-0.5 rounded-full text-[9px] bg-[rgb(14,145,145)]/10 text-[rgb(14,145,145)] dark:text-[rgb(14,145,145)] font-black uppercase tracking-wider animate-bounce">
+              <span className="px-1.5 py-0.5 rounded-full text-[9px] bg-purple-600/10 text-purple-600 dark:text-purple-600 font-black uppercase tracking-wider animate-bounce">
                 Live
               </span>
             </h3>
@@ -248,8 +248,8 @@ export default function AdminChatbot({ isOpen, onClose, panelData, isDark }: Adm
             {/* Message block */}
             <div className={`max-w-[95%] rounded-2xl px-4 py-3 shadow-xs space-y-3 ${
               msg.role === 'user'
-                ? 'bg-[rgb(14,145,145)] text-white rounded-tr-none'
-                : (isDark ? 'bg-[#161920] text-gray-200 border border-[#2D333D]' : 'bg-slate-50 text-slate-800 border border-slate-100') + ' rounded-tl-none'
+                ? 'bg-purple-600 text-white rounded-tr-none'
+                : (isDark ? 'bg-[#0f172a] text-gray-200 border border-[rgb(30, 41, 59)]' : 'bg-slate-50 text-slate-800 border border-slate-100') + ' rounded-tl-none'
             }`}>
               {msg.elements.map((el, index) => {
                 if (el.type === 'text') {
@@ -287,10 +287,10 @@ export default function AdminChatbot({ isOpen, onClose, panelData, isDark }: Adm
               B&J Intelligence
             </span>
             <div className={`rounded-2xl rounded-tl-none px-4 py-3 flex items-center gap-3 ${
-              isDark ? 'bg-[#161920] border border-[#2D333D]' : 'bg-slate-50 border border-slate-100'
+              isDark ? 'bg-[#0f172a] border border-[rgb(30, 41, 59)]' : 'bg-slate-50 border border-slate-100'
             }`}>
-              <RefreshCw className="w-3.5 h-3.5 text-[rgb(14,145,145)] dark:text-[rgb(14,145,145)] animate-spin" />
-              <span className="text-xs font-bold text-[rgb(14,145,145)] dark:text-[rgb(14,145,145)] animate-pulse">
+              <RefreshCw className="w-3.5 h-3.5 text-purple-600 dark:text-purple-600 animate-spin" />
+              <span className="text-xs font-bold text-purple-600 dark:text-purple-600 animate-pulse">
                 Analyzing Live Records & Synthesizing Insights...
               </span>
             </div>
@@ -309,7 +309,7 @@ export default function AdminChatbot({ isOpen, onClose, panelData, isDark }: Adm
 
       {/* QUICK PROMPTS GRID */}
       {messages.length === 1 && (
-        <div className={`p-4 border-t ${isDark ? 'border-[#2D333D] bg-[#12151B]' : 'border-slate-100 bg-slate-50/50'}`}>
+        <div className={`p-4 border-t ${isDark ? 'border-[rgb(30, 41, 59)] bg-[#12151B]' : 'border-slate-100 bg-slate-50/50'}`}>
           <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 block mb-2">
             Suggested Administrative Queries
           </span>
@@ -318,13 +318,13 @@ export default function AdminChatbot({ isOpen, onClose, panelData, isDark }: Adm
               <button
                 key={i}
                 onClick={() => handleSend(qp.prompt)}
-                className={`text-left p-2.5 rounded-lg border text-[11px] font-bold transition-all hover:scale-[1.01] hover:border-[rgb(14,145,145)] cursor-pointer ${
+                className={`text-left p-2.5 rounded-lg border text-[11px] font-bold transition-all hover:scale-[1.01] hover:border-purple-600 cursor-pointer ${
                   isDark 
-                    ? 'bg-[#1A1D23] border-[#2D333D] text-gray-300 hover:bg-[#20252C]' 
+                    ? 'bg-[#0f172a] border-[rgb(30, 41, 59)] text-gray-300 hover:bg-[#20252C]' 
                     : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50 shadow-3xs'
                 }`}
               >
-                <div className="flex items-center gap-1.5 text-[rgb(14,145,145)] dark:text-[rgb(14,145,145)] mb-0.5">
+                <div className="flex items-center gap-1.5 text-purple-600 dark:text-purple-600 mb-0.5">
                   <Sparkles className="w-3 h-3" />
                   <span>{qp.label}</span>
                 </div>
@@ -344,7 +344,7 @@ export default function AdminChatbot({ isOpen, onClose, panelData, isDark }: Adm
           handleSend(input);
         }}
         className={`p-3 border-t flex items-center gap-2 ${
-          isDark ? 'border-[#2D333D] bg-[#161920]' : 'border-slate-100 bg-white'
+          isDark ? 'border-[rgb(30, 41, 59)] bg-[#0f172a]' : 'border-slate-100 bg-white'
         }`}
       >
         <input 
@@ -355,14 +355,14 @@ export default function AdminChatbot({ isOpen, onClose, panelData, isDark }: Adm
           placeholder="Ask about users, licenses, projected revenue..."
           className={`flex-1 p-2.5 rounded-xl border text-xs font-semibold outline-hidden transition-all ${
             isDark 
-              ? 'bg-[#0F1115] border-[#2D333D] text-white focus:border-[rgb(14,145,145)]' 
-              : 'bg-slate-50 border-slate-200 text-slate-800 focus:border-[rgb(14,145,145)]'
+              ? 'bg-[#020617] border-[rgb(30, 41, 59)] text-white focus:border-purple-600' 
+              : 'bg-slate-50 border-slate-200 text-slate-800 focus:border-purple-600'
           }`}
         />
         <button
           type="submit"
           disabled={!input.trim() || loading}
-          className={`p-2.5 rounded-xl bg-[rgb(14,145,145)] hover:bg-[rgb(12,125,125)] text-white font-bold transition-all cursor-pointer hover:scale-105 active:scale-95 disabled:opacity-50 disabled:pointer-events-none`}
+          className={`p-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold transition-all cursor-pointer hover:scale-105 active:scale-95 disabled:opacity-50 disabled:pointer-events-none`}
         >
           <Send className="w-4 h-4" />
         </button>
@@ -384,9 +384,9 @@ function ChartRenderer({ chartData, isDark }: { chartData: any; isDark: boolean 
 
   return (
     <div className={`p-3 rounded-xl border mt-1 space-y-2 w-full ${
-      isDark ? 'bg-black/30 border-[#2D333D]' : 'bg-white border-slate-100 shadow-3xs'
+      isDark ? 'bg-black/30 border-[rgb(30, 41, 59)]' : 'bg-white border-slate-100 shadow-3xs'
     }`}>
-      <div className="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-wider text-[rgb(14,145,145)] dark:text-[rgb(14,145,145)]">
+      <div className="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-wider text-purple-600 dark:text-purple-600">
         <BarChart3 className="w-3.5 h-3.5" />
         <span>{title}</span>
       </div>
@@ -498,7 +498,7 @@ function ReportRenderer({ reportData, isDark }: { reportData: any; isDark: boole
 
   return (
     <div className={`p-3 rounded-xl border mt-1 space-y-3 w-full ${
-      isDark ? 'bg-black/30 border-[#2D333D]' : 'bg-white border-slate-100 shadow-3xs'
+      isDark ? 'bg-black/30 border-[rgb(30, 41, 59)]' : 'bg-white border-slate-100 shadow-3xs'
     }`}>
       <div className="flex flex-wrap items-center justify-between gap-2 border-b dark:border-gray-800 border-slate-100 pb-2">
         <div className="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-wider text-emerald-500">
@@ -517,7 +517,7 @@ function ReportRenderer({ reportData, isDark }: { reportData: any; isDark: boole
           </button>
           <button 
             onClick={handleDownloadJSON}
-            className="flex items-center gap-1 px-2 py-1 rounded bg-[rgb(14,145,145)]/10 text-[rgb(14,145,145)] dark:text-[rgb(14,145,145)] text-[10px] font-bold transition-all hover:bg-[rgb(14,145,145)]/20 cursor-pointer"
+            className="flex items-center gap-1 px-2 py-1 rounded bg-purple-600/10 text-purple-600 dark:text-purple-600 text-[10px] font-bold transition-all hover:bg-purple-600/20 cursor-pointer"
             title="Download JSON structured data"
           >
             <Download className="w-3 h-3" />

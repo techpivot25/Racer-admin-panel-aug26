@@ -395,7 +395,7 @@ export const initialCustomers: Customer[] = [
     primaryContactName: 'John Connor',
     primaryContactPhone: '+1 (555) 019-9000',
     primaryContactEmail: 'jconnor@cyberdyne.io',
-    billingContactName: 'Robert Brewster',
+    billingContactName: 'Billing & Invoicing',
     billingContactPhone: '+1 (555) 019-9111',
     billingContactEmail: 'rbrewster@cyberdyne.io',
     supportTier: 'Gold Support Model',

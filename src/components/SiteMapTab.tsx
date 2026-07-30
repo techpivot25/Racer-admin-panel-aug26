@@ -103,7 +103,7 @@ export default function SiteMapTab({
   const getSectionClassName = (secId: string) => {
     return `p-6 md:p-8 rounded-2xl border transition-all duration-300 mb-8 relative scroll-mt-28 ${
       isDark 
-        ? 'bg-[#1A1D23] border-[#2D333D]' 
+        ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' 
         : 'bg-white border-slate-200 shadow-xs'
     }`;
   };
@@ -155,7 +155,7 @@ export default function SiteMapTab({
       title: t.dashboard || 'Dashboard',
       category: 'Overview & Monitoring',
       icon: LayoutDashboard,
-      iconColor: 'text-[rgb(14,145,145)] bg-[rgb(14,145,145)]/10',
+      iconColor: 'text-purple-600 bg-purple-600/10',
       description: 'Analytics, registration trends, and dual-mode data subtabs.',
       workflows: [
         'Hosts interactive "Total Users Trend Analysis" using dynamic date filter boundaries',
@@ -233,7 +233,7 @@ export default function SiteMapTab({
       title: t.documentation || 'Documentation',
       category: 'Support & Assets',
       icon: BookOpen,
-      iconColor: 'text-[rgb(14,145,145)] bg-[rgb(14,145,145)]/10',
+      iconColor: 'text-purple-600 bg-purple-600/10',
       description: 'Product manuals, help desks, and targeted guide publishing.',
       workflows: [
         'Categories documentation items (Product Documentation vs Support Documentation)',
@@ -309,17 +309,17 @@ export default function SiteMapTab({
     }
   </style>
 </head>
-<body class="bg-[#0F1115] text-gray-100 min-h-screen flex flex-col selection:bg-[rgb(14,145,145)]/30 selection:text-white">
+<body class="bg-[#020617] text-gray-100 min-h-screen flex flex-col selection:bg-purple-600/30 selection:text-white">
 
   <!-- TOP DECK BAR -->
-  <header class="border-b border-[#2D333D] bg-[#1A1D23] px-6 py-4 flex items-center justify-between sticky top-0 z-50">
+  <header class="border-b border-[rgb(30, 41, 59)] bg-[#0f172a] px-6 py-4 flex items-center justify-between sticky top-0 z-50">
     <div class="flex items-center gap-3">
-      <div class="w-9 h-9 rounded-lg bg-[rgb(14,145,145)] flex items-center justify-center shadow-md">
+      <div class="w-9 h-9 rounded-lg bg-purple-600 flex items-center justify-center shadow-md">
         <span class="text-white font-extrabold text-sm">R</span>
       </div>
       <div>
         <h1 class="text-sm font-black tracking-tight text-white leading-none">RACER PANEL DOCS</h1>
-        <p class="text-[10px] font-mono text-[rgb(14,145,145)] mt-1 font-bold">docs.expanse.sh • Standalone System Spec</p>
+        <p class="text-[10px] font-mono text-purple-600 mt-1 font-bold">docs.expanse.sh • Standalone System Spec</p>
       </div>
     </div>
     <div class="flex items-center gap-3">
@@ -337,8 +337,8 @@ export default function SiteMapTab({
     
     <!-- LEFT NAVIGATION GUIDE -->
     <aside class="space-y-6 md:sticky md:top-24 h-fit">
-      <div class="bg-[#1A1D23] p-4 rounded-xl border border-[#2D333D]">
-        <h3 class="text-xs font-bold uppercase tracking-wider text-[rgb(14,145,145)] mb-3">Contents Overview</h3>
+      <div class="bg-[#0f172a] p-4 rounded-xl border border-[rgb(30, 41, 59)]">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-purple-600 mb-3">Contents Overview</h3>
         <nav class="space-y-1">
           <a href="#intro" class="block px-3 py-2 rounded-lg text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800 transition-all">1.0 Introduction & Domain</a>
           <a href="#design" class="block px-3 py-2 rounded-lg text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800 transition-all">2.0 Design System Specification</a>
@@ -350,7 +350,7 @@ export default function SiteMapTab({
         </nav>
       </div>
 
-      <div class="bg-[#1A1D23]/50 p-4 rounded-xl border border-[#2D333D]/60 text-[11px] text-gray-400 space-y-2">
+      <div class="bg-[#0f172a]/50 p-4 rounded-xl border border-[rgb(30, 41, 59)]/60 text-[11px] text-gray-400 space-y-2">
         <p class="font-bold text-white">Dynamic Snapshot Context:</p>
         <div>• Operators Registered: <strong>${users.length}</strong></div>
         <div>• Product Families: <strong>${products.length}</strong></div>
@@ -364,8 +364,8 @@ export default function SiteMapTab({
       
       <!-- INTRO SECTION -->
       <section id="intro" class="scroll-mt-24 space-y-4">
-        <h2 class="text-2xl font-black tracking-tight text-white border-b border-[#2D333D] pb-2 flex items-center gap-2">
-          <span class="text-[rgb(14,145,145)]">1.0</span> Introduction & Architecture Scope
+        <h2 class="text-2xl font-black tracking-tight text-white border-b border-[rgb(30, 41, 59)] pb-2 flex items-center gap-2">
+          <span class="text-purple-600">1.0</span> Introduction & Architecture Scope
         </h2>
         <p class="text-sm text-gray-300 leading-relaxed">
           Welcome to the official <strong>RACER Admin Digital Documentation Portal</strong>. Inspired by the strict content management principles and aesthetic spacing of <strong>docs.expanse.sh</strong>, this portal serves as the single source of truth for administrative systems, cryptographic license management, product versioning, multi-tenant databases, and integrated customer SLAs.
@@ -374,30 +374,30 @@ export default function SiteMapTab({
           The Racer Admin Panel is built on a modular, lightning-fast architecture. This document details the visual layouts, design pairings, routing structures, database architectures, and cross-cutting workflow matrix used inside the operator dashboard.
         </p>
         <div class="p-4 bg-slate-900 border border-slate-800 rounded-xl flex gap-3 text-xs leading-relaxed text-slate-400">
-          <span class="text-[rgb(14,145,145)] font-bold shrink-0">SYSTEM INFO</span>
+          <span class="text-purple-600 font-bold shrink-0">SYSTEM INFO</span>
           <span>This file is a fully compiled, self-contained HTML snapshot exported directly from the active administrative panel workspace. It contains embedded styling, state tables, and real-time registry measurements.</span>
         </div>
       </section>
 
       <!-- DESIGN SYSTEM -->
       <section id="design" class="scroll-mt-24 space-y-4">
-        <h2 class="text-2xl font-black tracking-tight text-white border-b border-[#2D333D] pb-2 flex items-center gap-2">
-          <span class="text-[rgb(14,145,145)]">2.0</span> Design System Specification
+        <h2 class="text-2xl font-black tracking-tight text-white border-b border-[rgb(30, 41, 59)] pb-2 flex items-center gap-2">
+          <span class="text-purple-600">2.0</span> Design System Specification
         </h2>
         <p class="text-sm text-gray-300 leading-relaxed">
           The visual interface follows a high-fidelity Swiss-modern structure, avoiding standard generic colors in favor of customized high-contrast themes.
         </p>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div class="p-4 bg-[#1A1D23] rounded-xl border border-[#2D333D] space-y-2">
-            <h4 class="text-xs font-black uppercase text-[rgb(14,145,145)]">Typography Specs</h4>
+          <div class="p-4 bg-[#0f172a] rounded-xl border border-[rgb(30, 41, 59)] space-y-2">
+            <h4 class="text-xs font-black uppercase text-purple-600">Typography Specs</h4>
             <ul class="text-xs text-slate-400 space-y-1.5">
               <li>• <strong>Display Headings:</strong> Space Grotesk (Tech-forward, tracking-tight, bold weight)</li>
               <li>• <strong>Body Typography:</strong> Inter (Legible, neutral sans-serif optimized for administrative grids)</li>
               <li>• <strong>Metadata & Code:</strong> JetBrains Mono (Technical data outputs, SKU identifiers, hashes, and schemas)</li>
             </ul>
           </div>
-          <div class="p-4 bg-[#1A1D23] rounded-xl border border-[#2D333D] space-y-2">
-            <h4 class="text-xs font-black uppercase text-[rgb(14,145,145)]">Layout Standards</h4>
+          <div class="p-4 bg-[#0f172a] rounded-xl border border-[rgb(30, 41, 59)] space-y-2">
+            <h4 class="text-xs font-black uppercase text-purple-600">Layout Standards</h4>
             <ul class="text-xs text-slate-400 space-y-1.5">
               <li>• <strong>Base Grid:</strong> Fluid layout limits with a container width cap of <code>max-w-7xl</code></li>
               <li>• <strong>Borders & Padding:</strong> Double-layered container framing, with rounded corners of <code>rounded-xl</code> (12px) and <code>rounded-2xl</code> (16px)</li>
@@ -409,17 +409,17 @@ export default function SiteMapTab({
 
       <!-- THEME ENGINE -->
       <section id="theme" class="scroll-mt-24 space-y-4">
-        <h2 class="text-2xl font-black tracking-tight text-white border-b border-[#2D333D] pb-2 flex items-center gap-2">
-          <span class="text-[rgb(14,145,145)]">3.0</span> Theme Engine & Locale Synchronization
+        <h2 class="text-2xl font-black tracking-tight text-white border-b border-[rgb(30, 41, 59)] pb-2 flex items-center gap-2">
+          <span class="text-purple-600">3.0</span> Theme Engine & Locale Synchronization
         </h2>
         <p class="text-sm text-gray-300 leading-relaxed">
           The Admin Panel contains a centralized, reactive light/dark theme system and dual translation layers syncing localized assets across languages:
         </p>
-        <div class="bg-slate-900/60 border border-[#2D333D] rounded-xl p-4 space-y-3 text-xs text-slate-300">
+        <div class="bg-slate-900/60 border border-[rgb(30, 41, 59)] rounded-xl p-4 space-y-3 text-xs text-slate-300">
           <div>
             <span class="font-bold text-white block">A. Dual theme states:</span>
             <p class="text-slate-400 mt-1">
-              - <strong>Eye-Safe Dark Canvas:</strong> Low-luminance charcoal base values (<code>#0F1115</code> body, <code>#1A1D23</code> cards, <code>#2D333D</code> lines) with sharp high-contrast slate borders.<br/>
+              - <strong>Eye-Safe Dark Canvas:</strong> Low-luminance charcoal base values (<code>#020617</code> body, <code>#0f172a</code> cards, <code>rgb(30, 41, 59)</code> lines) with sharp high-contrast slate borders.<br/>
               - <strong>Clean Light Canvas:</strong> Slate-gray base values (<code>#F8FAFC</code> body, <code>#FFFFFF</code> cards, <code>#E2E8F0</code> lines) providing crisp publication-grade interfaces.
             </p>
           </div>
@@ -434,34 +434,34 @@ export default function SiteMapTab({
 
       <!-- MODULES -->
       <section id="modules" class="scroll-mt-24 space-y-4">
-        <h2 class="text-2xl font-black tracking-tight text-white border-b border-[#2D333D] pb-2 flex items-center gap-2">
-          <span class="text-[rgb(14,145,145)]">4.0</span> Core Workstation Modules
+        <h2 class="text-2xl font-black tracking-tight text-white border-b border-[rgb(30, 41, 59)] pb-2 flex items-center gap-2">
+          <span class="text-purple-600">4.0</span> Core Workstation Modules
         </h2>
         <p class="text-sm text-gray-300 leading-relaxed">
           Racer Admin's operational surface is organized into separate, self-contained functional modules:
         </p>
         <div class="space-y-4 text-xs text-slate-300">
-          <div class="p-4 bg-[#1A1D23] rounded-xl border border-[#2D333D]">
+          <div class="p-4 bg-[#0f172a] rounded-xl border border-[rgb(30, 41, 59)]">
             <span class="font-bold text-white block">1. Home Command Center</span>
             <p class="text-slate-400 mt-1">Aggregates global stats, processes active operator logs, calculates monthly/annualized projections, and provides short-path links to create entities immediately.</p>
           </div>
-          <div class="p-4 bg-[#1A1D23] rounded-xl border border-[#2D333D]">
+          <div class="p-4 bg-[#0f172a] rounded-xl border border-[rgb(30, 41, 59)]">
             <span class="font-bold text-white block">2. Analytics & Trend Dashboard</span>
             <p class="text-slate-400 mt-1">Integrates dynamic date-range selector filters to update SVG trend charts dynamically. Features dual-mode subtabs to toggle display panels.</p>
           </div>
-          <div class="p-4 bg-[#1A1D23] rounded-xl border border-[#2D333D]">
+          <div class="p-4 bg-[#0f172a] rounded-xl border border-[rgb(30, 41, 59)]">
             <span class="font-bold text-white block">3. User & Operator Directory</span>
             <p class="text-slate-400 mt-1">Separates workspace Operators from client-level accounts. Supports SSO credentials configuration versus standard local password mappings.</p>
           </div>
-          <div class="p-4 bg-[#1A1D23] rounded-xl border border-[#2D333D]">
+          <div class="p-4 bg-[#0f172a] rounded-xl border border-[rgb(30, 41, 59)]">
             <span class="font-bold text-white block">4. Product & Binary catalog</span>
             <p class="text-slate-400 mt-1">Maintains structural product lines (SKUs, standard pricing tiers) and maps uploaded binary files with computed md5 integrity hashes.</p>
           </div>
-          <div class="p-4 bg-[#1A1D23] rounded-xl border border-[#2D333D]">
+          <div class="p-4 bg-[#0f172a] rounded-xl border border-[rgb(30, 41, 59)]">
             <span class="font-bold text-white block">5. Product Licenses Hub</span>
             <p class="text-slate-400 mt-1">Controls the generation, issuance, blocking, or reactivation of cryptographic key strings. Auto-generates SLA renewal email templates.</p>
           </div>
-          <div class="p-4 bg-[#1A1D23] rounded-xl border border-[#2D333D]">
+          <div class="p-4 bg-[#0f172a] rounded-xl border border-[rgb(30, 41, 59)]">
             <span class="font-bold text-white block">6. Customer Tenants & Support Contracts</span>
             <p class="text-slate-400 mt-1">Models company accounts, corporate primary contacts, and OIDC domains. Customizes SLA support parameters (Copper, Silver, Gold support models).</p>
           </div>
@@ -470,8 +470,8 @@ export default function SiteMapTab({
 
       <!-- WORKFLOWS -->
       <section id="workflows" class="scroll-mt-24 space-y-4">
-        <h2 class="text-2xl font-black tracking-tight text-white border-b border-[#2D333D] pb-2 flex items-center gap-2">
-          <span class="text-[rgb(14,145,145)]">5.0</span> Cross-Cutting Workflow Matrix
+        <h2 class="text-2xl font-black tracking-tight text-white border-b border-[rgb(30, 41, 59)] pb-2 flex items-center gap-2">
+          <span class="text-purple-600">5.0</span> Cross-Cutting Workflow Matrix
         </h2>
         <p class="text-sm text-gray-300 leading-relaxed">
           The panel contains deep-linking handshakes and real-time syncing pipelines to coordinate action across modules:
@@ -494,8 +494,8 @@ export default function SiteMapTab({
 
       <!-- DATABASE SCHEMA -->
       <section id="schema" class="scroll-mt-24 space-y-4">
-        <h2 class="text-2xl font-black tracking-tight text-white border-b border-[#2D333D] pb-2 flex items-center gap-2">
-          <span class="text-[rgb(14,145,145)]">6.0</span> Master Relational Database Schema
+        <h2 class="text-2xl font-black tracking-tight text-white border-b border-[rgb(30, 41, 59)] pb-2 flex items-center gap-2">
+          <span class="text-purple-600">6.0</span> Master Relational Database Schema
         </h2>
         <p class="text-sm text-gray-300 leading-relaxed">
           The following standard SQL statements represent the database tables, OIDC security attributes, and constraints running on the Cloud SQL backend:
@@ -549,16 +549,16 @@ CREATE TABLE licenses (
 
       <!-- DYNAMIC REGISTRY -->
       <section id="registry" class="scroll-mt-24 space-y-4">
-        <h2 class="text-2xl font-black tracking-tight text-white border-b border-[#2D333D] pb-2 flex items-center gap-2">
-          <span class="text-[rgb(14,145,145)]">7.0</span> Live System Registry Feed
+        <h2 class="text-2xl font-black tracking-tight text-white border-b border-[rgb(30, 41, 59)] pb-2 flex items-center gap-2">
+          <span class="text-purple-600">7.0</span> Live System Registry Feed
         </h2>
         <p class="text-sm text-gray-300 leading-relaxed">
           This registry pulls measurements and lists variables actively from the B&J Admin database session. Adding or editing items on other panels will cause these rows to update immediately.
         </p>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div class="p-4 bg-[#1A1D23] rounded-xl border border-[#2D333D]">
-            <h4 class="text-xs font-bold text-[rgb(14,145,145)] uppercase mb-3 font-mono">Active Product SKUs</h4>
+          <div class="p-4 bg-[#0f172a] rounded-xl border border-[rgb(30, 41, 59)]">
+            <h4 class="text-xs font-bold text-purple-600 uppercase mb-3 font-mono">Active Product SKUs</h4>
             <div class="flex flex-wrap gap-2">
               <span class="px-2.5 py-1 bg-slate-800 text-slate-300 font-mono text-[11px] rounded border border-slate-700">SKU-RACER-CORE</span>
               <span class="px-2.5 py-1 bg-slate-800 text-slate-300 font-mono text-[11px] rounded border border-slate-700">SKU-RACER-NET</span>
@@ -566,8 +566,8 @@ CREATE TABLE licenses (
               <span class="px-2.5 py-1 bg-slate-800 text-slate-300 font-mono text-[11px] rounded border border-slate-700">SKU-RACER-DB</span>
             </div>
           </div>
-          <div class="p-4 bg-[#1A1D23] rounded-xl border border-[#2D333D]">
-            <h4 class="text-xs font-bold text-[rgb(14,145,145)] uppercase mb-3 font-mono">Active Customer Orgs</h4>
+          <div class="p-4 bg-[#0f172a] rounded-xl border border-[rgb(30, 41, 59)]">
+            <h4 class="text-xs font-bold text-purple-600 uppercase mb-3 font-mono">Active Customer Orgs</h4>
             <div class="flex flex-wrap gap-2">
               <span class="px-2.5 py-1 bg-slate-800 text-slate-300 font-mono text-[11px] rounded border border-slate-700">B&J Corp</span>
               <span class="px-2.5 py-1 bg-slate-800 text-slate-300 font-mono text-[11px] rounded border border-slate-700">Expanse Tech</span>
@@ -579,7 +579,7 @@ CREATE TABLE licenses (
     </div>
   </div>
 
-  <footer class="border-t border-[#2D333D] bg-[#1A1D23] text-center py-6 text-xs text-gray-500 mt-12">
+  <footer class="border-t border-[rgb(30, 41, 59)] bg-[#0f172a] text-center py-6 text-xs text-gray-500 mt-12">
     B&J RACER Administration Panel • Standalone Portal Export. Copyright &copy; ${new Date().getFullYear()}. All Rights Reserved.
   </footer>
 
@@ -615,7 +615,7 @@ CREATE TABLE licenses (
       id: 'theme',
       title: '3.0 Theme & Locale Swappers',
       category: 'Engine',
-      content: 'Dual theme states, light and dark toggles, dark canvas charcoal base (#0F1115, #1A1D23, #2D333D), light canvas (#F8FAFC, #FFFFFF, #E2E8F0), translation layers, English (EN), French (FR), Spanish (ES), localized labels, in-memory dictionaries.'
+      content: 'Dual theme states, light and dark toggles, dark canvas charcoal base (#020617, #0f172a, rgb(30, 41, 59)), light canvas (#F8FAFC, #FFFFFF, #E2E8F0), translation layers, English (EN), French (FR), Spanish (ES), localized labels, in-memory dictionaries.'
     },
     {
       id: 'modules',
@@ -717,7 +717,7 @@ CREATE TABLE licenses (
                 : (isDark ? 'text-slate-400 hover:text-white hover:bg-slate-800/40' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50/50')
             }`}
           >
-            <GitFork className="w-4 h-4 text-[rgb(14,145,145)]" />
+            <GitFork className="w-4 h-4 text-purple-600" />
             <span>Sitemap</span>
           </button>
           <button
@@ -729,7 +729,7 @@ CREATE TABLE licenses (
                 : (isDark ? 'text-slate-400 hover:text-white hover:bg-slate-800/40' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50/50')
             }`}
           >
-            <FileText className="w-4 h-4 text-[rgb(14,145,145)]" />
+            <FileText className="w-4 h-4 text-purple-600" />
             <span>Document</span>
           </button>
         </div>
@@ -742,8 +742,8 @@ CREATE TABLE licenses (
         <div className="space-y-6 animate-fade-in">
           
           {/* SITEMAP INTERACTIVE GUIDE HEADER CARD */}
-          <div className={`p-6 rounded-2xl border ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200 shadow-xs'}`}>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-[rgb(14,145,145)]/10 text-[rgb(14,145,145)] mb-3">
+          <div className={`p-6 rounded-2xl border ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200 shadow-xs'}`}>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-purple-600/10 text-purple-600 mb-3">
               <Layers className="w-3.5 h-3.5" />
               <span>Interactive Guide</span>
             </div>
@@ -759,9 +759,9 @@ CREATE TABLE licenses (
             
             {/* COLUMN 1 & 2: ARCHITECTURAL SITE MAP */}
           <div className="lg:col-span-2 space-y-6">
-            <div className={`p-6 rounded-2xl border h-full ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200 shadow-xs'}`}>
+            <div className={`p-6 rounded-2xl border h-full ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200 shadow-xs'}`}>
               <h3 className={`text-xs font-black uppercase tracking-wider mb-6 flex items-center gap-2 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                <GitFork className="w-4 h-4 text-[rgb(14,145,145)]" />
+                <GitFork className="w-4 h-4 text-purple-600" />
                 <span>Hierarchical Navigation Matrix</span>
               </h3>
 
@@ -771,11 +771,11 @@ CREATE TABLE licenses (
                 {/* Category: Overview & Monitoring */}
                 <div className="space-y-4 relative">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-[rgb(14,145,145)]/10 text-[rgb(14,145,145)] flex items-center justify-center font-black text-xs z-10 border-4 border-slate-50 dark:border-[#1A1D23]">
+                    <div className="w-10 h-10 rounded-full bg-purple-600/10 text-purple-600 flex items-center justify-center font-black text-xs z-10 border-4 border-slate-50 dark:border-[#0f172a]">
                       1
                     </div>
                     <div>
-                      <h4 className={`text-xs font-black uppercase tracking-wider ${isDark ? 'text-[rgb(14,145,145)]' : 'text-[rgb(10,115,115)]'}`}>Overview & Monitoring</h4>
+                      <h4 className={`text-xs font-black uppercase tracking-wider ${isDark ? 'text-purple-600' : 'text-[rgb(10,115,115)]'}`}>Overview & Monitoring</h4>
                       <span className="text-[10px] text-slate-400 font-medium">Primary operational telemetry and general analytics</span>
                     </div>
                   </div>
@@ -787,8 +787,8 @@ CREATE TABLE licenses (
                         onClick={() => onNavigate(node.id)}
                         className={`group p-4 rounded-xl border transition-all cursor-pointer text-left hover:scale-[1.01] ${
                           isDark 
-                            ? 'bg-[#13161C] border-[#2C333E] hover:border-[rgb(14,145,145)]/50 hover:bg-[#1A1D23]' 
-                            : 'bg-slate-50/50 border-slate-100 hover:border-[rgb(14,145,145)]/40 hover:bg-white hover:shadow-3xs'
+                            ? 'bg-[#0f172a] border-[#2C333E] hover:border-purple-600/50 hover:bg-[#0f172a]' 
+                            : 'bg-slate-50/50 border-slate-100 hover:border-purple-600/40 hover:bg-white hover:shadow-3xs'
                         }`}
                       >
                         <div className="flex items-center justify-between mb-2">
@@ -798,7 +798,7 @@ CREATE TABLE licenses (
                             </div>
                             <span className={`text-xs font-extrabold ${isDark ? 'text-white' : 'text-slate-800'}`}>{node.title}</span>
                           </div>
-                          <div className="text-[9px] font-black uppercase tracking-wider text-[rgb(14,145,145)] opacity-0 group-hover:opacity-100 transition-all flex items-center gap-1">
+                          <div className="text-[9px] font-black uppercase tracking-wider text-purple-600 opacity-0 group-hover:opacity-100 transition-all flex items-center gap-1">
                             <span>Open View</span>
                             <ArrowRight className="w-3 h-3" />
                           </div>
@@ -820,7 +820,7 @@ CREATE TABLE licenses (
                 {/* Category: Enterprise Admin */}
                 <div className="space-y-4 relative">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-purple-500/10 text-purple-500 flex items-center justify-center font-black text-xs z-10 border-4 border-slate-50 dark:border-[#1A1D23]">
+                    <div className="w-10 h-10 rounded-full bg-purple-500/10 text-purple-500 flex items-center justify-center font-black text-xs z-10 border-4 border-slate-50 dark:border-[#0f172a]">
                       2
                     </div>
                     <div>
@@ -836,7 +836,7 @@ CREATE TABLE licenses (
                         onClick={() => onNavigate(node.id)}
                         className={`group p-4 rounded-xl border transition-all cursor-pointer text-left hover:scale-[1.01] ${
                           isDark 
-                            ? 'bg-[#13161C] border-[#2C333E] hover:border-purple-500/50 hover:bg-[#1A1D23]' 
+                            ? 'bg-[#0f172a] border-[#2C333E] hover:border-purple-500/50 hover:bg-[#0f172a]' 
                             : 'bg-slate-50/50 border-slate-100 hover:border-purple-500/40 hover:bg-white hover:shadow-3xs'
                         }`}
                       >
@@ -869,7 +869,7 @@ CREATE TABLE licenses (
                 {/* Category: Support & Assets */}
                 <div className="space-y-4 relative">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-emerald-500/10 text-emerald-500 flex items-center justify-center font-black text-xs z-10 border-4 border-slate-50 dark:border-[#1A1D23]">
+                    <div className="w-10 h-10 rounded-full bg-emerald-500/10 text-emerald-500 flex items-center justify-center font-black text-xs z-10 border-4 border-slate-50 dark:border-[#0f172a]">
                       3
                     </div>
                     <div>
@@ -885,7 +885,7 @@ CREATE TABLE licenses (
                         onClick={() => onNavigate(node.id)}
                         className={`group p-4 rounded-xl border transition-all cursor-pointer text-left hover:scale-[1.01] ${
                           isDark 
-                            ? 'bg-[#13161C] border-[#2C333E] hover:border-emerald-500/50 hover:bg-[#1A1D23]' 
+                            ? 'bg-[#0f172a] border-[#2C333E] hover:border-emerald-500/50 hover:bg-[#0f172a]' 
                             : 'bg-slate-50/50 border-slate-100 hover:border-emerald-500/40 hover:bg-white hover:shadow-3xs'
                         }`}
                       >
@@ -921,7 +921,7 @@ CREATE TABLE licenses (
 
           {/* COLUMN 3: CROSS-CUTTING WORKFLOW CHANNELS */}
           <div className="space-y-6">
-            <div className={`p-6 rounded-2xl border h-full ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200 shadow-xs'}`}>
+            <div className={`p-6 rounded-2xl border h-full ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200 shadow-xs'}`}>
               <h3 className={`text-xs font-black uppercase tracking-wider mb-6 flex items-center gap-2 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
                 <Zap className="w-4 h-4 text-amber-500" />
                 <span>Cross-Cutting Workflows</span>
@@ -932,7 +932,7 @@ CREATE TABLE licenses (
                   <div 
                     key={index} 
                     className={`p-4 rounded-xl border ${
-                      isDark ? 'bg-[#13161C] border-[#2D333D]' : 'bg-slate-50 border-slate-200/60 shadow-3xs'
+                      isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200/60 shadow-3xs'
                     }`}
                   >
                     <h4 className={`text-xs font-extrabold mb-1.5 ${isDark ? 'text-white' : 'text-slate-900'}`}>
@@ -983,18 +983,18 @@ CREATE TABLE licenses (
           {/* TOP DECK BAR */}
           <header className={`border-b px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4 sticky top-0 z-50 rounded-2xl no-print ${
             isDark 
-              ? 'bg-[#1A1D23] border-[#2D333D] text-white' 
+              ? 'bg-[#0f172a] border-[rgb(30, 41, 59)] text-white' 
               : 'bg-white border-slate-200 text-slate-900 shadow-xs'
           }`}>
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-lg bg-[rgb(14,145,145)] flex items-center justify-center shadow-md shrink-0">
+              <div className="w-9 h-9 rounded-lg bg-purple-600 flex items-center justify-center shadow-md shrink-0">
                 <span className="text-white font-extrabold text-sm">R</span>
               </div>
               <div>
                 <h1 className={`text-sm font-black tracking-tight leading-none ${isDark ? 'text-white' : 'text-slate-900'}`}>
                   RACER PANEL DOCS
                 </h1>
-                <p className="text-[10px] font-mono text-[rgb(14,145,145)] mt-1 font-bold">
+                <p className="text-[10px] font-mono text-purple-600 mt-1 font-bold">
                   docs.expanse.sh • Standalone System Spec
                 </p>
               </div>
@@ -1012,12 +1012,12 @@ CREATE TABLE licenses (
                     : 'bg-slate-100 hover:bg-slate-200 text-slate-800 border-slate-200 shadow-3xs'
                 }`}
               >
-                <Printer className="w-3.5 h-3.5 text-[rgb(14,145,145)]" />
+                <Printer className="w-3.5 h-3.5 text-purple-600" />
                 <span>Export Print / PDF</span>
               </button>
               <button 
                 onClick={handleShareHTML} 
-                className="px-3 py-1.5 bg-[rgb(14,145,145)] hover:bg-[rgb(12,125,125)] text-white text-[11px] font-bold rounded-lg transition-all flex items-center gap-1.5 cursor-pointer shrink-0 shadow-xs"
+                className="px-3 py-1.5 bg-purple-600 hover:bg-purple-700 text-white text-[11px] font-bold rounded-lg transition-all flex items-center gap-1.5 cursor-pointer shrink-0 shadow-xs"
               >
                 <Share2 className="w-3.5 h-3.5" />
                 <span>Share HTML</span>
@@ -1030,9 +1030,9 @@ CREATE TABLE licenses (
             {/* LEFT NAVIGATION GUIDE */}
             <aside className="space-y-6 lg:sticky lg:top-24 h-fit no-print">
               <div className={`p-4 rounded-xl border ${
-                isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200 shadow-xs'
+                isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200 shadow-xs'
               }`}>
-                <h3 className="text-xs font-bold uppercase tracking-wider text-[rgb(14,145,145)] mb-3 px-1">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-purple-600 mb-3 px-1">
                   Contents Overview
                 </h3>
                 <nav className="space-y-1">
@@ -1044,14 +1044,14 @@ CREATE TABLE licenses (
                         onClick={() => handleSectionClick(sec.id)}
                         className={`w-full text-left px-3 py-2 rounded-lg text-xs font-semibold transition-all flex items-center justify-between cursor-pointer ${
                           isSecActive
-                            ? 'bg-[rgb(14,145,145)]/10 text-[rgb(14,145,145)] font-bold'
+                            ? 'bg-purple-600/10 text-purple-600 font-bold'
                             : (isDark 
                                 ? 'text-slate-300 hover:text-white hover:bg-slate-800/80' 
                                 : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50')
                         }`}
                       >
                         <span>{sec.title}</span>
-                        <ChevronRight className={`w-3.5 h-3.5 transition-transform ${isSecActive ? 'rotate-90 text-[rgb(14,145,145)]' : 'text-slate-400'}`} />
+                        <ChevronRight className={`w-3.5 h-3.5 transition-transform ${isSecActive ? 'rotate-90 text-purple-600' : 'text-slate-400'}`} />
                       </button>
                     );
                   })}
@@ -1060,7 +1060,7 @@ CREATE TABLE licenses (
 
               {/* DYNAMIC SNAPSHOT CONTEXT CARD */}
               <div className={`p-4 rounded-xl border text-[11px] space-y-2 ${
-                isDark ? 'bg-[#1A1D23]/50 border-[#2D333D]/60 text-gray-400' : 'bg-slate-50 border-slate-200/60 text-slate-600'
+                isDark ? 'bg-[#0f172a]/50 border-[rgb(30, 41, 59)]/60 text-gray-400' : 'bg-slate-50 border-slate-200/60 text-slate-600'
               }`}>
                 <p className={`font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>Dynamic Snapshot Context:</p>
                 <div>• Operators Registered: <strong className={isDark ? 'text-white' : 'text-slate-900'}>{users.length}</strong></div>
@@ -1079,7 +1079,7 @@ CREATE TABLE licenses (
                 {/* SECTION 1.0: INTRODUCTION */}
                 <section id="sec-intro" className={getSectionClassName('intro')}>
                   <div className="flex items-center gap-2 border-b border-slate-700/30 pb-3 mb-4">
-                    <span className="px-2 py-0.5 bg-[rgb(14,145,145)]/10 text-[rgb(14,145,145)] text-[10px] font-mono font-bold rounded">SEC 1.0</span>
+                    <span className="px-2 py-0.5 bg-purple-600/10 text-purple-600 text-[10px] font-mono font-bold rounded">SEC 1.0</span>
                     <h2 className={`text-base font-black tracking-tight my-0 ${isDark ? 'text-white' : 'text-slate-900'}`}>
                       Introduction & Architecture Scope
                     </h2>
@@ -1089,7 +1089,7 @@ CREATE TABLE licenses (
                   </p>
                   
                   <div className={`p-4 rounded-xl border ${isDark ? 'bg-slate-900/60 border-slate-800/80' : 'bg-slate-50 border-slate-200'} space-y-2`}>
-                    <h4 className="text-xs font-bold text-[rgb(14,145,145)] uppercase font-sans my-0">Core Architectural Principles:</h4>
+                    <h4 className="text-xs font-bold text-purple-600 uppercase font-sans my-0">Core Architectural Principles:</h4>
                     <p className="text-xs text-slate-400 my-0 leading-relaxed">
                       • <strong>Strict Multi-Tenancy segregation:</strong> State isolation is guaranteed by matching entities to customer ids, OIDC domains, and unique cryptographic hashes.<br/>
                       • <strong>Offline-First State Replication:</strong> State structures are updated reactively inside the primary memory context, mirroring a durable database schema structure.<br/>
@@ -1111,24 +1111,24 @@ CREATE TABLE licenses (
                   </p>
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-                    <div className={`p-4 rounded-xl border ${isDark ? 'bg-black/10 border-[#2D333D]' : 'bg-slate-50 border-slate-200'}`}>
-                      <h4 className="font-bold text-[rgb(14,145,145)] font-sans mb-1.5 mt-0">Typography Pairing</h4>
+                    <div className={`p-4 rounded-xl border ${isDark ? 'bg-black/10 border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200'}`}>
+                      <h4 className="font-bold text-purple-600 font-sans mb-1.5 mt-0">Typography Pairing</h4>
                       <p className="text-slate-400 leading-relaxed my-0">
                         • Display Headings: Space Grotesk / Outfit<br/>
                         • Body copy: Inter Sans<br/>
                         • Metrics & Code: JetBrains Mono
                       </p>
                     </div>
-                    <div className={`p-4 rounded-xl border ${isDark ? 'bg-black/10 border-[#2D333D]' : 'bg-slate-50 border-slate-200'}`}>
-                      <h4 className="font-bold text-[rgb(14,145,145)] font-sans mb-1.5 mt-0">Symmetry & Padding</h4>
+                    <div className={`p-4 rounded-xl border ${isDark ? 'bg-black/10 border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200'}`}>
+                      <h4 className="font-bold text-purple-600 font-sans mb-1.5 mt-0">Symmetry & Padding</h4>
                       <p className="text-slate-400 leading-relaxed my-0">
                         • Page boundaries: <code>p-4 sm:p-6 md:p-8</code><br/>
                         • Cards padding: <code>p-5</code> / <code>p-6</code><br/>
                         • Double-layered modular separation
                       </p>
                     </div>
-                    <div className={`p-4 rounded-xl border ${isDark ? 'bg-black/10 border-[#2D333D]' : 'bg-slate-50 border-slate-200'}`}>
-                      <h4 className="font-bold text-[rgb(14,145,145)] font-sans mb-1.5 mt-0">Micro-Animations</h4>
+                    <div className={`p-4 rounded-xl border ${isDark ? 'bg-black/10 border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200'}`}>
+                      <h4 className="font-bold text-purple-600 font-sans mb-1.5 mt-0">Micro-Animations</h4>
                       <p className="text-slate-400 leading-relaxed my-0">
                         • Transition durations: 150ms-200ms<br/>
                         • Hover feedback: <code>hover:scale-99</code> / <code>scale-101</code><br/>
@@ -1153,7 +1153,7 @@ CREATE TABLE licenses (
                   <div className="space-y-3 text-xs text-slate-400">
                     <div className="flex gap-4">
                       <span className="font-bold text-slate-300 dark:text-white font-mono shrink-0">Dark Theme:</span>
-                      <p className="my-0">CHARCOAL Palette (<code>#0F1115</code> body, <code>#1A1D23</code> workstation blocks, <code>#2D333D</code> thin line divisions). Provides optimal readability for long operation sessions.</p>
+                      <p className="my-0">CHARCOAL Palette (<code>#020617</code> body, <code>#0f172a</code> workstation blocks, <code>rgb(30, 41, 59)</code> thin line divisions). Provides optimal readability for long operation sessions.</p>
                     </div>
                     <div className="flex gap-4">
                       <span className="font-bold text-slate-600 dark:text-white font-mono shrink-0">Light Theme:</span>
@@ -1179,19 +1179,19 @@ CREATE TABLE licenses (
                   </p>
 
                   <div className="space-y-3 font-sans text-xs text-slate-400">
-                    <div className={`p-4 rounded-xl border ${isDark ? 'bg-black/10 border-[#2D333D]' : 'bg-slate-50 border-slate-200'}`}>
+                    <div className={`p-4 rounded-xl border ${isDark ? 'bg-black/10 border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200'}`}>
                       <span className="font-extrabold text-slate-800 dark:text-white block">A. Telemetry Command (Home View)</span>
                       <p className="mt-1 mb-0">Displays high-level statistics like total products, license metrics, customer registries, and monthly/annual contract financial projections. Houses the shortcut panels to launch creation dialog modals immediately.</p>
                     </div>
-                    <div className={`p-4 rounded-xl border ${isDark ? 'bg-black/10 border-[#2D333D]' : 'bg-slate-50 border-slate-200'}`}>
+                    <div className={`p-4 rounded-xl border ${isDark ? 'bg-black/10 border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200'}`}>
                       <span className="font-extrabold text-slate-800 dark:text-white block">B. Interactive Analytics (Dashboard View)</span>
                       <p className="mt-1 mb-0">Features SVG analytics graphs powered by Recharts, integrating dynamic date-filtering boundaries. Provides dual-pane panels to toggle listings between admin rosters and customer profiles.</p>
                     </div>
-                    <div className={`p-4 rounded-xl border ${isDark ? 'bg-black/10 border-[#2D333D]' : 'bg-slate-50 border-slate-200'}`}>
+                    <div className={`p-4 rounded-xl border ${isDark ? 'bg-black/10 border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200'}`}>
                       <span className="font-extrabold text-slate-800 dark:text-white block">C. Software Catalog & Binary Directory (Products View)</span>
                       <p className="mt-1 mb-0">Maintains structural SKU pricing codes, categorizations, and maps binary deployment files with computed md5 verification checksums. Supports customer company visibility controls.</p>
                     </div>
-                    <div className={`p-4 rounded-xl border ${isDark ? 'bg-black/10 border-[#2D333D]' : 'bg-slate-50 border-slate-200'}`}>
+                    <div className={`p-4 rounded-xl border ${isDark ? 'bg-black/10 border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200'}`}>
                       <span className="font-extrabold text-slate-800 dark:text-white block">D. Cryptographic License Ledger (Licenses View)</span>
                       <p className="mt-1 mb-0">Enables generation of cryptographic key hashes, live block/unlock toggles, and pre-populates template renewed email SLA communications.</p>
                     </div>
@@ -1212,21 +1212,21 @@ CREATE TABLE licenses (
 
                   <div className="space-y-4 text-xs text-slate-400">
                     <div className="flex items-start gap-3">
-                      <div className="w-1.5 h-1.5 rounded-full bg-[rgb(14,145,145)] mt-1.5 shrink-0"></div>
+                      <div className="w-1.5 h-1.5 rounded-full bg-purple-600 mt-1.5 shrink-0"></div>
                       <div>
                         <strong className="text-slate-800 dark:text-white font-sans">Workflow A: License Organization Handshake</strong>
                         <p className="mt-0.5 mb-0 leading-relaxed">From the License ledger, clicking a company name intercepts the route, switches the main viewport to the Customer Admin module, and automatically triggers the focus/expand drawer on the respective target card.</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
-                      <div className="w-1.5 h-1.5 rounded-full bg-[rgb(14,145,145)] mt-1.5 shrink-0"></div>
+                      <div className="w-1.5 h-1.5 rounded-full bg-purple-600 mt-1.5 shrink-0"></div>
                       <div>
                         <strong className="text-slate-800 dark:text-white font-sans">Workflow B: Customer to Billing Workspace shortcut</strong>
                         <p className="mt-0.5 mb-0 leading-relaxed">Clicking a corporate billing contact inside the Customer tab immediately routes to the Billing & Usage tab, sets the customer name query filter, and filters charts/dates for that specific company context.</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
-                      <div className="w-1.5 h-1.5 rounded-full bg-[rgb(14,145,145)] mt-1.5 shrink-0"></div>
+                      <div className="w-1.5 h-1.5 rounded-full bg-purple-600 mt-1.5 shrink-0"></div>
                       <div>
                         <strong className="text-slate-800 dark:text-white font-sans">Workflow C: OSM Nominatim Geo-autofill Integration</strong>
                         <p className="mt-0.5 mb-0 leading-relaxed">The Profile Management settings leverage the OpenStreetMap Nominatim API for address queries. Live lookup results allow one-click reverse geocoding to fill address, state, and location fields immediately.</p>
@@ -1352,7 +1352,7 @@ CREATE TABLE licenses (
                 {/* SECTION 7.0: LIVE SYSTEM REGISTRY */}
                 <section id="sec-registry" className={getSectionClassName('registry')}>
                   <div className="flex items-center gap-2 border-b border-slate-700/30 pb-3 mb-4">
-                    <span className="px-2 py-0.5 bg-[rgb(14,145,145)]/15 text-[rgb(14,145,145)] text-[10px] font-mono font-bold rounded">SEC 7.0</span>
+                    <span className="px-2 py-0.5 bg-purple-600/15 text-purple-600 text-[10px] font-mono font-bold rounded">SEC 7.0</span>
                     <h2 className={`text-base font-black tracking-tight my-0 ${isDark ? 'text-white' : 'text-slate-900'}`}>
                       Live System Registry Feed
                     </h2>
@@ -1404,7 +1404,7 @@ CREATE TABLE licenses (
                   <div className={`p-5 rounded-xl border mb-6 ${isDark ? 'bg-black/40 border-slate-800' : 'bg-slate-50 border-slate-200'}`}>
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center gap-2">
-                        <Terminal className="w-4 h-4 text-[rgb(14,145,145)] animate-pulse" />
+                        <Terminal className="w-4 h-4 text-purple-600 animate-pulse" />
                         <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">Interactive DB Console Playground</span>
                       </div>
                       <span className="text-[9px] font-mono bg-emerald-500/10 text-emerald-500 px-2 py-0.5 rounded border border-emerald-500/20 font-bold uppercase">Sandbox Engine Active</span>
@@ -1431,7 +1431,7 @@ CREATE TABLE licenses (
                           }}
                           className={`p-2.5 rounded-lg border text-left cursor-pointer transition-all ${
                             activeQuery === q.id
-                              ? 'bg-[rgb(14,145,145)]/10 border-[rgb(14,145,145)] text-[rgb(14,145,145)] ring-1 ring-[rgb(14,145,145)]/25'
+                              ? 'bg-purple-600/10 border-purple-600 text-purple-600 ring-1 ring-[purple-600]/25'
                               : (isDark ? 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white hover:border-slate-700' : 'bg-white border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-100/50')
                           }`}
                         >
@@ -1455,7 +1455,7 @@ CREATE TABLE licenses (
 
                       {queryExecuting ? (
                         <div className="flex flex-col items-center justify-center py-6 text-slate-400 gap-2">
-                          <Cpu className="w-5 h-5 text-[rgb(14,145,145)] animate-spin" />
+                          <Cpu className="w-5 h-5 text-purple-600 animate-spin" />
                           <span className="text-[10px] uppercase tracking-widest text-slate-500 font-bold">Executing virtual query plan...</span>
                         </div>
                       ) : (
@@ -1587,7 +1587,7 @@ CREATE TABLE licenses (
 
                           <div className="text-[9px] text-slate-600 border-t border-slate-900 pt-1.5 flex justify-between">
                             <span>({activeQuery === 'SELECT_PRODUCTS' ? products.length : activeQuery === 'SELECT_CUSTOMERS' ? customers.length : activeQuery === 'SELECT_LICENSES' ? licenses.length : users.length} rows returned)</span>
-                            <span className="text-[rgb(14,145,145)] font-bold">SUCCESS (2ms)</span>
+                            <span className="text-purple-600 font-bold">SUCCESS (2ms)</span>
                           </div>
                         </div>
                       )}
@@ -1595,13 +1595,13 @@ CREATE TABLE licenses (
                   </div>
                   
                   <div className={`p-4 rounded-xl border text-xs leading-relaxed flex items-center justify-between gap-4 ${
-                    isDark ? 'bg-[#0F1115] border-[#2D333D] text-slate-400' : 'bg-slate-50 border-slate-200 text-slate-700'
+                    isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)] text-slate-400' : 'bg-slate-50 border-slate-200 text-slate-700'
                   }`}>
                     <div className="flex items-center gap-2">
-                      <Cpu className="w-4 h-4 text-[rgb(14,145,145)] shrink-0" />
+                      <Cpu className="w-4 h-4 text-purple-600 shrink-0" />
                       <span>Data snapshot compiled at system local session clock. Sync interval: 0ms (Reactive).</span>
                     </div>
-                    <div className="flex items-center gap-1 text-[10px] font-mono font-bold text-[rgb(14,145,145)] uppercase shrink-0">
+                    <div className="flex items-center gap-1 text-[10px] font-mono font-bold text-purple-600 uppercase shrink-0">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                       <span>SECURE_CONNECTION</span>
                     </div>

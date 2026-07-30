@@ -33,7 +33,9 @@ import {
   User,
   Layers,
   ArrowLeft,
-  ArrowRight
+  ArrowRight,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 import { Contract, Customer, Product, HostActivation, ProductBinary, License } from '../types';
 import { initialBinaries } from '../data';
@@ -513,6 +515,9 @@ export default function BillingTab({
   // TAB 3: SEAT ALLOCATIONS (LEGACY) STATE & HANDLERS
   // ==========================================
   const [licenseSearchQuery, setLicenseSearchQuery] = useState('');
+  const [selectedLicenseIds, setSelectedLicenseIds] = useState<string[]>([]);
+  const [licenseCurrentPage, setLicenseCurrentPage] = useState<number>(1);
+  const [licenseItemsPerPage, setLicenseItemsPerPage] = useState<number>(5);
 
   const [isLicenseModalOpen, setIsLicenseModalOpen] = useState(false);
   const [editingLicense, setEditingLicense] = useState<License | null>(null);
@@ -723,6 +728,45 @@ export default function BillingTab({
     });
   }, [licenses, licenseSearchQuery]);
 
+  useEffect(() => {
+    setLicenseCurrentPage(1);
+  }, [licenseSearchQuery, licenseItemsPerPage]);
+
+  const totalLicensePages = useMemo(() => {
+    return Math.max(1, Math.ceil(filteredLicenses.length / licenseItemsPerPage));
+  }, [filteredLicenses.length, licenseItemsPerPage]);
+
+  const paginatedLicenses = useMemo(() => {
+    const start = (licenseCurrentPage - 1) * licenseItemsPerPage;
+    return filteredLicenses.slice(start, start + licenseItemsPerPage);
+  }, [filteredLicenses, licenseCurrentPage, licenseItemsPerPage]);
+
+  const toggleSelectAllLicenses = () => {
+    if (paginatedLicenses.length > 0 && paginatedLicenses.every(l => selectedLicenseIds.includes(l.id))) {
+      setSelectedLicenseIds(prev => prev.filter(id => !paginatedLicenses.some(l => l.id === id)));
+    } else {
+      const newSelected = new Set([...selectedLicenseIds, ...paginatedLicenses.map(l => l.id)]);
+      setSelectedLicenseIds(Array.from(newSelected));
+    }
+  };
+
+  const toggleSelectLicense = (id: string) => {
+    setSelectedLicenseIds(prev =>
+      prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
+    );
+  };
+
+  const handleBulkDeleteLicenses = () => {
+    if (selectedLicenseIds.length === 0) return;
+    if (confirm(`Are you sure you want to delete ${selectedLicenseIds.length} selected license record(s)?`)) {
+      selectedLicenseIds.forEach(id => {
+        onDeleteLicense(id);
+      });
+      addAuditLog?.('Bulk Delete Seat Licenses', `Permanently deleted ${selectedLicenseIds.length} legacy license record(s)`, 'Licenses');
+      setSelectedLicenseIds([]);
+    }
+  };
+
 
   return (
     <div className="space-y-6">
@@ -733,17 +777,17 @@ export default function BillingTab({
           <h2 className="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
             {activeSubSection === 'reports' ? (
               <>
-                <Briefcase className="w-5 h-5 text-[rgb(14,145,145)]" />
+                <Briefcase className="w-5 h-5 text-purple-600" />
                 <span>Audits</span>
               </>
             ) : activeSubSection === 'activations' ? (
               <>
-                <Fingerprint className="w-5 h-5 text-[rgb(14,145,145)]" />
+                <Fingerprint className="w-5 h-5 text-purple-600" />
                 <span>Host Activations (Granular Audit)</span>
               </>
             ) : (
               <>
-                <Key className="w-5 h-5 text-[rgb(14,145,145)]" />
+                <Key className="w-5 h-5 text-purple-600" />
                 <span>Seat Allocations (Legacy)</span>
               </>
             )}
@@ -764,7 +808,7 @@ export default function BillingTab({
               onClick={handleResetFilters}
               className={`px-4 py-2 rounded-lg text-xs font-bold border flex items-center gap-2 transition-all cursor-pointer shrink-0 ${
                 isDark 
-                  ? 'bg-[#1A1D23] border-[#2D333D] hover:border-gray-700 text-gray-300' 
+                  ? 'bg-[#0f172a] border-[rgb(30, 41, 59)] hover:border-gray-700 text-gray-300' 
                   : 'bg-white border-slate-200 hover:bg-slate-50 text-slate-700'
               }`}
             >
@@ -776,7 +820,7 @@ export default function BillingTab({
           {activeSubSection === 'activations' && (
             <button
               onClick={() => handleOpenAddActivation()}
-              className="px-4 py-2 bg-[rgb(14,145,145)] hover:bg-[rgb(12,125,125)] text-white rounded-lg text-xs font-bold flex items-center gap-2 shadow-md shadow-[rgb(14,145,145)]/10 transition-all cursor-pointer shrink-0 animate-fade-in"
+              className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-xs font-bold flex items-center gap-2 shadow-md shadow-purple-600/10 transition-all cursor-pointer shrink-0 animate-fade-in"
             >
               <Plus className="w-4 h-4" />
               <span>Activate Host Unit</span>
@@ -786,7 +830,7 @@ export default function BillingTab({
           {activeSubSection === 'licenses' && (
             <button
               onClick={handleOpenAddLicenseModal}
-              className="px-4 py-2 bg-[rgb(14,145,145)] hover:bg-[rgb(12,125,125)] text-white rounded-lg text-xs font-bold flex items-center gap-2 shadow-md shadow-[rgb(14,145,145)]/10 transition-all cursor-pointer shrink-0 animate-fade-in"
+              className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-xs font-bold flex items-center gap-2 shadow-md shadow-purple-600/10 transition-all cursor-pointer shrink-0 animate-fade-in"
             >
               <Plus className="w-4 h-4" />
               <span>Issue Legacy Seat Key</span>
@@ -796,12 +840,12 @@ export default function BillingTab({
       </div>
 
       {/* SUB-SECTION TAB NAVIGATION */}
-      <div className="flex border-b border-slate-200 dark:border-[#2D333D] gap-1 overflow-x-auto pb-px">
+      <div className="flex border-b border-slate-200 dark:border-[rgb(30, 41, 59)] gap-1 overflow-x-auto pb-px">
         <button
           onClick={() => setActiveSubSection('reports')}
           className={`px-4 py-2.5 text-xs font-bold border-b-2 transition-all cursor-pointer flex items-center gap-2 shrink-0 ${
             activeSubSection === 'reports'
-              ? 'border-[rgb(14,145,145)] text-[rgb(14,145,145)] bg-slate-50 dark:bg-slate-900/40 rounded-t-lg'
+              ? 'border-purple-600 text-purple-600 bg-slate-50 dark:bg-slate-900/40 rounded-t-lg'
               : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-gray-400 dark:hover:text-white'
           }`}
         >
@@ -813,7 +857,7 @@ export default function BillingTab({
           onClick={() => setActiveSubSection('activations')}
           className={`px-4 py-2.5 text-xs font-bold border-b-2 transition-all cursor-pointer flex items-center gap-2 shrink-0 ${
             activeSubSection === 'activations'
-              ? 'border-[rgb(14,145,145)] text-[rgb(14,145,145)] bg-slate-50 dark:bg-slate-900/40 rounded-t-lg'
+              ? 'border-purple-600 text-purple-600 bg-slate-50 dark:bg-slate-900/40 rounded-t-lg'
               : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-gray-400 dark:hover:text-white'
           }`}
         >
@@ -825,7 +869,7 @@ export default function BillingTab({
           onClick={() => setActiveSubSection('licenses')}
           className={`px-4 py-2.5 text-xs font-bold border-b-2 transition-all cursor-pointer flex items-center gap-2 shrink-0 ${
             activeSubSection === 'licenses'
-              ? 'border-[rgb(14,145,145)] text-[rgb(14,145,145)] bg-slate-50 dark:bg-slate-900/40 rounded-t-lg'
+              ? 'border-purple-600 text-purple-600 bg-slate-50 dark:bg-slate-900/40 rounded-t-lg'
               : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-gray-400 dark:hover:text-white'
           }`}
         >
@@ -841,7 +885,7 @@ export default function BillingTab({
       {activeSubSection === 'reports' && (
         <div className="space-y-6 animate-fade-in">
           {/* MULTI-CRITERIA AUDITING FILTER BOX */}
-          <div className={`p-5 rounded-2xl border ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200 shadow-2xs'}`}>
+          <div className={`p-5 rounded-2xl border ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200 shadow-2xs'}`}>
             <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-1.5">
               <Search className="w-3.5 h-3.5" />
               <span>Report Customizer Controls</span>
@@ -936,19 +980,19 @@ export default function BillingTab({
 
           {/* QUICK STATUS INDICATOR TILES */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200'} shadow-2xs`}>
+            <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200'} shadow-2xs`}>
               <div className="flex justify-between items-start">
                 <div>
                   <p className="text-[10px] uppercase font-mono font-bold text-slate-400">Total Contract Value</p>
-                  <p className="text-xl font-black mt-1 text-[rgb(14,145,145)]">${totalValue.toLocaleString()}</p>
+                  <p className="text-xl font-black mt-1 text-purple-600">${totalValue.toLocaleString()}</p>
                 </div>
-                <span className="p-2 rounded-lg bg-[rgb(14,145,145)]/10 text-[rgb(14,145,145)]">
+                <span className="p-2 rounded-lg bg-purple-600/10 text-purple-600">
                   <DollarSign className="w-4 h-4" />
                 </span>
               </div>
             </div>
 
-            <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200'} shadow-2xs`}>
+            <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200'} shadow-2xs`}>
               <div className="flex justify-between items-start">
                 <div>
                   <p className="text-[10px] uppercase font-mono font-bold text-slate-400">Monthly Run-rate</p>
@@ -960,7 +1004,7 @@ export default function BillingTab({
               </div>
             </div>
 
-            <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200'} shadow-2xs`}>
+            <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200'} shadow-2xs`}>
               <div className="flex justify-between items-start">
                 <div>
                   <p className="text-[10px] uppercase font-mono font-bold text-slate-400">Agreed Seat Capacity</p>
@@ -972,7 +1016,7 @@ export default function BillingTab({
               </div>
             </div>
 
-            <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200'} shadow-2xs`}>
+            <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200'} shadow-2xs`}>
               <div className="flex justify-between items-start">
                 <div>
                   <p className="text-[10px] uppercase font-mono font-bold text-slate-400">Consumed License Units</p>
@@ -988,7 +1032,7 @@ export default function BillingTab({
           {/* CHARTS CONTAINER */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Purchased vs Consumed Units Bar Chart */}
-            <div className={`p-6 rounded-xl border lg:col-span-2 transition-all duration-300 ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200 shadow-2xs'}`}>
+            <div className={`p-6 rounded-xl border lg:col-span-2 transition-all duration-300 ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200 shadow-2xs'}`}>
               <div className="flex justify-between items-center mb-4">
                 <div>
                   <h3 className={`text-sm font-extrabold ${isDark ? 'text-white' : 'text-slate-900'}`}>
@@ -1011,14 +1055,14 @@ export default function BillingTab({
                 ) : (
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 5 }}>
-                      <CartesianGrid strokeDasharray="3 3" stroke={isDark ? '#2D333D' : '#F1F5F9'} />
+                      <CartesianGrid strokeDasharray="3 3" stroke={isDark ? 'rgb(30, 41, 59)' : '#F1F5F9'} />
                       <XAxis dataKey="name" stroke={isDark ? '#9CA3AF' : '#64748B'} fontSize={10} />
                       <YAxis stroke={isDark ? '#9CA3AF' : '#64748B'} fontSize={10} />
                       <Tooltip 
                         cursor={false}
                         contentStyle={{ 
-                          backgroundColor: isDark ? '#1A1D23' : '#FFFFFF', 
-                          borderColor: isDark ? '#2D333D' : '#E2E8F0',
+                          backgroundColor: isDark ? '#0f172a' : '#FFFFFF', 
+                          borderColor: isDark ? 'rgb(30, 41, 59)' : '#E2E8F0',
                           color: isDark ? '#FFFFFF' : '#0F172A'
                         }} 
                         itemStyle={{
@@ -1026,7 +1070,7 @@ export default function BillingTab({
                         }}
                       />
                       <Legend verticalAlign="top" height={36} iconType="circle" />
-                      <Bar dataKey="Purchased Units" fill="rgb(14,145,145)" radius={[4, 4, 0, 0]} />
+                      <Bar dataKey="Purchased Units" fill="purple-600" radius={[4, 4, 0, 0]} />
                       <Bar dataKey="Consumed Units" fill="#10B981" radius={[4, 4, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
@@ -1035,7 +1079,7 @@ export default function BillingTab({
             </div>
 
             {/* License Allocation Efficiency Breakdown */}
-            <div className={`p-6 rounded-xl border flex flex-col justify-between ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200 shadow-2xs'}`}>
+            <div className={`p-6 rounded-xl border flex flex-col justify-between ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200 shadow-2xs'}`}>
               <div className="space-y-4">
                 <h4 className={`text-xs font-bold uppercase tracking-wider ${isDark ? 'text-gray-500' : 'text-slate-400'}`}>
                   Tenant SLA Allocation Utilization Rate
@@ -1054,14 +1098,14 @@ export default function BillingTab({
                         <div key={con.id} className="space-y-1">
                           <div className="flex justify-between font-bold">
                             <span className="truncate max-w-[150px]">{con.customerName}</span>
-                            <span className={floatEff > 100 ? 'text-rose-500 font-extrabold' : floatEff > 80 ? 'text-amber-500' : 'text-[rgb(14,145,145)]'}>
+                            <span className={floatEff > 100 ? 'text-rose-500 font-extrabold' : floatEff > 80 ? 'text-amber-500' : 'text-purple-600'}>
                               {efficiency}%
                             </span>
                           </div>
                           <div className="w-full bg-slate-100 dark:bg-gray-800 h-2 rounded-full overflow-hidden">
                             <div 
                               className={`h-full rounded-full ${
-                                floatEff > 100 ? 'bg-rose-500' : floatEff > 80 ? 'bg-amber-500' : 'bg-[rgb(14,145,145)]'
+                                floatEff > 100 ? 'bg-rose-500' : floatEff > 80 ? 'bg-amber-500' : 'bg-purple-600'
                               }`} 
                               style={{ width: `${Math.min(100, floatEff)}%` }}
                             />
@@ -1084,15 +1128,15 @@ export default function BillingTab({
           </div>
 
           {/* TABLE: BILLING AGREEMENTS AUDIT trail */}
-          <div className={`p-6 rounded-xl border ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200 shadow-2xs'}`}>
+          <div className={`p-6 rounded-xl border ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200 shadow-2xs'}`}>
             <h3 className="text-sm font-extrabold mb-4 flex items-center gap-2">
-              <FileCheck2 className="w-4.5 h-4.5 text-[rgb(14,145,145)]" />
+              <FileCheck2 className="w-4.5 h-4.5 text-purple-600" />
               <span>SLA Agreement Core Records ({filteredContracts.length})</span>
             </h3>
 
             {/* BULK ACTION BAR WHEN SLA ITEMS CHECKED */}
             {selectedSlaContractIds.length > 0 && (
-              <div className="flex items-center justify-between p-3 px-4 mb-4 bg-[rgb(14,145,145)]/10 border border-[rgb(14,145,145)]/30 rounded-xl text-xs font-bold text-[rgb(14,145,145)]">
+              <div className="flex items-center justify-between p-3 px-4 mb-4 bg-purple-600/10 border border-purple-600/30 rounded-xl text-xs font-bold text-purple-600">
                 <div className="flex items-center gap-2">
                   <CheckCircle className="w-4 h-4" />
                   <span>{selectedSlaContractIds.length} SLA agreement record(s) selected</span>
@@ -1117,7 +1161,7 @@ export default function BillingTab({
                         type="checkbox" 
                         checked={isAllSlaOnPageSelected}
                         onChange={handleToggleSelectAllSlaOnPage}
-                        className="w-4 h-4 rounded border-slate-300 text-[rgb(14,145,145)] focus:ring-[rgb(14,145,145)] cursor-pointer"
+                        className="w-4 h-4 rounded border-slate-300 text-purple-600 focus:ring-purple-600 cursor-pointer"
                         title="Select all on current page"
                       />
                     </th>
@@ -1151,7 +1195,7 @@ export default function BillingTab({
                               type="checkbox" 
                               checked={selectedSlaContractIds.includes(con.id)}
                               onChange={() => handleToggleSelectSlaContract(con.id)}
-                              className="w-4 h-4 rounded border-slate-300 text-[rgb(14,145,145)] focus:ring-[rgb(14,145,145)] cursor-pointer"
+                              className="w-4 h-4 rounded border-slate-300 text-purple-600 focus:ring-purple-600 cursor-pointer"
                             />
                           </td>
                           <td className="px-3 py-3.5 text-center font-mono font-bold text-slate-500 dark:text-slate-400">
@@ -1197,7 +1241,7 @@ export default function BillingTab({
 
             {/* SLA PAGINATION CONTROLS */}
             {filteredContracts.length > 0 && (
-              <div className={`flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 mt-4 border-t ${isDark ? 'border-[#2D333D]' : 'border-slate-200'} text-xs`}>
+              <div className={`flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 mt-4 border-t ${isDark ? 'border-[rgb(30, 41, 59)]' : 'border-slate-200'} text-xs`}>
                 <div className="text-slate-500 dark:text-gray-400 font-medium">
                   Showing <span className="font-bold text-slate-800 dark:text-white">{(safeSlaCurrentPage - 1) * slaItemsPerPage + 1}</span> to <span className="font-bold text-slate-800 dark:text-white">{Math.min(safeSlaCurrentPage * slaItemsPerPage, filteredContracts.length)}</span> of <span className="font-bold text-slate-800 dark:text-white">{filteredContracts.length}</span> records
                 </div>
@@ -1209,9 +1253,9 @@ export default function BillingTab({
                     disabled={safeSlaCurrentPage === 1}
                     className={`p-2 px-3 rounded-lg border font-bold flex items-center gap-1.5 cursor-pointer transition-all ${
                       safeSlaCurrentPage === 1
-                        ? 'opacity-40 cursor-not-allowed border-slate-200 text-slate-400 dark:border-[#2D333D]'
+                        ? 'opacity-40 cursor-not-allowed border-slate-200 text-slate-400 dark:border-[rgb(30, 41, 59)]'
                         : isDark 
-                          ? 'bg-[#1A1D23] border-[#2D333D] text-white hover:bg-slate-800' 
+                          ? 'bg-[#0f172a] border-[rgb(30, 41, 59)] text-white hover:bg-slate-800' 
                           : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
                     }`}
                     title="Previous Page"
@@ -1228,9 +1272,9 @@ export default function BillingTab({
                         onClick={() => setSlaCurrentPage(pg)}
                         className={`w-8 h-8 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                           pg === safeSlaCurrentPage
-                            ? 'bg-[rgb(14,145,145)] text-white shadow-xs font-extrabold'
+                            ? 'bg-purple-600 text-white shadow-xs font-extrabold'
                             : isDark
-                              ? 'bg-[#1A1D23] border border-[#2D333D] text-gray-300 hover:bg-slate-800'
+                              ? 'bg-[#0f172a] border border-[rgb(30, 41, 59)] text-gray-300 hover:bg-slate-800'
                               : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
                         }`}
                       >
@@ -1245,9 +1289,9 @@ export default function BillingTab({
                     disabled={safeSlaCurrentPage === slaTotalPages}
                     className={`p-2 px-3 rounded-lg border font-bold flex items-center gap-1.5 cursor-pointer transition-all ${
                       safeSlaCurrentPage === slaTotalPages
-                        ? 'opacity-40 cursor-not-allowed border-slate-200 text-slate-400 dark:border-[#2D333D]'
+                        ? 'opacity-40 cursor-not-allowed border-slate-200 text-slate-400 dark:border-[rgb(30, 41, 59)]'
                         : isDark 
-                          ? 'bg-[#1A1D23] border-[#2D333D] text-white hover:bg-slate-800' 
+                          ? 'bg-[#0f172a] border-[rgb(30, 41, 59)] text-white hover:bg-slate-800' 
                           : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
                     }`}
                     title="Next Page"
@@ -1261,11 +1305,11 @@ export default function BillingTab({
           </div>
 
           {/* SECTION 4: BINARIES REGISTRY (Page 4) */}
-          <div className={`p-6 rounded-xl border ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200 shadow-2xs'}`}>
+          <div className={`p-6 rounded-xl border ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200 shadow-2xs'}`}>
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
               <div>
                 <h3 className="text-sm font-extrabold flex items-center gap-2">
-                  <FileCode2 className="w-4.5 h-4.5 text-[rgb(14,145,145)]" />
+                  <FileCode2 className="w-4.5 h-4.5 text-purple-600" />
                   <span>Licensed Software Binary Repository</span>
                 </h3>
                 <p className={`text-[11px] ${isDark ? 'text-gray-500' : 'text-slate-400'} mt-0.5 font-medium`}>
@@ -1287,7 +1331,7 @@ export default function BillingTab({
                 </div>
                 <button
                   onClick={() => setIsBinModalOpen(true)}
-                  className="px-3 py-1.5 bg-[rgb(14,145,145)] hover:bg-[rgb(12,125,125)] text-white rounded-lg text-xs font-bold flex items-center gap-1 transition-all cursor-pointer"
+                  className="px-3 py-1.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-xs font-bold flex items-center gap-1 transition-all cursor-pointer"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   <span>Upload Binary</span>
@@ -1307,13 +1351,13 @@ export default function BillingTab({
                     <div 
                       key={bin.id} 
                       className={`p-4 rounded-xl border flex flex-col justify-between ${
-                        isDark ? 'bg-[#0F1115] border-gray-800' : 'bg-slate-50/50 border-slate-100'
+                        isDark ? 'bg-[#020617] border-gray-800' : 'bg-slate-50/50 border-slate-100'
                       }`}
                     >
                       <div>
                         <div className="flex items-start justify-between">
                           <div className="space-y-0.5">
-                            <span className="text-[10px] uppercase font-mono font-bold text-[rgb(14,145,145)] bg-[rgb(14,145,145)]/10 px-2 py-0.5 rounded-full">
+                            <span className="text-[10px] uppercase font-mono font-bold text-purple-600 bg-purple-600/10 px-2 py-0.5 rounded-full">
                               v{bin.version}
                             </span>
                             <h4 className="font-bold text-xs text-slate-800 dark:text-white mt-1.5">{bin.fileName}</h4>
@@ -1370,7 +1414,7 @@ export default function BillingTab({
       {activeSubSection === 'activations' && (
         <div className="space-y-6 animate-fade-in">
           {/* MULTI-CRITERIA AUDITING CONTROLS */}
-          <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200'} shadow-2xs`}>
+          <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200'} shadow-2xs`}>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs font-semibold">
               <div>
                 <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Filter Corporate Client</label>
@@ -1413,8 +1457,8 @@ export default function BillingTab({
                     onChange={(e) => setActivationSearchQuery(e.target.value)}
                     className={`w-full pl-9 pr-4 py-2 text-xs rounded-lg border outline-hidden transition-all ${
                       isDark 
-                        ? 'bg-[#0F1115] border-[#2D333D] text-white focus:border-[rgb(14,145,145)]' 
-                        : 'bg-slate-50 border-slate-200 text-slate-800 focus:border-[rgb(14,145,145)]'
+                        ? 'bg-[#020617] border-[rgb(30, 41, 59)] text-white focus:border-purple-600' 
+                        : 'bg-slate-50 border-slate-200 text-slate-800 focus:border-purple-600'
                     }`}
                     placeholder="Search host keys, MAC addresses..."
                   />
@@ -1424,24 +1468,24 @@ export default function BillingTab({
           </div>
 
           {/* ACTIVE HOST REGISTRIES */}
-          <div className={`border rounded-xl overflow-hidden shadow-2xs ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200'}`}>
+          <div className={`border rounded-xl overflow-hidden shadow-2xs ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200'}`}>
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse text-xs">
                 <thead>
-                  <tr className={`border-b text-[10px] uppercase font-mono tracking-wider font-extrabold ${isDark ? 'bg-[#0F1115]/60 border-[#2D333D] text-gray-400' : 'bg-slate-50/70 border-slate-100 text-slate-500'}`}>
-                    <th className="px-5 py-3.5">Corporate Client</th>
-                    <th className="px-5 py-3.5 font-mono">Contract ID</th>
-                    <th className="px-5 py-3.5">Product Module</th>
-                    <th className="px-5 py-3.5">SKU</th>
-                    <th className="px-5 py-3.5">Physical Host ID</th>
-                    <th className="px-5 py-3.5 font-mono">Platform License Key</th>
-                    <th className="px-5 py-3.5 text-center">Status</th>
-                    <th className="px-5 py-3.5">Active From</th>
-                    <th className="px-5 py-3.5">Active To</th>
-                    <th className="px-5 py-3.5 text-right">Actions</th>
+                  <tr className={`border-b text-[10px] uppercase font-mono tracking-wider font-extrabold ${isDark ? 'bg-[#020617]/60 border-[rgb(30, 41, 59)] text-gray-400' : 'bg-slate-50/70 border-slate-100 text-slate-500'}`}>
+                    <th className="px-4 py-3.5 whitespace-nowrap">Corporate Client</th>
+                    <th className="px-4 py-3.5 font-mono whitespace-nowrap">Contract ID</th>
+                    <th className="px-4 py-3.5 whitespace-nowrap">Product Module</th>
+                    <th className="px-4 py-3.5 whitespace-nowrap font-mono">SKU</th>
+                    <th className="px-4 py-3.5 whitespace-nowrap font-mono min-w-[180px]">Physical Host ID</th>
+                    <th className="px-4 py-3.5 whitespace-nowrap font-mono min-w-[240px]">Platform License Key</th>
+                    <th className="px-4 py-3.5 text-center whitespace-nowrap">Status</th>
+                    <th className="px-4 py-3.5 whitespace-nowrap">Active From</th>
+                    <th className="px-4 py-3.5 whitespace-nowrap">Active To</th>
+                    <th className="px-4 py-3.5 text-right whitespace-nowrap">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-[#2D333D]">
+                <tbody className="divide-y divide-slate-100 dark:divide-[rgb(30, 41, 59)]">
                   {filteredActivations.length === 0 ? (
                     <tr>
                       <td colSpan={10} className="px-5 py-12 text-center text-slate-400 dark:text-gray-500 font-medium">
@@ -1453,29 +1497,29 @@ export default function BillingTab({
                   ) : (
                     filteredActivations.map((act) => (
                       <tr key={act.id} className={`hover:bg-slate-50/50 dark:hover:bg-gray-800/30 transition-colors ${!act.licenseActive ? 'opacity-60 bg-red-500/5' : ''}`}>
-                        <td className="px-5 py-4 font-bold text-slate-900 dark:text-white">
+                        <td className="px-4 py-3.5 font-bold text-slate-900 dark:text-white whitespace-nowrap">
                           {act.customerName}
                         </td>
-                        <td className="px-5 py-4 font-mono font-bold text-[rgb(14,145,145)]">
+                        <td className="px-4 py-3.5 font-mono font-bold text-purple-600 whitespace-nowrap">
                           {act.contractId}
                         </td>
-                        <td className="px-5 py-4 font-semibold text-slate-700 dark:text-slate-200">
+                        <td className="px-4 py-3.5 font-semibold text-slate-700 dark:text-slate-200 whitespace-nowrap">
                           {act.productName}
                         </td>
-                        <td className="px-5 py-4 font-mono text-gray-400">
+                        <td className="px-4 py-3.5 font-mono text-slate-500 dark:text-gray-400 whitespace-nowrap">
                           {act.productSku}
                         </td>
-                        <td className="px-5 py-4">
-                          <span className="px-2 py-1 rounded-md bg-slate-100 dark:bg-slate-800 border dark:border-slate-800 font-mono text-[11px] font-bold text-slate-800 dark:text-slate-200">
+                        <td className="px-4 py-3.5 whitespace-nowrap">
+                          <span className="inline-block px-2.5 py-1 rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 font-mono text-xs font-bold text-slate-800 dark:text-slate-200 whitespace-nowrap select-all">
                             {act.customerHostId}
                           </span>
                         </td>
-                        <td className="px-5 py-4">
-                          <span className="px-2.5 py-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/20 text-indigo-600 dark:text-indigo-400 font-mono text-xs font-extrabold border border-indigo-100 dark:border-indigo-950">
+                        <td className="px-4 py-3.5 whitespace-nowrap">
+                          <span className="inline-block px-2.5 py-1 rounded-md bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 font-mono text-xs font-bold border border-indigo-200 dark:border-indigo-800/60 whitespace-nowrap select-all">
                             {act.licenseKey}
                           </span>
                         </td>
-                        <td className="px-5 py-4 text-center">
+                        <td className="px-4 py-3.5 text-center whitespace-nowrap">
                           {act.licenseActive ? (
                             <span className="inline-flex items-center gap-1 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-2.5 py-1 rounded-full text-[9px] font-black uppercase font-mono tracking-wider">
                               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -1488,13 +1532,13 @@ export default function BillingTab({
                             </span>
                           )}
                         </td>
-                        <td className="px-5 py-4 font-mono text-[11px] text-gray-400">
+                        <td className="px-4 py-3.5 font-mono text-xs text-slate-600 dark:text-gray-400 whitespace-nowrap">
                           {act.licenseStartDate}
                         </td>
-                        <td className="px-5 py-4 font-mono text-[11px] text-gray-400">
+                        <td className="px-4 py-3.5 font-mono text-xs text-slate-600 dark:text-gray-400 whitespace-nowrap">
                           {act.licenseEndDate}
                         </td>
-                        <td className="px-5 py-4 text-right">
+                        <td className="px-4 py-3.5 text-right whitespace-nowrap">
                           <div className="flex items-center justify-end gap-1">
                             <button
                               onClick={() => handleDeactivateActivation(act)}
@@ -1534,15 +1578,15 @@ export default function BillingTab({
         <div className="space-y-6 animate-fade-in">
           {/* QUICK STATUS OVERVIEW GRID */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200'} shadow-2xs`}>
+            <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200'} shadow-2xs`}>
               <p className="text-[10px] uppercase font-mono font-bold text-slate-400">Total Active Keys</p>
               <p className="text-2xl font-black mt-1 text-emerald-500">{licenses.filter(l => l.isActive).length}</p>
             </div>
-            <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200'} shadow-2xs`}>
+            <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200'} shadow-2xs`}>
               <p className="text-[10px] uppercase font-mono font-bold text-slate-400">Blocked / Expired</p>
               <p className="text-2xl font-black mt-1 text-rose-500">{licenses.filter(l => !l.isActive).length}</p>
             </div>
-            <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200'} shadow-2xs`}>
+            <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200'} shadow-2xs`}>
               <p className="text-[10px] uppercase font-mono font-bold text-slate-400">Expiring in 60 Days</p>
               <p className="text-2xl font-black mt-1 text-amber-500">
                 {licenses.filter(l => {
@@ -1554,39 +1598,71 @@ export default function BillingTab({
             </div>
           </div>
 
-          {/* SEARCH BAR */}
-          <div className="relative">
-            <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
-            <input 
-              type="text" 
-              value={licenseSearchQuery}
-              onChange={(e) => setLicenseSearchQuery(e.target.value)}
-              className={`w-full pl-9 pr-4 py-2 text-xs rounded-lg border outline-hidden transition-all ${
-                isDark 
-                  ? 'bg-[#0F1115] border-[#2D333D] text-white focus:border-[rgb(14,145,145)]' 
-                  : 'bg-slate-50 border-slate-200 text-slate-800 focus:border-[rgb(14,145,145)]'
-              }`}
-              placeholder="Search by company, authorized contact person, license key, or SKU..."
-            />
+          {/* SEARCH & SELECTION TOOLBAR */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
+              <input 
+                type="text" 
+                value={licenseSearchQuery}
+                onChange={(e) => setLicenseSearchQuery(e.target.value)}
+                className={`w-full pl-9 pr-4 py-2 text-xs rounded-lg border outline-hidden transition-all ${
+                  isDark 
+                    ? 'bg-[#020617] border-[rgb(30, 41, 59)] text-white focus:border-purple-600' 
+                    : 'bg-slate-50 border-slate-200 text-slate-800 focus:border-purple-600'
+                }`}
+                placeholder="Search by company, authorized contact person, license key, or SKU..."
+              />
+            </div>
+
+            {selectedLicenseIds.length > 0 && (
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-xs text-indigo-600 dark:text-indigo-400 font-bold shrink-0">
+                <span>{selectedLicenseIds.length} selected</span>
+                <button
+                  onClick={handleBulkDeleteLicenses}
+                  className="px-2 py-0.5 rounded bg-rose-500/20 text-rose-600 dark:text-rose-400 hover:bg-rose-500/30 transition-colors flex items-center gap-1 text-[11px] font-extrabold cursor-pointer"
+                  title="Delete selected items"
+                >
+                  <Trash2 className="w-3 h-3" />
+                  <span>Delete Selected</span>
+                </button>
+                <button
+                  onClick={() => setSelectedLicenseIds([])}
+                  className="px-1.5 py-0.5 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-500 text-[11px] cursor-pointer"
+                >
+                  Clear
+                </button>
+              </div>
+            )}
           </div>
 
           {/* LICENSE TABLE */}
-          <div className={`border rounded-xl overflow-hidden shadow-2xs ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200'}`}>
+          <div className={`border rounded-xl overflow-hidden shadow-2xs ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200'}`}>
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse text-xs">
                 <thead>
-                  <tr className={`border-b text-[10px] uppercase tracking-wider font-mono font-extrabold ${isDark ? 'bg-[#0F1115]/60 border-[#2D333D] text-gray-400' : 'bg-slate-50/70 border-slate-100 text-slate-500'}`}>
-                    <th className="px-5 py-3.5 text-center w-12">S/No.</th>
-                    <th className="px-5 py-3.5">Company Name</th>
-                    <th className="px-5 py-3.5">Authorized Contact</th>
-                    <th className="px-5 py-3.5 font-mono">License Key</th>
-                    <th className="px-5 py-3.5">SKU</th>
-                    <th className="px-5 py-3.5">Renewal Date</th>
-                    <th className="px-5 py-3.5">Status</th>
-                    <th className="px-5 py-3.5 text-right">Actions</th>
+                  <tr className={`border-b text-[10px] uppercase tracking-wider font-mono font-extrabold ${isDark ? 'bg-[#020617]/60 border-[rgb(30, 41, 59)] text-gray-400' : 'bg-slate-50/70 border-slate-100 text-slate-500'}`}>
+                    <th className="px-4 py-3.5 text-center w-24 whitespace-nowrap">
+                      <div className="flex items-center justify-center gap-2">
+                        <input 
+                          type="checkbox"
+                          checked={paginatedLicenses.length > 0 && paginatedLicenses.every(l => selectedLicenseIds.includes(l.id))}
+                          onChange={toggleSelectAllLicenses}
+                          className="w-4 h-4 rounded border-slate-300 dark:border-slate-700 text-purple-600 focus:ring-purple-600 cursor-pointer"
+                        />
+                        <span>S/No.</span>
+                      </div>
+                    </th>
+                    <th className="px-4 py-3.5 whitespace-nowrap">Company Name</th>
+                    <th className="px-4 py-3.5 whitespace-nowrap">Authorized Contact</th>
+                    <th className="px-4 py-3.5 font-mono whitespace-nowrap">License Key</th>
+                    <th className="px-4 py-3.5 whitespace-nowrap font-mono">SKU</th>
+                    <th className="px-4 py-3.5 whitespace-nowrap">Renewal Date</th>
+                    <th className="px-4 py-3.5 whitespace-nowrap">Status</th>
+                    <th className="px-4 py-3.5 text-right whitespace-nowrap">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-[#2D333D]">
+                <tbody className="divide-y divide-slate-100 dark:divide-[rgb(30, 41, 59)]">
                   {filteredLicenses.length === 0 ? (
                     <tr>
                       <td colSpan={8} className="px-5 py-10 text-center text-slate-400 dark:text-gray-500">
@@ -1595,28 +1671,41 @@ export default function BillingTab({
                       </td>
                     </tr>
                   ) : (
-                    filteredLicenses.map((lic, index) => {
+                    paginatedLicenses.map((lic, index) => {
                       const isExpiringSoon = (() => {
                         const renewal = new Date(lic.renewalDate).getTime();
                         const limit = Date.now() + 60 * 24 * 60 * 60 * 1000;
                         return renewal > Date.now() && renewal < limit;
                       })();
 
+                      const serialNumber = (licenseCurrentPage - 1) * licenseItemsPerPage + index + 1;
+                      const isSelected = selectedLicenseIds.includes(lic.id);
+
                       return (
-                        <tr key={lic.id} className={`hover:bg-slate-50/50 dark:hover:bg-gray-800/30 transition-colors ${!lic.isActive ? 'opacity-70' : ''}`}>
-                          <td className="px-5 py-4 text-center font-bold text-slate-400 font-mono">
-                            {index + 1}
+                        <tr key={lic.id} className={`hover:bg-slate-50/50 dark:hover:bg-gray-800/30 transition-colors ${isSelected ? (isDark ? 'bg-indigo-950/20' : 'bg-indigo-50/40') : ''} ${!lic.isActive ? 'opacity-70' : ''}`}>
+                          <td className="px-4 py-3.5 text-center font-bold text-slate-400 font-mono whitespace-nowrap">
+                            <div className="flex items-center justify-center gap-2.5">
+                              <input 
+                                type="checkbox"
+                                checked={isSelected}
+                                onChange={() => toggleSelectLicense(lic.id)}
+                                className="w-4 h-4 rounded border-slate-300 dark:border-slate-700 text-purple-600 focus:ring-purple-600 cursor-pointer"
+                              />
+                              <span className="w-5 text-right font-mono text-slate-500 dark:text-slate-400">
+                                {serialNumber}
+                              </span>
+                            </div>
                           </td>
-                          <td className="px-5 py-4">
+                          <td className="px-4 py-3.5 whitespace-nowrap">
                             <button
                               onClick={() => onSelectCustomer(lic.companyId)}
                               className="font-extrabold text-black dark:text-white hover:underline flex items-center gap-1.5 cursor-pointer text-left focus:outline-hidden"
                             >
-                              <Building2 className="w-3.5 h-3.5 shrink-0 opacity-70 text-[rgb(14,145,145)]" />
+                              <Building2 className="w-3.5 h-3.5 shrink-0 opacity-70 text-purple-600" />
                               <span>{lic.companyName}</span>
                             </button>
                           </td>
-                          <td className="px-5 py-4">
+                          <td className="px-4 py-3.5 whitespace-nowrap">
                             <button
                               onClick={() => onSelectCustomer(lic.companyId)}
                               className="font-medium text-slate-700 dark:text-slate-200 hover:text-black hover:underline flex items-center gap-1.5 text-left cursor-pointer focus:outline-hidden"
@@ -1625,15 +1714,15 @@ export default function BillingTab({
                               <span>{lic.authPerson}</span>
                             </button>
                           </td>
-                          <td className="px-5 py-4">
+                          <td className="px-4 py-3.5 whitespace-nowrap">
                             <span className="font-bold text-black dark:text-white bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 px-2.5 py-1 rounded-md text-xs font-mono">
                               {lic.licenseKey}
                             </span>
                           </td>
-                          <td className="px-5 py-4 font-mono text-[11px]">
+                          <td className="px-4 py-3.5 font-mono text-[11px] whitespace-nowrap">
                             {lic.sku}
                           </td>
-                          <td className="px-5 py-4">
+                          <td className="px-4 py-3.5 whitespace-nowrap">
                             <div className="flex items-center gap-1.5">
                               <Calendar className={`w-3.5 h-3.5 ${isExpiringSoon ? 'text-amber-500' : 'text-slate-400'}`} />
                               <span className={`font-medium ${isExpiringSoon ? 'text-amber-600 dark:text-amber-400 font-bold' : 'text-slate-600 dark:text-gray-300'}`}>
@@ -1641,7 +1730,7 @@ export default function BillingTab({
                               </span>
                             </div>
                           </td>
-                          <td className="px-5 py-4">
+                          <td className="px-4 py-3.5 whitespace-nowrap">
                             {lic.isActive ? (
                               <span className="inline-flex items-center gap-1 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase font-mono tracking-wider">
                                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -1654,7 +1743,7 @@ export default function BillingTab({
                               </span>
                             )}
                           </td>
-                          <td className="px-5 py-4 text-right">
+                          <td className="px-4 py-3.5 text-right whitespace-nowrap">
                             <div className="flex items-center justify-end gap-1">
                               <button
                                 onClick={() => handleOpenEmailModal(lic)}
@@ -1702,6 +1791,80 @@ export default function BillingTab({
                 </tbody>
               </table>
             </div>
+
+            {/* PAGINATION BAR */}
+            <div className={`px-5 py-3.5 border-t flex flex-col sm:flex-row items-center justify-between gap-4 ${isDark ? 'bg-[#020617]/80 border-[rgb(30, 41, 59)] text-slate-300' : 'bg-slate-50/70 border-slate-200 text-slate-600'}`}>
+              <div className="flex items-center gap-3 text-xs">
+                <span className="text-slate-500 font-medium">Rows per page:</span>
+                <select
+                  value={licenseItemsPerPage}
+                  onChange={(e) => setLicenseItemsPerPage(Number(e.target.value))}
+                  className={`px-2.5 py-1 text-xs rounded-md border outline-hidden transition-colors cursor-pointer ${
+                    isDark 
+                      ? 'bg-[#0f172a] border-[rgb(30, 41, 59)] text-white focus:border-purple-600' 
+                      : 'bg-white border-slate-300 text-slate-800 focus:border-purple-600'
+                  }`}
+                >
+                  <option value={5}>5</option>
+                  <option value={10}>10</option>
+                  <option value={25}>25</option>
+                  <option value={50}>50</option>
+                </select>
+                <span className="font-mono text-xs text-slate-500">
+                  Showing <strong className="text-slate-900 dark:text-white">{filteredLicenses.length === 0 ? 0 : (licenseCurrentPage - 1) * licenseItemsPerPage + 1}</strong> to <strong className="text-slate-900 dark:text-white">{Math.min(licenseCurrentPage * licenseItemsPerPage, filteredLicenses.length)}</strong> of <strong className="text-slate-900 dark:text-white">{filteredLicenses.length}</strong> items
+                </span>
+              </div>
+
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => setLicenseCurrentPage(p => Math.max(1, p - 1))}
+                  disabled={licenseCurrentPage === 1}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1 transition-all ${
+                    licenseCurrentPage === 1
+                      ? 'opacity-40 cursor-not-allowed text-slate-400'
+                      : isDark
+                      ? 'bg-[#0f172a] hover:bg-slate-800 text-white border border-[rgb(30, 41, 59)] cursor-pointer'
+                      : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 shadow-2xs cursor-pointer'
+                  }`}
+                >
+                  <ChevronLeft className="w-3.5 h-3.5" />
+                  <span>Previous</span>
+                </button>
+
+                <div className="flex items-center gap-1 px-1">
+                  {Array.from({ length: totalLicensePages }, (_, i) => i + 1).map((pageNum) => (
+                    <button
+                      key={pageNum}
+                      onClick={() => setLicenseCurrentPage(pageNum)}
+                      className={`w-7 h-7 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                        licenseCurrentPage === pageNum
+                          ? 'bg-purple-600 text-white shadow-xs'
+                          : isDark
+                          ? 'hover:bg-slate-800 text-slate-400 hover:text-white'
+                          : 'hover:bg-slate-100 text-slate-600'
+                      }`}
+                    >
+                      {pageNum}
+                    </button>
+                  ))}
+                </div>
+
+                <button
+                  onClick={() => setLicenseCurrentPage(p => Math.min(totalLicensePages, p + 1))}
+                  disabled={licenseCurrentPage === totalLicensePages || filteredLicenses.length === 0}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1 transition-all ${
+                    licenseCurrentPage === totalLicensePages || filteredLicenses.length === 0
+                      ? 'opacity-40 cursor-not-allowed text-slate-400'
+                      : isDark
+                      ? 'bg-[#0f172a] hover:bg-slate-800 text-white border border-[rgb(30, 41, 59)] cursor-pointer'
+                      : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 shadow-2xs cursor-pointer'
+                  }`}
+                >
+                  <span>Next</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}
@@ -1713,10 +1876,10 @@ export default function BillingTab({
       {/* MODAL: BINARY UPLOAD */}
       {isBinModalOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-fade-in">
-          <div className={`w-full max-w-md rounded-2xl p-6 shadow-2xl ${isDark ? 'bg-[#1A1D23] border border-[#2D333D] text-white' : 'bg-white border text-slate-800'}`}>
+          <div className={`w-full max-w-md rounded-2xl p-6 shadow-2xl ${isDark ? 'bg-[#0f172a] border border-[rgb(30, 41, 59)] text-white' : 'bg-white border text-slate-800'}`}>
             <div className="flex justify-between items-center pb-4 border-b dark:border-gray-800">
               <h3 className="font-extrabold text-sm flex items-center gap-2">
-                <FileCode2 className="w-4.5 h-4.5 text-[rgb(14,145,145)]" />
+                <FileCode2 className="w-4.5 h-4.5 text-purple-600" />
                 <span>Upload Software Binary</span>
               </h3>
               <button onClick={() => setIsBinModalOpen(false)} className="text-slate-400 cursor-pointer">
@@ -1731,7 +1894,7 @@ export default function BillingTab({
                   type="text" 
                   value={binFileName}
                   onChange={(e) => setBinFileName(e.target.value)}
-                  className={`w-full px-3 py-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D] text-white' : 'bg-white border-slate-200'}`}
+                  className={`w-full px-3 py-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)] text-white' : 'bg-white border-slate-200'}`}
                   placeholder="e.g. core-engine-service-v3.2.1-x86.tar.gz"
                   required
                 />
@@ -1744,7 +1907,7 @@ export default function BillingTab({
                     type="text" 
                     value={binVersion}
                     onChange={(e) => setBinVersion(e.target.value)}
-                    className={`w-full px-3 py-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D] text-white' : 'bg-white border-slate-200'}`}
+                    className={`w-full px-3 py-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)] text-white' : 'bg-white border-slate-200'}`}
                     placeholder="e.g. 3.2.1"
                     required
                   />
@@ -1766,7 +1929,7 @@ export default function BillingTab({
                   type="text" 
                   value={binSize}
                   onChange={(e) => setBinSize(e.target.value)}
-                  className={`w-full px-3 py-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D] text-white' : 'bg-white border-slate-200'}`}
+                  className={`w-full px-3 py-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)] text-white' : 'bg-white border-slate-200'}`}
                   placeholder="e.g. 154.2 MB"
                 />
               </div>
@@ -1776,7 +1939,7 @@ export default function BillingTab({
                 <textarea 
                   value={binNotes}
                   onChange={(e) => setBinNotes(e.target.value)}
-                  className={`w-full px-3 py-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D] text-white' : 'bg-white border-slate-200'}`}
+                  className={`w-full px-3 py-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)] text-white' : 'bg-white border-slate-200'}`}
                   placeholder="Include security updates, vulnerability mitigation notes or critical warnings..."
                   rows={3}
                 />
@@ -1791,7 +1954,7 @@ export default function BillingTab({
                         type="checkbox" 
                         checked={binCustomers.includes(c.id)}
                         onChange={() => toggleBinCustomer(c.id)}
-                        className="rounded text-[rgb(14,145,145)] focus:ring-[rgb(14,145,145)]"
+                        className="rounded text-purple-600 focus:ring-purple-600"
                       />
                       <span>{c.name}</span>
                     </label>
@@ -1809,7 +1972,7 @@ export default function BillingTab({
                 </button>
                 <button 
                   type="submit" 
-                  className="px-4 py-2 bg-[rgb(14,145,145)] hover:bg-[rgb(12,125,125)] text-white rounded-lg cursor-pointer font-bold"
+                  className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg cursor-pointer font-bold"
                 >
                   Register Binary
                 </button>
@@ -1822,10 +1985,10 @@ export default function BillingTab({
       {/* MODAL: HOST ACTIVATION (REGISTER MACHINE) */}
       {isActivationModalOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-fade-in">
-          <div className={`w-full max-w-lg rounded-2xl shadow-2xl p-6 overflow-y-auto max-h-[90vh] ${isDark ? 'bg-[#1A1D23] border border-[#2D333D] text-white' : 'bg-white border text-slate-800'}`}>
-            <div className="flex items-center justify-between border-b pb-4 mb-4 dark:border-[#2D333D] border-slate-100">
+          <div className={`w-full max-w-lg rounded-2xl shadow-2xl p-6 overflow-y-auto max-h-[90vh] ${isDark ? 'bg-[#0f172a] border border-[rgb(30, 41, 59)] text-white' : 'bg-white border text-slate-800'}`}>
+            <div className="flex items-center justify-between border-b pb-4 mb-4 dark:border-[rgb(30, 41, 59)] border-slate-100">
               <h3 className="font-extrabold text-base flex items-center gap-2">
-                <Fingerprint className="w-5 h-5 text-[rgb(14,145,145)]" />
+                <Fingerprint className="w-5 h-5 text-purple-600" />
                 <span>Register Host Machine</span>
               </h3>
               <button 
@@ -1872,7 +2035,7 @@ export default function BillingTab({
                   type="text" 
                   value={actHostId}
                   onChange={(e) => setActHostId(e.target.value)}
-                  className={`w-full px-3 py-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D] text-white' : 'bg-white border-slate-200'}`}
+                  className={`w-full px-3 py-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)] text-white' : 'bg-white border-slate-200'}`}
                   placeholder="e.g. sys-cyber-01-mac-00:25:90:ff:11:12"
                   required
                 />
@@ -1885,7 +2048,7 @@ export default function BillingTab({
                     type="date" 
                     value={actStartDate}
                     onChange={(e) => setActStartDate(e.target.value)}
-                    className={`w-full px-3 py-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D] text-white' : 'bg-white border-slate-200'}`}
+                    className={`w-full px-3 py-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)] text-white' : 'bg-white border-slate-200'}`}
                     required
                   />
                 </div>
@@ -1895,7 +2058,7 @@ export default function BillingTab({
                     type="date" 
                     value={actEndDate}
                     onChange={(e) => setActEndDate(e.target.value)}
-                    className={`w-full px-3 py-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D] text-white' : 'bg-white border-slate-200'}`}
+                    className={`w-full px-3 py-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)] text-white' : 'bg-white border-slate-200'}`}
                     required
                   />
                 </div>
@@ -1908,14 +2071,14 @@ export default function BillingTab({
                     type="text" 
                     value={actLicenseKey}
                     onChange={(e) => setActLicenseKey(e.target.value)}
-                    className={`flex-1 px-3 py-2 rounded-lg border font-mono outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D] text-white' : 'bg-white border-slate-200'}`}
+                    className={`flex-1 px-3 py-2 rounded-lg border font-mono outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)] text-white' : 'bg-white border-slate-200'}`}
                     placeholder="Click Generate to build safe key"
                     readOnly
                   />
                   <button
                     type="button"
                     onClick={handleGenerateHostLicenseKey}
-                    className="px-3 py-2 rounded-lg bg-[rgb(14,145,145)] hover:bg-[rgb(12,125,125)] text-white hover:bg-[rgb(12,125,125)] cursor-pointer font-bold shrink-0 text-xs"
+                    className="px-3 py-2 rounded-lg bg-purple-600 hover:bg-purple-700 text-white hover:bg-purple-700 cursor-pointer font-bold shrink-0 text-xs"
                   >
                     Generate
                   </button>
@@ -1928,13 +2091,13 @@ export default function BillingTab({
                     type="checkbox" 
                     checked={actLicenseActive}
                     onChange={(e) => setActLicenseActive(e.target.checked)}
-                    className="rounded text-[rgb(14,145,145)] focus:ring-[rgb(14,145,145)]"
+                    className="rounded text-purple-600 focus:ring-purple-600"
                   />
                   <span className="font-bold text-slate-700 dark:text-slate-300">License Instantly Active</span>
                 </label>
               </div>
 
-              <div className="flex justify-end gap-2 border-t pt-4 dark:border-[#2D333D]">
+              <div className="flex justify-end gap-2 border-t pt-4 dark:border-[rgb(30, 41, 59)]">
                 <button 
                   type="button" 
                   onClick={() => setIsActivationModalOpen(false)}
@@ -1945,7 +2108,7 @@ export default function BillingTab({
                 <button 
                   type="submit" 
                   disabled={!actContractId}
-                  className="px-4 py-2 bg-[rgb(14,145,145)] text-white rounded-lg cursor-pointer font-bold disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-4 py-2 bg-purple-600 text-white rounded-lg cursor-pointer font-bold disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Activate Host
                 </button>
@@ -1958,7 +2121,7 @@ export default function BillingTab({
       {/* MODAL: LEGACY SEAT LICENSE (Add / Edit) */}
       {isLicenseModalOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-fade-in">
-          <div className={`w-full max-w-lg rounded-2xl shadow-2xl p-6 ${isDark ? 'bg-[#1A1D23] border border-[#2D333D] text-white' : 'bg-white border text-slate-800'}`}>
+          <div className={`w-full max-w-lg rounded-2xl shadow-2xl p-6 ${isDark ? 'bg-[#0f172a] border border-[rgb(30, 41, 59)] text-white' : 'bg-white border text-slate-800'}`}>
             <div className="flex items-center justify-between border-b pb-4 mb-4 dark:border-gray-800">
               <h3 className="font-extrabold text-base flex items-center gap-2">
                 <Key className="w-5 h-5 text-black dark:text-white" />
@@ -1990,7 +2153,7 @@ export default function BillingTab({
                     type="text"
                     value={formAuthPerson}
                     onChange={(e) => setFormAuthPerson(e.target.value)}
-                    className={`w-full px-3 py-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50'}`}
+                    className={`w-full px-3 py-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50'}`}
                     required
                   />
                 </div>
@@ -2000,7 +2163,7 @@ export default function BillingTab({
                     type="email"
                     value={formEmail}
                     onChange={(e) => setFormEmail(e.target.value)}
-                    className={`w-full px-3 py-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50'}`}
+                    className={`w-full px-3 py-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50'}`}
                     required
                   />
                 </div>
@@ -2022,7 +2185,7 @@ export default function BillingTab({
                   type="text" 
                   value={formLicenseKey}
                   onChange={(e) => setFormLicenseKey(e.target.value)}
-                  className={`w-full px-3 py-2 font-mono rounded-lg border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50'}`}
+                  className={`w-full px-3 py-2 font-mono rounded-lg border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50'}`}
                   required
                 />
               </div>
@@ -2034,7 +2197,7 @@ export default function BillingTab({
                     type="number" 
                     value={formCustomerUnitPrice}
                     onChange={(e) => setFormCustomerUnitPrice(Number(e.target.value))}
-                    className={`w-full px-3 py-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50'}`}
+                    className={`w-full px-3 py-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50'}`}
                     required
                   />
                 </div>
@@ -2044,7 +2207,7 @@ export default function BillingTab({
                     type="number" 
                     value={formTermMonths}
                     onChange={(e) => handleTermMonthsChange(e.target.value)}
-                    className={`w-full px-3 py-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50'}`}
+                    className={`w-full px-3 py-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50'}`}
                     placeholder="12"
                     required
                   />
@@ -2058,7 +2221,7 @@ export default function BillingTab({
                     type="date" 
                     value={formTermStartDate}
                     onChange={(e) => handleStartDateChange(e.target.value)}
-                    className={`w-full px-3 py-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50'}`}
+                    className={`w-full px-3 py-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50'}`}
                     required
                   />
                 </div>
@@ -2068,7 +2231,7 @@ export default function BillingTab({
                     type="date" 
                     value={formTermEndDate}
                     onChange={(e) => handleEndDateChange(e.target.value)}
-                    className={`w-full px-3 py-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50'}`}
+                    className={`w-full px-3 py-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50'}`}
                     required
                   />
                 </div>
@@ -2084,7 +2247,7 @@ export default function BillingTab({
                 </button>
                 <button 
                   type="submit" 
-                  className="px-4 py-2 bg-[rgb(14,145,145)] text-white rounded-lg cursor-pointer font-bold"
+                  className="px-4 py-2 bg-purple-600 text-white rounded-lg cursor-pointer font-bold"
                 >
                   Save Seat License
                 </button>
@@ -2097,7 +2260,7 @@ export default function BillingTab({
       {/* MODAL: EMAIL RENEWAL Dispatch Hub */}
       {isEmailModalOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className={`w-full max-w-md rounded-2xl p-6 shadow-2xl ${isDark ? 'bg-[#1A1D23] text-white border border-[#2D333D]' : 'bg-white text-slate-800 border'}`}>
+          <div className={`w-full max-w-md rounded-2xl p-6 shadow-2xl ${isDark ? 'bg-[#0f172a] text-white border border-[rgb(30, 41, 59)]' : 'bg-white text-slate-800 border'}`}>
             <div className="flex justify-between items-center pb-4 border-b dark:border-gray-800">
               <h3 className="font-extrabold text-sm flex items-center gap-2">
                 <Send className="w-4 h-4 text-sky-500 animate-pulse" />
@@ -2122,7 +2285,7 @@ export default function BillingTab({
                     type="text" 
                     value={emailSubject}
                     onChange={(e) => setEmailSubject(e.target.value)}
-                    className={`w-full px-3 py-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D] text-white' : 'bg-white border-slate-200'}`}
+                    className={`w-full px-3 py-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)] text-white' : 'bg-white border-slate-200'}`}
                     required
                   />
                 </div>
@@ -2131,7 +2294,7 @@ export default function BillingTab({
                   <textarea 
                     value={emailMessage}
                     onChange={(e) => setEmailMessage(e.target.value)}
-                    className={`w-full px-3 py-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D] text-white' : 'bg-white border-slate-200'}`}
+                    className={`w-full px-3 py-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)] text-white' : 'bg-white border-slate-200'}`}
                     rows={8}
                     required
                   />
@@ -2139,7 +2302,7 @@ export default function BillingTab({
                 <button 
                   type="submit" 
                   disabled={isSendingEmail}
-                  className="w-full py-2.5 bg-[rgb(14,145,145)] text-white rounded-lg font-bold hover:bg-[rgb(12,125,125)] transition-all cursor-pointer"
+                  className="w-full py-2.5 bg-purple-600 text-white rounded-lg font-bold hover:bg-purple-700 transition-all cursor-pointer"
                 >
                   {isSendingEmail ? 'Dispatching Terms...' : 'Publish Renewals Email'}
                 </button>

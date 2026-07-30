@@ -84,8 +84,8 @@ export const TypeaheadSelect: React.FC<TypeaheadSelectProps> = ({
           placeholder={placeholder}
           className={`w-full pl-9 pr-8 py-2 text-xs rounded-lg border outline-hidden transition-all ${
             isDark
-              ? 'bg-[#0F1115] border-[#2D333D] text-white focus:border-[rgb(14,145,145)] focus:ring-2 focus:ring-[rgb(14,145,145)]/20 placeholder-slate-500'
-              : 'bg-white border-slate-300 text-slate-900 focus:border-[rgb(14,145,145)] focus:ring-2 focus:ring-[rgb(14,145,145)]/20 placeholder-slate-400'
+              ? 'bg-[#020617] border-[rgb(30, 41, 59)] text-white focus:border-purple-600 focus:ring-2 focus:ring-purple-600/20 placeholder-slate-500'
+              : 'bg-white border-slate-300 text-slate-900 focus:border-purple-600 focus:ring-2 focus:ring-purple-600/20 placeholder-slate-400'
           }`}
         />
         <ChevronDown
@@ -98,7 +98,7 @@ export const TypeaheadSelect: React.FC<TypeaheadSelectProps> = ({
       {isOpen && (
         <div
           className={`absolute z-50 left-0 right-0 mt-1 max-h-56 overflow-y-auto rounded-lg border shadow-xl ${
-            isDark ? 'bg-[#1A1D23] border-[#2D333D] text-white' : 'bg-white border-slate-200 text-slate-800'
+            isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)] text-white' : 'bg-white border-slate-200 text-slate-800'
           }`}
         >
           {filteredOptions.length === 0 ? (
@@ -114,7 +114,7 @@ export const TypeaheadSelect: React.FC<TypeaheadSelectProps> = ({
                   onClick={() => handleSelect(opt)}
                   className={`px-3 py-2 text-xs flex items-center justify-between cursor-pointer transition-colors ${
                     isSelected
-                      ? 'bg-[rgb(14,145,145)] text-white font-bold'
+                      ? 'bg-purple-600 text-white font-bold'
                       : isDark
                       ? 'hover:bg-slate-800'
                       : 'hover:bg-slate-100'

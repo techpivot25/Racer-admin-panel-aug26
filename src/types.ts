@@ -1,5 +1,16 @@
 export type Language = 'EN' | 'FR' | 'ES';
 
+export interface CommunicationLog {
+  id: string;
+  senderEmail: string;
+  recipientEmail: string;
+  subject: string;
+  body: string;
+  timestamp: string;
+  sentBy: string;
+  templateName?: string;
+}
+
 export interface AdminUser {
   uuid: string;
   firstName: string;
@@ -17,9 +28,13 @@ export interface AdminUser {
   lastModified: string;
   lastModifiedBy: string;
   isAdminUser: boolean; // Differentiate between Admin UI users and Customer UI users
-  adminRole?: 'Super Admin' | 'Billing Specialist' | 'Support Specialist' | 'User Admin' | 'Customer Operator';
+  adminRole?: 'Super Admin' | 'Admin' | 'Sub Admin' | 'Billing Specialist' | 'Support Specialist' | 'User Admin' | 'Customer Operator' | string;
+  permissions?: string[]; // Module permission keys assigned
+  password?: string; // Credentials password
   authMethod?: 'local' | 'sso'; // SSO/Local auth method
   ssoProvider?: string; // Linked IDP
+  isBlocked?: boolean; // Account block status
+  communicationLogs?: CommunicationLog[]; // Sent email history
 }
 
 export interface Product {
@@ -65,6 +80,8 @@ export interface Customer {
   ssoProtocol?: string;
   ssoDomain?: string;
   ssoUrl?: string;
+  logoUrl?: string;
+  registeredMobile?: string;
 }
 
 export interface ContractProductLineItem {
@@ -204,6 +221,30 @@ export interface CustomerProductMapping {
   customerUnitPrice: number; // dollar amount
 }
 
+export interface CustomerInvoiceItem {
+  name: string;
+  sku?: string;
+  units: number;
+  amount: number;
+}
+
+export interface CustomerInvoice {
+  id: string;
+  customerId: string;
+  customerName?: string;
+  invoiceNumber: string;
+  issueDate: string;
+  dueDate: string;
+  paidDate?: string;
+  amount: number;
+  paidAmount: number;
+  status: 'Raised' | 'Pending' | 'Paid' | 'Overdue';
+  description: string;
+  paymentMethod?: string;
+  items: CustomerInvoiceItem[];
+  notes?: string;
+}
+
 export interface HostActivation {
   id: string;
   contractId: string;
@@ -219,5 +260,6 @@ export interface HostActivation {
   licenseStartDate: string;
   licenseEndDate: string;
 }
+
 
 

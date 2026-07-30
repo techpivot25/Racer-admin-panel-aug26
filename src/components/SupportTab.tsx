@@ -525,8 +525,8 @@ export default function SupportTab({
       
       {/* TOAST ALERT DISPLAY */}
       {localToast && (
-        <div className="fixed bottom-5 right-5 z-50 bg-slate-900 border border-[rgb(14,145,145)]/40 text-white px-5 py-3.5 rounded-xl shadow-2xl flex items-center gap-3 animate-bounce">
-          <Activity className="w-5 h-5 text-[rgb(14,145,145)] animate-pulse" />
+        <div className="fixed bottom-5 right-5 z-50 bg-slate-900 border border-purple-600/40 text-white px-5 py-3.5 rounded-xl shadow-2xl flex items-center gap-3 animate-bounce">
+          <Activity className="w-5 h-5 text-purple-600 animate-pulse" />
           <span className="text-xs font-bold">{localToast}</span>
         </div>
       )}
@@ -554,7 +554,7 @@ export default function SupportTab({
           )}
           <button
             onClick={activeSupportTab === 'profiles' ? openAddTierModal : openAddRecordModal}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[rgb(14,145,145)] hover:bg-[rgb(12,125,125)] text-white rounded-lg text-xs font-bold cursor-pointer transition-all shadow-xs"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-xs font-bold cursor-pointer transition-all shadow-xs"
           >
             <Plus className="w-4 h-4" />
             <span>{activeSupportTab === 'profiles' ? 'Create SLO Profile' : 'Add Support Record'}</span>
@@ -568,7 +568,7 @@ export default function SupportTab({
           onClick={() => setActiveSupportTab('profiles')}
           className={`px-5 py-3 text-xs font-bold border-b-2 transition-all cursor-pointer flex items-center gap-2 ${
             activeSupportTab === 'profiles'
-              ? 'border-[rgb(14,145,145)] text-[rgb(14,145,145)]'
+              ? 'border-purple-600 text-purple-600'
               : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-gray-400 dark:hover:text-gray-300'
           }`}
         >
@@ -582,7 +582,7 @@ export default function SupportTab({
           onClick={() => setActiveSupportTab('admin')}
           className={`px-5 py-3 text-xs font-bold border-b-2 transition-all cursor-pointer flex items-center gap-2 ${
             activeSupportTab === 'admin'
-              ? 'border-[rgb(14,145,145)] text-[rgb(14,145,145)]'
+              ? 'border-purple-600 text-purple-600'
               : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-gray-400 dark:hover:text-gray-300'
           }`}
         >
@@ -601,7 +601,7 @@ export default function SupportTab({
         <div className="space-y-6">
           <div className={`p-4 rounded-xl border ${isDark ? 'bg-gray-900/30 border-gray-800/60' : 'bg-slate-50/50 border-slate-100'} flex flex-col md:flex-row md:items-center justify-between gap-4`}>
             <div className="flex gap-3 items-center">
-              <div className="w-10 h-10 rounded-xl bg-[rgb(14,145,145)]/10 text-[rgb(14,145,145)] flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-purple-600/10 text-purple-600 flex items-center justify-center">
                 <Sliders className="w-5 h-5" />
               </div>
               <div>
@@ -611,12 +611,12 @@ export default function SupportTab({
             </div>
             <div className="flex items-center gap-3 text-xs font-mono text-gray-400">
               <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Gold Program: Active</span>
-              <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-[rgb(14,145,145)]"></span> Standard Program: Active</span>
+              <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-purple-600"></span> Standard Program: Active</span>
             </div>
           </div>
 
           {/* SLO PROFILES TABLE GRID */}
-          <div className={`border rounded-2xl overflow-hidden ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200 shadow-2xs'}`}>
+          <div className={`border rounded-2xl overflow-hidden ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200 shadow-2xs'}`}>
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
@@ -639,11 +639,11 @@ export default function SupportTab({
                           <span className={`px-2 py-0.5 rounded-md font-mono text-[10px] font-bold border inline-block ${
                             isDark 
                               ? 'bg-slate-800 text-teal-400 border-slate-700/60' 
-                              : 'bg-slate-100 text-[rgb(14,145,145)] border-slate-200'
+                              : 'bg-slate-100 text-purple-600 border-slate-200'
                           }`}>{tier.id}</span>
                         </div>
                       </td>
-                      <td className="px-5 py-4 font-mono font-bold text-[rgb(14,145,145)]">
+                      <td className="px-5 py-4 font-mono font-bold text-purple-600">
                         {tier.responseTime}
                       </td>
                       <td className="px-5 py-4 font-mono text-gray-500 dark:text-gray-400">
@@ -708,7 +708,7 @@ export default function SupportTab({
                                 : 'border-slate-100 hover:bg-slate-50 text-slate-600 hover:text-slate-700 bg-white shadow-2xs'
                             }`}
                           >
-                            <Edit3 className="w-3.5 h-3.5 text-[rgb(14,145,145)]" />
+                            <Edit3 className="w-3.5 h-3.5 text-purple-600" />
                             <span>Edit</span>
                           </button>
                           <button
@@ -736,7 +736,7 @@ export default function SupportTab({
         <div className="space-y-6">
           
           {/* SEARCH & FILTER CONTROLS IN THE SAME ROW */}
-          <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200 shadow-3xs'} space-y-4`}>
+          <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200 shadow-3xs'} space-y-4`}>
             <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
               
               {/* Search query (6/12 columns) */}
@@ -748,7 +748,7 @@ export default function SupportTab({
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
                   className={`w-full pl-9 pr-4 py-2 text-xs rounded-lg border outline-hidden transition-all ${
-                    isDark ? 'bg-[#0F1115] border-[#2D333D] text-white focus:border-[rgb(14,145,145)]' : 'bg-slate-50 border-slate-200 text-slate-800 focus:border-[rgb(14,145,145)]'
+                    isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)] text-white focus:border-purple-600' : 'bg-slate-50 border-slate-200 text-slate-800 focus:border-purple-600'
                   }`}
                 />
               </div>
@@ -786,8 +786,8 @@ export default function SupportTab({
 
           {/* SUPPORT AGREEMENTS GRID DATA-TABLE */}
           {filteredRecords.length === 0 ? (
-            <div className={`p-12 text-center rounded-xl border ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200 shadow-2xs'}`}>
-              <ShieldAlert className="w-10 h-10 mx-auto text-[rgb(14,145,145)]/80 mb-3" />
+            <div className={`p-12 text-center rounded-xl border ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200 shadow-2xs'}`}>
+              <ShieldAlert className="w-10 h-10 mx-auto text-purple-600/80 mb-3" />
               <h4 className={`text-sm font-bold ${isDark ? 'text-white' : 'text-slate-800'}`}>
                 No Product Support Agreements Found
               </h4>
@@ -796,7 +796,7 @@ export default function SupportTab({
               </p>
             </div>
           ) : (
-            <div className={`border rounded-2xl overflow-hidden ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200 shadow-2xs'}`}>
+            <div className={`border rounded-2xl overflow-hidden ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200 shadow-2xs'}`}>
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                   <thead>
@@ -818,7 +818,7 @@ export default function SupportTab({
                             <span className={`font-black text-sm block ${isDark ? 'text-white' : 'text-slate-800'}`}>
                               {record.productName}
                             </span>
-                            <span className="text-[10px] font-mono text-gray-400 bg-[rgb(14,145,145)]/10 px-2 py-0.2 rounded-sm inline-block">
+                            <span className="text-[10px] font-mono text-gray-400 bg-purple-600/10 px-2 py-0.2 rounded-sm inline-block">
                               SKU: {record.productSku}
                             </span>
                           </div>
@@ -829,12 +829,12 @@ export default function SupportTab({
                               ? 'bg-rose-500/15 text-rose-500' 
                               : record.severityLevel.startsWith('P2') 
                               ? 'bg-amber-500/15 text-amber-500' 
-                              : 'bg-[rgb(14,145,145)]/15 text-[rgb(10,115,115)]'
+                              : 'bg-purple-600/15 text-[rgb(10,115,115)]'
                           }`}>
                             {record.severityLevel}
                           </span>
                         </td>
-                        <td className="px-5 py-4 font-mono font-bold text-[rgb(14,145,145)]">
+                        <td className="px-5 py-4 font-mono font-bold text-purple-600">
                           {record.responseTime}
                         </td>
                         <td className="px-5 py-4 font-mono text-gray-500">
@@ -852,7 +852,7 @@ export default function SupportTab({
                             className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-extrabold border transition-all cursor-pointer ${
                               isDark 
                                 ? 'bg-slate-800 hover:bg-slate-700/80 text-teal-400 border-slate-700/60' 
-                                : 'bg-slate-100 hover:bg-slate-200/80 text-[rgb(14,145,145)] border-slate-200'
+                                : 'bg-slate-100 hover:bg-slate-200/80 text-purple-600 border-slate-200'
                             }`}
                           >
                             <span>👤 {record.customerIds.length} Clients</span>
@@ -879,7 +879,7 @@ export default function SupportTab({
                                   : 'border-slate-100 hover:bg-slate-50 text-slate-600 hover:text-slate-700 bg-white shadow-2xs'
                               }`}
                             >
-                              <Edit3 className="w-3.5 h-3.5 text-[rgb(14,145,145)]" />
+                              <Edit3 className="w-3.5 h-3.5 text-purple-600" />
                               <span>Edit</span>
                             </button>
                             <button
@@ -904,18 +904,18 @@ export default function SupportTab({
       {/* ---------------------------------------------------- */}
       {/* SECTION: SLO STRATEGY & TOOLING DISCUSSION PANEL     */}
       {/* ---------------------------------------------------- */}
-      <div className={`p-6 rounded-2xl border ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200 shadow-2xs'} space-y-6`}>
+      <div className={`p-6 rounded-2xl border ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200 shadow-2xs'} space-y-6`}>
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b dark:border-gray-800 border-slate-100 pb-4">
           <div className="space-y-1">
             <h3 className={`text-base font-extrabold tracking-tight ${isDark ? 'text-white' : 'text-slate-900'} flex items-center gap-2`}>
-              <Settings className="w-5 h-5 text-[rgb(14,145,145)]" />
+              <Settings className="w-5 h-5 text-purple-600" />
               <span>SLO Strategy & Tooling Reference</span>
             </h3>
             <p className="text-xs text-gray-400">
               Interactive sandbox representing discussion points regarding Service Level Objectives vs Agreements, simple support tiers, and system escalations.
             </p>
           </div>
-          <span className="text-[10px] font-bold font-mono px-2 py-0.5 rounded bg-[rgb(14,145,145)]/15 text-[rgb(10,115,115)]">Interactive Discussion Tool</span>
+          <span className="text-[10px] font-bold font-mono px-2 py-0.5 rounded bg-purple-600/15 text-[rgb(10,115,115)]">Interactive Discussion Tool</span>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -929,7 +929,7 @@ export default function SupportTab({
                 onClick={() => setActiveVocabComparison('slo')}
                 className={`flex-1 py-1.5 text-xs font-bold rounded-md transition-all cursor-pointer ${
                   activeVocabComparison === 'slo' 
-                    ? 'bg-[rgb(14,145,145)] text-white shadow-xs' 
+                    ? 'bg-purple-600 text-white shadow-xs' 
                     : 'text-gray-500 hover:text-slate-700 dark:text-gray-400 dark:hover:text-gray-300'
                 }`}
               >
@@ -939,7 +939,7 @@ export default function SupportTab({
                 onClick={() => setActiveVocabComparison('sla')}
                 className={`flex-1 py-1.5 text-xs font-bold rounded-md transition-all cursor-pointer ${
                   activeVocabComparison === 'sla' 
-                    ? 'bg-[rgb(14,145,145)] text-white shadow-xs' 
+                    ? 'bg-purple-600 text-white shadow-xs' 
                     : 'text-gray-500 hover:text-slate-700 dark:text-gray-400 dark:hover:text-gray-300'
                 }`}
               >
@@ -951,7 +951,7 @@ export default function SupportTab({
             <div className={`p-4 rounded-xl border text-xs leading-relaxed ${isDark ? 'bg-black/20 border-gray-800' : 'bg-slate-50/50 border-slate-100'}`}>
               {activeVocabComparison === 'slo' ? (
                 <div className="space-y-2">
-                  <h5 className="font-extrabold text-[rgb(14,145,145)] uppercase tracking-wider text-[10px]">💡 Less Strict Internal Metric Target</h5>
+                  <h5 className="font-extrabold text-purple-600 uppercase tracking-wider text-[10px]">💡 Less Strict Internal Metric Target</h5>
                   <p className="text-gray-500 dark:text-gray-300">
                     An <strong>SLO</strong> is a target metric that support teams aim to achieve to maintain customer satisfaction (e.g., responding to high-priority issues within 2 hours). It serves as a performance metric without immediate legal penalties, keeping response tracking flexible and team-driven.
                   </p>
@@ -973,7 +973,7 @@ export default function SupportTab({
             </div>
 
             {/* The 2-Tiers Support description */}
-            <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50 border-slate-100'} space-y-2.5`}>
+            <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-100'} space-y-2.5`}>
               <span className="text-[10px] font-extrabold text-indigo-500 uppercase tracking-wider block">Streamlined 2x Tier Model Standard</span>
               <div className="grid grid-cols-2 gap-3 text-xs">
                 <div className="space-y-1">
@@ -1005,11 +1005,11 @@ export default function SupportTab({
                   onClick={() => setActiveToolTab(tool.id as any)}
                   className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col gap-1.5 relative ${
                     activeToolTab === tool.id 
-                      ? 'border-[rgb(14,145,145)] bg-[rgb(14,145,145)]/5 text-[rgb(14,145,145)]' 
+                      ? 'border-purple-600 bg-purple-600/5 text-purple-600' 
                       : 'border-slate-100 dark:border-gray-800 text-gray-500 hover:border-slate-300 dark:hover:border-gray-700'
                   }`}
                 >
-                  <tool.icon className={`w-4 h-4 ${activeToolTab === tool.id ? 'text-[rgb(14,145,145)]' : 'text-gray-400'}`} />
+                  <tool.icon className={`w-4 h-4 ${activeToolTab === tool.id ? 'text-purple-600' : 'text-gray-400'}`} />
                   <span className="font-bold text-[10px] leading-none">{tool.label}</span>
                   <span className={`absolute top-2 right-2 w-2 h-2 rounded-full ${toolsActiveState[tool.id as keyof typeof toolsActiveState] ? 'bg-emerald-500' : 'bg-gray-300 dark:bg-gray-600'}`}></span>
                 </button>
@@ -1047,7 +1047,7 @@ export default function SupportTab({
                       </div>
                       <div>
                         <span className="text-gray-400 block">Auto-Response SLA limit:</span>
-                        <span className="font-bold text-[rgb(14,145,145)]">&lt; 2 Minutes</span>
+                        <span className="font-bold text-purple-600">&lt; 2 Minutes</span>
                       </div>
                     </div>
                   </div>
@@ -1079,7 +1079,7 @@ export default function SupportTab({
                     <div className="grid grid-cols-2 gap-2 pt-1 text-[10px] font-mono">
                       <div>
                         <span className="text-gray-400 block">Voice AI Phone Hotline:</span>
-                        <span className="font-bold text-[rgb(14,145,145)]">+1 (800) 555-RCER (7237)</span>
+                        <span className="font-bold text-purple-600">+1 (800) 555-RCER (7237)</span>
                       </div>
                       <div>
                         <span className="text-gray-400 block">Backup Escalation Path:</span>
@@ -1119,7 +1119,7 @@ export default function SupportTab({
                       </div>
                       <div>
                         <span className="text-gray-400 block">Auto-Escalation Interval:</span>
-                        <span className="font-bold text-[rgb(14,145,145)]">10 Minutes to SRE Director</span>
+                        <span className="font-bold text-purple-600">10 Minutes to SRE Director</span>
                       </div>
                     </div>
                   </div>
@@ -1151,7 +1151,7 @@ export default function SupportTab({
                     <div className="grid grid-cols-2 gap-2 pt-1 text-[10px] font-mono">
                       <div>
                         <span className="text-gray-400 block">Slack Integration Hook:</span>
-                        <span className="font-bold text-[rgb(14,145,145)]">slack.com/services/racer-direct</span>
+                        <span className="font-bold text-purple-600">slack.com/services/racer-direct</span>
                       </div>
                       <div>
                         <span className="text-gray-400 block">Active VIP Channels count:</span>
@@ -1169,11 +1169,11 @@ export default function SupportTab({
       {/* ---------------------------------------------------- */}
       {/* SECTION: AUDIT LOG DISPLAY                           */}
       {/* ---------------------------------------------------- */}
-      <div className={`p-6 rounded-2xl border ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200 shadow-2xs'} space-y-4`}>
+      <div className={`p-6 rounded-2xl border ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200 shadow-2xs'} space-y-4`}>
         <div className="flex justify-between items-center border-b dark:border-gray-800 border-slate-100 pb-3">
           <div>
             <h4 className="text-sm font-extrabold flex items-center gap-2">
-              <FileCheck2 className="w-4.5 h-4.5 text-[rgb(14,145,145)]" />
+              <FileCheck2 className="w-4.5 h-4.5 text-purple-600" />
               <span>Product Support Screen Audit Trail</span>
             </h4>
             <p className="text-[10px] text-gray-400 mt-0.5">Real-time record tracking changes made to SLO Profiles, Support Agreements and mapped client portfolios.</p>
@@ -1189,7 +1189,7 @@ export default function SupportTab({
                 <span className="text-gray-400 font-mono shrink-0 select-none">[{log.timestamp}]</span>
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-0.5">
-                    <span className="font-extrabold text-[rgb(14,145,145)]">{log.action}</span>
+                    <span className="font-extrabold text-purple-600">{log.action}</span>
                     <span className="text-gray-500">•</span>
                     <span className="text-gray-400 font-medium">Actor: {log.user}</span>
                   </div>
@@ -1207,7 +1207,7 @@ export default function SupportTab({
       {isTierModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-xs" onClick={() => setIsTierModalOpen(false)}></div>
-          <div className={`relative w-full max-w-lg rounded-2xl p-6 border shadow-2xl ${isDark ? 'bg-[#1A1D23] border-[#2D333D] text-white' : 'bg-white border-slate-200 text-slate-800'}`}>
+          <div className={`relative w-full max-w-lg rounded-2xl p-6 border shadow-2xl ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)] text-white' : 'bg-white border-slate-200 text-slate-800'}`}>
             <div className="flex justify-between items-center mb-4 border-b dark:border-gray-800 border-slate-100 pb-3">
               <h3 className="font-extrabold text-base">
                 {editingTier ? `Modify Mapped ${editingTier.name} SLO Parameters` : 'Create New Custom Support SLO Profile'}
@@ -1226,7 +1226,7 @@ export default function SupportTab({
                   placeholder="e.g. Gold Support Model, Silver Priority Model..."
                   value={tierName} 
                   onChange={e => setTierName(e.target.value)}
-                  className={`w-full p-2.5 rounded-lg border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50 border-slate-200'}`}
+                  className={`w-full p-2.5 rounded-lg border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200'}`}
                 />
               </div>
 
@@ -1239,7 +1239,7 @@ export default function SupportTab({
                     placeholder="e.g. 2-4 Hours (P1-P2)"
                     value={tierResponseTime} 
                     onChange={e => setTierResponseTime(e.target.value)}
-                    className={`w-full p-2.5 rounded-lg border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50 border-slate-200'}`}
+                    className={`w-full p-2.5 rounded-lg border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200'}`}
                   />
                 </div>
                 <div className="space-y-1">
@@ -1250,7 +1250,7 @@ export default function SupportTab({
                     placeholder="e.g. 24/7/365 Continuous, Business Hours Only..."
                     value={tierCoverageHours} 
                     onChange={e => setTierCoverageHours(e.target.value)}
-                    className={`w-full p-2.5 rounded-lg border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50 border-slate-200'}`}
+                    className={`w-full p-2.5 rounded-lg border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200'}`}
                   />
                 </div>
               </div>
@@ -1266,7 +1266,7 @@ export default function SupportTab({
                           type="checkbox" 
                           checked={isSelected}
                           onChange={() => handleTierChannelToggle(chan)}
-                          className="rounded-sm border-slate-300 text-black focus:ring-[rgb(14,145,145)] cursor-pointer"
+                          className="rounded-sm border-slate-300 text-black focus:ring-purple-600 cursor-pointer"
                         />
                         <span className="text-[11px]">{chan}</span>
                       </label>
@@ -1276,7 +1276,7 @@ export default function SupportTab({
               </div>
 
               <div className="border-t pt-3 dark:border-gray-800 border-slate-100 space-y-3">
-                <h4 className="font-extrabold text-[rgb(14,145,145)] uppercase tracking-wider text-[10px]">Premium Specifications</h4>
+                <h4 className="font-extrabold text-purple-600 uppercase tracking-wider text-[10px]">Premium Specifications</h4>
                 
                 <div className="space-y-1">
                   <label className="font-bold">Max Concurrent Monthly Allowed Tickets</label>
@@ -1285,7 +1285,7 @@ export default function SupportTab({
                     required
                     value={tierMaxTickets} 
                     onChange={e => setTierMaxTickets(parseInt(e.target.value) || 0)}
-                    className={`w-full p-2.5 rounded-lg border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50 border-slate-200'}`}
+                    className={`w-full p-2.5 rounded-lg border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200'}`}
                   />
                 </div>
 
@@ -1295,7 +1295,7 @@ export default function SupportTab({
                       type="checkbox" 
                       checked={tierDirectPhoneAccess}
                       onChange={e => setTierDirectPhoneAccess(e.target.checked)}
-                      className="rounded-sm border-slate-300 text-black focus:ring-[rgb(14,145,145)] cursor-pointer"
+                      className="rounded-sm border-slate-300 text-black focus:ring-purple-600 cursor-pointer"
                     />
                     <span className="font-bold">Direct Phone Hotline Option</span>
                   </label>
@@ -1305,7 +1305,7 @@ export default function SupportTab({
                       type="checkbox" 
                       checked={tierDedicatedLiaison}
                       onChange={e => setTierDedicatedLiaison(e.target.checked)}
-                      className="rounded-sm border-slate-300 text-black focus:ring-[rgb(14,145,145)] cursor-pointer"
+                      className="rounded-sm border-slate-300 text-black focus:ring-purple-600 cursor-pointer"
                     />
                     <span className="font-bold">Dedicated On-Call SRE</span>
                   </label>
@@ -1319,7 +1319,7 @@ export default function SupportTab({
                   onChange={e => setTierNotes(e.target.value)}
                   placeholder="Enter support program details, on-call alert rotations, SRE escalations..."
                   rows={3}
-                  className={`w-full p-2.5 rounded-lg border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50 border-slate-200'}`}
+                  className={`w-full p-2.5 rounded-lg border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200'}`}
                 />
               </div>
 
@@ -1333,7 +1333,7 @@ export default function SupportTab({
                 </button>
                 <button 
                   type="submit"
-                  className="px-4 py-2 bg-[rgb(14,145,145)] hover:bg-[rgb(12,125,125)] text-white rounded-lg font-bold"
+                  className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-bold"
                 >
                   Save Profile
                 </button>
@@ -1349,7 +1349,7 @@ export default function SupportTab({
       {isRecordModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-xs" onClick={() => setIsRecordModalOpen(false)}></div>
-          <div className={`relative w-full max-w-2xl rounded-2xl p-6 border shadow-2xl ${isDark ? 'bg-[#1A1D23] border-[#2D333D] text-white' : 'bg-white border-slate-200 text-slate-800'}`}>
+          <div className={`relative w-full max-w-2xl rounded-2xl p-6 border shadow-2xl ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)] text-white' : 'bg-white border-slate-200 text-slate-800'}`}>
             <div className="flex justify-between items-center mb-4 border-b dark:border-gray-800 border-slate-100 pb-3">
               <h3 className="font-extrabold text-base">
                 {editingRecord ? `Modify Support Agreement: ${editingRecord.productName}` : 'Add Product Support SLO Configuration'}
@@ -1396,7 +1396,7 @@ export default function SupportTab({
                     placeholder="e.g. 15 mins (P1), 2 hours (P2)"
                     value={recordResponseTime} 
                     onChange={e => setRecordResponseTime(e.target.value)}
-                    className={`w-full p-2.5 rounded-lg border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50 border-slate-200'}`}
+                    className={`w-full p-2.5 rounded-lg border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200'}`}
                   />
                 </div>
                 <div className="space-y-1">
@@ -1407,7 +1407,7 @@ export default function SupportTab({
                     placeholder="e.g. 24/7/365 Continuous, Business Hours Only"
                     value={recordCoverage} 
                     onChange={e => setRecordCoverage(e.target.value)}
-                    className={`w-full p-2.5 rounded-lg border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50 border-slate-200'}`}
+                    className={`w-full p-2.5 rounded-lg border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200'}`}
                   />
                 </div>
               </div>
@@ -1420,12 +1420,12 @@ export default function SupportTab({
                   required
                   rows={2}
                   placeholder="Specify system performance targets, uptime guarantees, database parities..."
-                  className={`w-full p-2.5 rounded-lg border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50 border-slate-200'}`}
+                  className={`w-full p-2.5 rounded-lg border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200'}`}
                 />
               </div>
 
               <div className="p-4 rounded-xl border dark:border-gray-800 border-slate-100 space-y-3 bg-slate-50/40 dark:bg-black/10">
-                <h4 className="font-extrabold text-[rgb(14,145,145)] uppercase tracking-wider text-[10px]">Technical SRE Lead Contact Details</h4>
+                <h4 className="font-extrabold text-purple-600 uppercase tracking-wider text-[10px]">Technical SRE Lead Contact Details</h4>
                 <div className="grid grid-cols-3 gap-3">
                   <div className="space-y-1">
                     <label className="font-bold">Full Name</label>
@@ -1435,7 +1435,7 @@ export default function SupportTab({
                       placeholder="e.g. Miles Dyson"
                       value={recordContactName} 
                       onChange={e => setRecordContactName(e.target.value)}
-                      className={`w-full p-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-white border-slate-200'}`}
+                      className={`w-full p-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200'}`}
                     />
                   </div>
                   <div className="space-y-1">
@@ -1446,7 +1446,7 @@ export default function SupportTab({
                       placeholder="+1 (555) 000-0000"
                       value={recordContactPhone} 
                       onChange={e => setRecordContactPhone(e.target.value)}
-                      className={`w-full p-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-white border-slate-200'}`}
+                      className={`w-full p-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200'}`}
                     />
                   </div>
                   <div className="space-y-1">
@@ -1457,7 +1457,7 @@ export default function SupportTab({
                       placeholder="e.g. m.dyson@cyberdyne.io"
                       value={recordContactEmail} 
                       onChange={e => setRecordContactEmail(e.target.value)}
-                      className={`w-full p-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-white border-slate-200'}`}
+                      className={`w-full p-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200'}`}
                     />
                   </div>
                 </div>
@@ -1472,12 +1472,12 @@ export default function SupportTab({
                     value={recordWorkflowInput}
                     onChange={e => setRecordWorkflowInput(e.target.value)}
                     placeholder="Enter process step e.g., 'Page On-Call SRE in PagerDuty'"
-                    className={`flex-1 p-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50 border-slate-200'}`}
+                    className={`flex-1 p-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200'}`}
                   />
                   <button
                     type="button"
                     onClick={handleAddWorkflowStep}
-                    className="px-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-bold"
+                    className="px-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-bold"
                   >
                     Add Step
                   </button>
@@ -1510,7 +1510,7 @@ export default function SupportTab({
                   onChange={e => setRecordNotes(e.target.value)}
                   rows={2}
                   placeholder="Automated monitoring, backup routines, key rotations..."
-                  className={`w-full p-2.5 rounded-lg border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50 border-slate-200'}`}
+                  className={`w-full p-2.5 rounded-lg border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200'}`}
                 />
               </div>
 
@@ -1524,7 +1524,7 @@ export default function SupportTab({
                 </button>
                 <button 
                   type="submit"
-                  className="px-4 py-2 bg-[rgb(14,145,145)] hover:bg-[rgb(12,125,125)] text-white rounded-lg font-bold animate-pulse"
+                  className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-bold animate-pulse"
                 >
                   Save Agreement Console
                 </button>
@@ -1540,11 +1540,11 @@ export default function SupportTab({
       {selectedProfileDetail && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-xs" onClick={() => setSelectedProfileDetail(null)}></div>
-          <div className={`relative w-full max-w-2xl rounded-2xl p-6 border shadow-2xl ${isDark ? 'bg-[#1A1D23] border-[#2D333D] text-white' : 'bg-white border-slate-200 text-slate-800'}`}>
+          <div className={`relative w-full max-w-2xl rounded-2xl p-6 border shadow-2xl ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)] text-white' : 'bg-white border-slate-200 text-slate-800'}`}>
             <div className="flex justify-between items-center mb-4 border-b dark:border-gray-800 border-slate-100 pb-3">
               <div>
                 <h3 className="font-extrabold text-base flex items-center gap-2">
-                  <ShieldCheck className="w-5 h-5 text-[rgb(14,145,145)]" />
+                  <ShieldCheck className="w-5 h-5 text-purple-600" />
                   <span>SLO Profile details: {selectedProfileDetail.name}</span>
                 </h3>
                 <p className="text-[10px] text-gray-400 mt-0.5">Comprehensive commitment specifications and SLA incident simulations.</p>
@@ -1556,8 +1556,8 @@ export default function SupportTab({
 
             <div className="space-y-5 text-xs overflow-y-auto max-h-[75vh] pr-1">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#0F1115] border-gray-800' : 'bg-slate-50 border-slate-100'} space-y-2`}>
-                  <span className="text-[10px] uppercase font-bold text-[rgb(14,145,145)] tracking-wider">Committed Performance Target</span>
+                <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#020617] border-gray-800' : 'bg-slate-50 border-slate-100'} space-y-2`}>
+                  <span className="text-[10px] uppercase font-bold text-purple-600 tracking-wider">Committed Performance Target</span>
                   <div className="grid grid-cols-2 gap-2 text-[11px] font-mono">
                     <div>
                       <span className="text-gray-400 block">Response Target:</span>
@@ -1570,7 +1570,7 @@ export default function SupportTab({
                   </div>
                 </div>
 
-                <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#0F1115] border-gray-800' : 'bg-slate-50 border-slate-100'} space-y-2`}>
+                <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#020617] border-gray-800' : 'bg-slate-50 border-slate-100'} space-y-2`}>
                   <span className="text-[10px] uppercase font-bold text-indigo-500 tracking-wider">Premium Access Allocations</span>
                   <div className="grid grid-cols-2 gap-2 text-[11px] font-mono">
                     <div>
@@ -1604,9 +1604,9 @@ export default function SupportTab({
               )}
 
               {/* ACTIVE SLO incident simulator widget */}
-              <div className="p-4 rounded-xl border border-[rgb(14,145,145)]/20 bg-[rgb(14,145,145)]/5 space-y-4">
+              <div className="p-4 rounded-xl border border-purple-600/20 bg-purple-600/5 space-y-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-[10px] uppercase font-bold text-[rgb(14,145,145)] tracking-wider">Simulate SLA Incident response routing</span>
+                  <span className="text-[10px] uppercase font-bold text-purple-600 tracking-wider">Simulate SLA Incident response routing</span>
                   <span className="text-[9px] text-gray-400 font-mono">Select incident severity tier</span>
                 </div>
                 
@@ -1618,7 +1618,7 @@ export default function SupportTab({
                       onClick={() => setSimulationSeverity(sev as any)}
                       className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold transition-all cursor-pointer ${
                         simulationSeverity === sev 
-                          ? 'bg-[rgb(14,145,145)] text-white shadow-xs' 
+                          ? 'bg-purple-600 text-white shadow-xs' 
                           : 'bg-white dark:bg-gray-900 border dark:border-gray-800 text-gray-500 hover:text-slate-700'
                       }`}
                     >
@@ -1629,7 +1629,7 @@ export default function SupportTab({
                   <button
                     type="button"
                     onClick={() => runSloSimulation(selectedProfileDetail)}
-                    className="ml-auto px-4 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-lg transition-all cursor-pointer flex items-center gap-1"
+                    className="ml-auto px-4 py-1.5 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-lg transition-all cursor-pointer flex items-center gap-1"
                   >
                     <Send className="w-3.5 h-3.5" />
                     <span>Run Test</span>
@@ -1637,7 +1637,7 @@ export default function SupportTab({
                 </div>
 
                 {simulationResult && (
-                  <div className="p-3 bg-white dark:bg-gray-950 rounded-lg border border-[rgb(14,145,145)]/20 font-mono text-[11px] leading-relaxed animate-fade-in text-slate-800 dark:text-gray-200">
+                  <div className="p-3 bg-white dark:bg-gray-950 rounded-lg border border-purple-600/20 font-mono text-[11px] leading-relaxed animate-fade-in text-slate-800 dark:text-gray-200">
                     {simulationResult}
                   </div>
                 )}
@@ -1666,7 +1666,7 @@ export default function SupportTab({
       {selectedRecordDetail && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-xs" onClick={() => setSelectedRecordDetail(null)}></div>
-          <div className={`relative w-full max-w-2xl rounded-2xl p-6 border shadow-2xl ${isDark ? 'bg-[#1A1D23] border-[#2D333D] text-white' : 'bg-white border-slate-200 text-slate-800'}`}>
+          <div className={`relative w-full max-w-2xl rounded-2xl p-6 border shadow-2xl ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)] text-white' : 'bg-white border-slate-200 text-slate-800'}`}>
             <div className="flex justify-between items-center mb-4 border-b dark:border-gray-800 border-slate-100 pb-3">
               <div>
                 <h3 className="font-extrabold text-base">
@@ -1684,12 +1684,12 @@ export default function SupportTab({
               <div className="grid grid-cols-1 md:grid-cols-12 gap-5">
                 {/* Committed details & workflows (8 cols) */}
                 <div className="md:col-span-8 space-y-4">
-                  <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#0F1115] border-gray-800' : 'bg-slate-50 border-slate-100'} space-y-2`}>
-                    <span className="text-[10px] uppercase font-bold text-[rgb(14,145,145)] tracking-wider block">Service Level Objectives & Agreements</span>
+                  <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#020617] border-gray-800' : 'bg-slate-50 border-slate-100'} space-y-2`}>
+                    <span className="text-[10px] uppercase font-bold text-purple-600 tracking-wider block">Service Level Objectives & Agreements</span>
                     <p className={`text-xs font-bold leading-relaxed ${isDark ? 'text-gray-200' : 'text-slate-700'}`}>{selectedRecordDetail.sloDetails}</p>
                     <div className="pt-2 flex items-center gap-3 font-mono text-[10px]">
                       <span className="text-gray-400">Response Target:</span>
-                      <strong className="text-[rgb(14,145,145)]">{selectedRecordDetail.responseTime}</strong>
+                      <strong className="text-purple-600">{selectedRecordDetail.responseTime}</strong>
                     </div>
                   </div>
 
@@ -1699,7 +1699,7 @@ export default function SupportTab({
                     <div className="flex flex-col gap-2">
                       {selectedRecordDetail.supportWorkflow.map((step, idx) => (
                         <div key={idx} className={`flex items-center gap-3 p-2.5 rounded-xl border ${isDark ? 'bg-black/10 border-gray-800' : 'bg-slate-50/50 border-slate-100'}`}>
-                          <span className="w-5 h-5 rounded-full bg-[rgb(14,145,145)] text-white flex items-center justify-center font-bold text-[10px] font-mono shrink-0">
+                          <span className="w-5 h-5 rounded-full bg-purple-600 text-white flex items-center justify-center font-bold text-[10px] font-mono shrink-0">
                             {idx + 1}
                           </span>
                           <span className="font-extrabold text-slate-700 dark:text-gray-300">{step}</span>
@@ -1711,15 +1711,15 @@ export default function SupportTab({
 
                 {/* SRE contact and mapped accounts (4 cols) */}
                 <div className="md:col-span-4 space-y-4">
-                  <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#0F1115] border-gray-800' : 'bg-slate-50 border-slate-100'} space-y-3`}>
+                  <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#020617] border-gray-800' : 'bg-slate-50 border-slate-100'} space-y-3`}>
                     <span className="text-[10px] uppercase font-bold text-indigo-500 block tracking-wider">Primary technical SRE Lead</span>
                     <div className="space-y-2 font-mono text-[11px]">
                       <strong className="text-slate-800 dark:text-white font-sans text-xs">👤 {selectedRecordDetail.supportContactName}</strong>
-                      <a href={`tel:${selectedRecordDetail.supportContactPhone}`} className="flex items-center gap-1.5 text-gray-400 hover:text-[rgb(14,145,145)]">
+                      <a href={`tel:${selectedRecordDetail.supportContactPhone}`} className="flex items-center gap-1.5 text-gray-400 hover:text-purple-600">
                         <Phone className="w-3.5 h-3.5" />
                         <span>{selectedRecordDetail.supportContactPhone}</span>
                       </a>
-                      <a href={`mailto:${selectedRecordDetail.supportContactEmail}`} className="flex items-center gap-1.5 text-gray-400 hover:text-[rgb(14,145,145)] truncate">
+                      <a href={`mailto:${selectedRecordDetail.supportContactEmail}`} className="flex items-center gap-1.5 text-gray-400 hover:text-purple-600 truncate">
                         <Mail className="w-3.5 h-3.5" />
                         <span className="truncate">{selectedRecordDetail.supportContactEmail}</span>
                       </a>
@@ -1774,7 +1774,7 @@ export default function SupportTab({
       {isPortfolioModalOpen && portfolioRecordId && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-xs" onClick={() => setIsPortfolioModalOpen(false)}></div>
-          <div className={`relative w-full max-w-lg rounded-2xl p-6 border shadow-2xl ${isDark ? 'bg-[#1A1D23] border-[#2D333D] text-white' : 'bg-white border-slate-200 text-slate-800'}`}>
+          <div className={`relative w-full max-w-lg rounded-2xl p-6 border shadow-2xl ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)] text-white' : 'bg-white border-slate-200 text-slate-800'}`}>
             <div className="flex justify-between items-center mb-3 border-b dark:border-gray-800 border-slate-100 pb-3">
               <div>
                 <h3 className="font-extrabold text-base">
@@ -1798,7 +1798,7 @@ export default function SupportTab({
                       key={cust.id} 
                       className={`flex items-center justify-between p-2 rounded-lg cursor-pointer transition-all ${
                         isChecked 
-                          ? 'bg-[rgb(14,145,145)]/10 text-[rgb(14,145,145)] font-bold' 
+                          ? 'bg-purple-600/10 text-purple-600 font-bold' 
                           : 'hover:bg-slate-50 dark:hover:bg-gray-800 text-slate-700 dark:text-gray-300'
                       }`}
                     >
@@ -1807,7 +1807,7 @@ export default function SupportTab({
                           type="checkbox" 
                           checked={isChecked}
                           onChange={() => togglePortfolioCustomer(cust.id)}
-                          className="rounded-sm border-slate-300 text-black focus:ring-[rgb(14,145,145)] cursor-pointer"
+                          className="rounded-sm border-slate-300 text-black focus:ring-purple-600 cursor-pointer"
                         />
                         <span>{cust.name}</span>
                       </div>
@@ -1832,7 +1832,7 @@ export default function SupportTab({
                 </button>
                 <button 
                   onClick={savePortfolioMapping}
-                  className="px-4 py-2 bg-[rgb(14,145,145)] hover:bg-[rgb(12,125,125)] text-white rounded-lg font-bold"
+                  className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-bold"
                 >
                   Save Portfolio
                 </button>

@@ -55,8 +55,8 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
           disabled ? 'opacity-60 cursor-not-allowed' : ''
         } ${
           isDark 
-            ? 'bg-[#1A1D23] border-[#2D333D] text-white focus:border-[rgb(14,145,145)] focus:ring-2 focus:ring-[rgb(14,145,145)]/20' 
-            : 'bg-white border-slate-200 text-slate-800 focus:border-[rgb(14,145,145)] focus:ring-2 focus:ring-[rgb(14,145,145)]/20'
+            ? 'bg-[#0f172a] border-[rgb(30, 41, 59)] text-white focus:border-purple-600 focus:ring-2 focus:ring-purple-600/20' 
+            : 'bg-white border-slate-200 text-slate-800 focus:border-purple-600 focus:ring-2 focus:ring-purple-600/20'
         }`}
       >
         <span className="truncate">{selectedOption ? selectedOption.label : 'Select...'}</span>
@@ -67,7 +67,7 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
         <div 
           className={`absolute z-50 left-0 right-0 mt-1 max-h-60 overflow-y-auto rounded-lg border shadow-lg ${
             isDark 
-              ? 'bg-[#1A1D23] border-[#2D333D] text-white' 
+              ? 'bg-[#0f172a] border-[rgb(30, 41, 59)] text-white' 
               : 'bg-white border-slate-200 text-slate-800'
           }`}
         >
@@ -81,8 +81,8 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
                   opt.disabled 
                     ? 'opacity-40 cursor-not-allowed' 
                     : isSelected
-                      ? 'bg-[rgb(14,145,145)] text-white font-bold'
-                      : 'hover:bg-[rgb(14,145,145)] hover:text-white'
+                      ? 'bg-purple-600 text-white font-bold'
+                      : 'hover:bg-purple-600 hover:text-white'
                 }`}
               >
                 {opt.label}

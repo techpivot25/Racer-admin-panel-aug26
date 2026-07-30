@@ -12,6 +12,7 @@ import {
   Moon, 
   Globe, 
   ChevronDown, 
+  ChevronRight,
   Menu, 
   X,
   Bell,
@@ -20,6 +21,7 @@ import {
   Trash2,
   LogOut,
   UserCheck,
+  User,
   Bot,
   Sparkles,
   Camera,
@@ -29,7 +31,8 @@ import {
   MapPin,
   Shield,
   ChevronsUpDown,
-  Key
+  Key,
+  FileText
 } from 'lucide-react';
 
 import { Language, AdminUser, Product, Customer, Contract, DocItem, SupportTierInfo, AuditRecord, License, CustomerProductMapping, HostActivation } from './types';
@@ -139,20 +142,20 @@ export default function App() {
   
   // User Profile details
   const [profileName, setProfileName] = useState(() => {
-    return localStorage.getItem('bj_profileName') || 'Sarah Connor';
+    return localStorage.getItem('bj_profileName') || 'Angelina Gotelli';
   });
   const [profileMobile, setProfileMobile] = useState(() => {
     return localStorage.getItem('bj_profileMobile') || '+1 (555) 019-9842';
   });
   const [profileEmail, setProfileEmail] = useState(() => {
-    return localStorage.getItem('bj_profileEmail') || 'developerbe25@gmail.com';
+    return localStorage.getItem('bj_profileEmail') || 'admin-01@racer.com';
   });
   const [profileAddress, setProfileAddress] = useState(() => {
     return localStorage.getItem('bj_profileAddress') || '742 Evergreen Terrace, Los Angeles, CA';
   });
-  const [profileAdminType, setProfileAdminType] = useState<'Super Admin' | 'Sub Admin'>(() => {
+  const [profileAdminType, setProfileAdminType] = useState<'Super Admin' | 'Admin' | 'Sub Admin'>(() => {
     const saved = localStorage.getItem('bj_profileAdminType');
-    return (saved === 'Super Admin' || saved === 'Sub Admin') ? saved : 'Super Admin';
+    return (saved === 'Super Admin' || saved === 'Admin' || saved === 'Sub Admin') ? saved : 'Super Admin';
   });
   const [profilePhoto, setProfilePhoto] = useState<string | null>(() => {
     return localStorage.getItem('bj_profilePhoto') || null;
@@ -381,7 +384,7 @@ export default function App() {
       id: `log-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
       timestamp,
       action,
-      user: profileName || 'developerbe25@gmail.com',
+      user: profileName || profileEmail || 'System Admin',
       details,
       screen
     };
@@ -575,11 +578,13 @@ export default function App() {
   const getSidebarLinkClass = (tab: 'home' | 'dashboard' | 'users' | 'products' | 'licenses' | 'customers' | 'billing' | 'documentation' | 'support' | 'sitemap') => {
     const isActive = activeTab === tab;
     if (isActive) {
-      return 'text-white bg-[rgb(14,145,145)] font-bold shadow-xs hover:bg-[rgb(14,145,145)] hover:text-white';
+      return theme === 'dark'
+        ? 'relative text-purple-200 bg-purple-950/70 font-bold border-l-4 border-purple-500 rounded-r-xl shadow-2xs'
+        : 'relative text-purple-900 bg-purple-100/70 font-bold border-l-4 border-purple-700 rounded-r-xl shadow-2xs';
     }
     return theme === 'dark' 
-      ? 'text-gray-400 hover:text-white hover:bg-[rgb(14,145,145)]' 
-      : 'text-slate-600 hover:text-white hover:bg-[rgb(14,145,145)]';
+      ? 'relative text-slate-300 hover:text-purple-200 hover:bg-purple-950/40 hover:border-l-4 hover:border-purple-600 rounded-r-xl border-l-4 border-transparent' 
+      : 'relative text-purple-900 hover:text-purple-950 hover:bg-purple-50 hover:border-l-4 hover:border-purple-600 rounded-r-xl border-l-4 border-transparent';
   };
 
 
@@ -602,18 +607,18 @@ export default function App() {
   }
 
   return (
-    <div className={`min-h-screen flex font-sans ${theme === 'dark' ? 'bg-[#0F1115] text-gray-100' : 'bg-[#F8FAFC] text-slate-800'} transition-colors duration-200`}>
+    <div className={`min-h-screen flex font-sans ${theme === 'dark' ? 'bg-[#020617] text-gray-100' : 'bg-[#F8FAFC] text-slate-800'} transition-colors duration-200`}>
       
       {/* SIDEBAR NAVIGATION PANEL (RESPONSIVE COMPATIBLE FOR TABLET & MOBILE DRAWER) */}
       <aside className={`fixed inset-y-0 left-0 z-40 w-64 transform lg:translate-x-0 lg:static lg:h-screen transition-all duration-200 ease-in-out border-r shrink-0 flex flex-col justify-between ${
         isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-      } ${theme === 'dark' ? 'bg-[#0F1115] border-[#1E2330]' : 'bg-[#FFFFFF] border-slate-100 shadow-xs'}`}>
+      } ${theme === 'dark' ? 'bg-[#0f172a] border-slate-800' : 'bg-white border-slate-200/80 shadow-xs'}`}>
         
         <div className="flex flex-col h-full overflow-hidden">
           {/* Header / Brand Mark */}
-          <div className="p-5 flex items-center justify-between border-b border-transparent">
+          <div className="p-5 flex items-center justify-between border-b border-slate-100 dark:border-slate-800">
             <div className="flex items-center gap-2.5 cursor-pointer" onClick={() => setActiveTab('home')}>
-              <div className="w-8 h-8 rounded-xl bg-[rgb(14,145,145)] flex items-center justify-center shrink-0 shadow-md shadow-[rgb(14,145,145)]/20">
+              <div className="w-8 h-8 rounded-xl bg-purple-600 flex items-center justify-center shrink-0 shadow-md shadow-purple-600/20">
                 <svg className="w-4.5 h-4.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="12" cy="12" r="10" />
                   <path d="M8 12h8" />
@@ -624,33 +629,33 @@ export default function App() {
                 <h1 className="font-extrabold text-[19px] tracking-tight text-slate-900 dark:text-white leading-none">RACER</h1>
               </div>
             </div>
-            <button className="lg:hidden p-1.5 rounded-lg hover:bg-[rgb(145,145,145)] hover:text-white text-slate-500 transition-colors" onClick={() => setIsSidebarOpen(false)}>
+            <button className="lg:hidden p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 transition-colors" onClick={() => setIsSidebarOpen(false)}>
               <X className="w-5 h-5" />
             </button>
           </div>
 
-          {/* Menu Sections */}
+          {/* Menu Sections - Restored original functional navigation */}
           <div className="flex-1 overflow-y-auto px-4 py-4 space-y-5">
             
             {/* SECTION: Overview & Monitoring */}
             <div className="space-y-1">
-              <span className={`text-[10px] font-bold uppercase tracking-wider block px-3 mb-2 ${theme === 'dark' ? 'text-gray-600' : 'text-slate-400'}`}>
+              <span className={`text-[10px] font-bold uppercase tracking-wider block px-3 mb-2 ${theme === 'dark' ? 'text-gray-500' : 'text-slate-400'}`}>
                 Overview & Monitoring
               </span>
               <nav className="space-y-1">
                 <button
                   onClick={() => handleNavigation('home')}
-                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] font-semibold transition-all cursor-pointer ${getSidebarLinkClass('home')}`}
+                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${getSidebarLinkClass('home')}`}
                 >
-                  <Home className={`w-4 h-4 shrink-0 transition-colors ${activeTab === 'home' ? 'text-white' : 'text-[rgb(14,145,145)]'}`} />
+                  <Home className="w-4 h-4 shrink-0 transition-colors text-purple-700 dark:text-purple-400" />
                   <span>{t.home}</span>
                 </button>
 
                 <button
                   onClick={() => handleNavigation('dashboard')}
-                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] font-semibold transition-all cursor-pointer ${getSidebarLinkClass('dashboard')}`}
+                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${getSidebarLinkClass('dashboard')}`}
                 >
-                  <LayoutDashboard className={`w-4 h-4 shrink-0 transition-colors ${activeTab === 'dashboard' ? 'text-white' : 'text-[rgb(14,145,145)]'}`} />
+                  <LayoutDashboard className="w-4 h-4 shrink-0 transition-colors text-purple-700 dark:text-purple-400" />
                   <span>{t.dashboard}</span>
                 </button>
               </nav>
@@ -658,48 +663,47 @@ export default function App() {
 
             {/* SECTION: Enterprise Admin */}
             <div className="space-y-1">
-              <span className={`text-[10px] font-bold uppercase tracking-wider block px-3 mb-2 ${theme === 'dark' ? 'text-gray-600' : 'text-slate-400'}`}>
+              <span className={`text-[10px] font-bold uppercase tracking-wider block px-3 mb-2 ${theme === 'dark' ? 'text-gray-500' : 'text-slate-400'}`}>
                 {t.management || 'Enterprise Admin'}
               </span>
               <nav className="space-y-1">
                 <button
                   onClick={() => handleNavigation('users')}
-                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] font-semibold transition-all cursor-pointer ${getSidebarLinkClass('users')}`}
+                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${getSidebarLinkClass('users')}`}
                 >
-                  <UsersIcon className={`w-4 h-4 shrink-0 transition-colors ${activeTab === 'users' ? 'text-white' : 'text-[rgb(14,145,145)]'}`} />
+                  <UsersIcon className="w-4 h-4 shrink-0 transition-colors text-purple-700 dark:text-purple-400" />
                   <span>{t.users}</span>
                 </button>
 
                 <button
                   onClick={() => handleNavigation('products')}
-                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] font-semibold transition-all cursor-pointer ${getSidebarLinkClass('products')}`}
+                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${getSidebarLinkClass('products')}`}
                 >
-                  <Laptop className={`w-4 h-4 shrink-0 transition-colors ${activeTab === 'products' ? 'text-white' : 'text-[rgb(14,145,145)]'}`} />
+                  <Laptop className="w-4 h-4 shrink-0 transition-colors text-purple-700 dark:text-purple-400" />
                   <span>{t.products}</span>
                 </button>
 
-                {/* License Section - Under Enterprise Admin Beneath Product Admin */}
                 <button
                   onClick={() => handleNavigation('licenses')}
-                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] font-semibold transition-all cursor-pointer ${getSidebarLinkClass('licenses')}`}
+                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${getSidebarLinkClass('licenses')}`}
                 >
-                  <Key className={`w-4 h-4 shrink-0 transition-colors ${activeTab === 'licenses' ? 'text-white' : 'text-[rgb(14,145,145)]'}`} />
+                  <Key className="w-4 h-4 shrink-0 transition-colors text-purple-700 dark:text-purple-400" />
                   <span>{t.contracts || 'Licensing'}</span>
                 </button>
 
                 <button
                   onClick={() => handleNavigation('customers')}
-                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] font-semibold transition-all cursor-pointer ${getSidebarLinkClass('customers')}`}
+                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${getSidebarLinkClass('customers')}`}
                 >
-                  <Building2 className={`w-4 h-4 shrink-0 transition-colors ${activeTab === 'customers' ? 'text-white' : 'text-[rgb(14,145,145)]'}`} />
+                  <Building2 className="w-4 h-4 shrink-0 transition-colors text-purple-700 dark:text-purple-400" />
                   <span>{t.customers}</span>
                 </button>
 
                 <button
                   onClick={() => handleNavigation('billing')}
-                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] font-semibold transition-all cursor-pointer ${getSidebarLinkClass('billing')}`}
+                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${getSidebarLinkClass('billing')}`}
                 >
-                  <CircleDollarSign className={`w-4 h-4 shrink-0 transition-colors ${activeTab === 'billing' ? 'text-white' : 'text-[rgb(14,145,145)]'}`} />
+                  <CircleDollarSign className="w-4 h-4 shrink-0 transition-colors text-purple-700 dark:text-purple-400" />
                   <span>{t.billing || 'Audits'}</span>
                 </button>
               </nav>
@@ -707,31 +711,31 @@ export default function App() {
 
             {/* SECTION: Support & Assets */}
             <div className="space-y-1">
-              <span className={`text-[10px] font-bold uppercase tracking-wider block px-3 mb-2 ${theme === 'dark' ? 'text-gray-600' : 'text-slate-400'}`}>
+              <span className={`text-[10px] font-bold uppercase tracking-wider block px-3 mb-2 ${theme === 'dark' ? 'text-gray-500' : 'text-slate-400'}`}>
                 Support & Assets
               </span>
               <nav className="space-y-1">
                 <button
                   onClick={() => handleNavigation('documentation')}
-                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] font-semibold transition-all cursor-pointer ${getSidebarLinkClass('documentation')}`}
+                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${getSidebarLinkClass('documentation')}`}
                 >
-                  <BookOpen className={`w-4 h-4 shrink-0 transition-colors ${activeTab === 'documentation' ? 'text-white' : 'text-[rgb(14,145,145)]'}`} />
+                  <BookOpen className="w-4 h-4 shrink-0 transition-colors text-purple-700 dark:text-purple-400" />
                   <span>{t.documentation}</span>
                 </button>
 
                 <button
                   onClick={() => handleNavigation('support')}
-                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] font-semibold transition-all cursor-pointer ${getSidebarLinkClass('support')}`}
+                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${getSidebarLinkClass('support')}`}
                 >
-                  <ShieldAlert className={`w-4 h-4 shrink-0 transition-colors ${activeTab === 'support' ? 'text-white' : 'text-[rgb(14,145,145)]'}`} />
+                  <ShieldAlert className="w-4 h-4 shrink-0 transition-colors text-purple-700 dark:text-purple-400" />
                   <span>Product Support</span>
                 </button>
 
                 <button
                   onClick={() => handleNavigation('sitemap')}
-                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] font-semibold transition-all cursor-pointer ${getSidebarLinkClass('sitemap')}`}
+                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${getSidebarLinkClass('sitemap')}`}
                 >
-                  <Globe className={`w-4 h-4 shrink-0 transition-colors ${activeTab === 'sitemap' ? 'text-white' : 'text-[rgb(14,145,145)]'}`} />
+                  <Globe className="w-4 h-4 shrink-0 transition-colors text-purple-700 dark:text-purple-400" />
                   <span>{t.sitemap}</span>
                 </button>
               </nav>
@@ -740,7 +744,7 @@ export default function App() {
           </div>
 
           {/* Sidebar Footer with Logged In User Profile */}
-          <div className={`p-4 border-t ${theme === 'dark' ? 'border-[#1E2330]' : 'border-slate-100 bg-slate-50/40'}`}>
+          <div className={`p-4 border-t ${theme === 'dark' ? 'border-slate-800' : 'border-slate-100 bg-slate-50/40'}`}>
             <div className="flex items-center gap-3 p-1 rounded-xl">
               <div className="relative shrink-0">
                 <div 
@@ -748,22 +752,21 @@ export default function App() {
                   className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center font-extrabold text-sm cursor-pointer hover:opacity-90 overflow-hidden shrink-0 border border-slate-200 dark:border-slate-700"
                 >
                   {profilePhoto ? (
-                    <img src={profilePhoto} alt="Profile" className="w-full h-full object-cover rounded-full" referrerPolicy="no-referrer" />
+                    <img src={profilePhoto} alt={profileName} className="w-full h-full object-cover rounded-full" referrerPolicy="no-referrer" />
                   ) : (
-                    <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&fit=crop&q=80" alt="Angelina Gotelli" className="w-full h-full object-cover" />
+                    <div className="w-full h-full bg-purple-600 text-white flex items-center justify-center font-black text-xs">
+                      {profileName.split(' ').filter(Boolean).map(n => n[0]).join('').toUpperCase() || 'AG'}
+                    </div>
                   )}
                 </div>
-                <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border-2 border-white dark:border-[#0F1115] rounded-full"></span>
+                <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border-2 border-white dark:border-[#020617] rounded-full"></span>
               </div>
               <div className="min-w-0 flex-1">
                 <div 
                   onClick={() => setIsProfileModalOpen(true)}
                   className="text-xs font-bold truncate cursor-pointer hover:underline text-slate-800 dark:text-white leading-tight"
                 >
-                  {profilePhoto ? profileName : "Angelina Gotelli"}
-                </div>
-                <div className="text-[10px] text-gray-400 dark:text-gray-500 font-mono truncate leading-none mt-0.5">
-                  {profilePhoto ? profileEmail : "admin-01@racer.com"}
+                  {profileName}
                 </div>
               </div>
               
@@ -787,29 +790,24 @@ export default function App() {
 
       </aside>
 
-      {/* MAIN DISPLAY STAGE (REPORTS, METRICS, CRUD views) */}
-      <main className="flex-1 min-h-screen overflow-y-auto">
+      {/* MAIN DISPLAY STAGE */}
+      <main className="flex-1 min-h-screen overflow-y-auto bg-slate-100 dark:bg-[#020617]">
         
-        {/* PERSISTENT PAGE HEADER (DESKTOP) */}
-        <header className={`flex items-center justify-between p-6 border-b ${
-          theme === 'dark' ? 'bg-[#13161C] border-[#2D333D]' : 'bg-white border-slate-100 shadow-3xs'
+        {/* PERSISTENT PAGE HEADER */}
+        <header className={`px-6 py-4 flex items-center justify-between border-b transition-colors shadow-xs ${
+          theme === 'dark' ? 'bg-[#0f172a] border-slate-800 text-white' : 'bg-[#6b21a8] border-purple-800 text-white'
         }`}>
           <div className="flex items-center gap-3">
             {/* Hamburger Button on Mobile */}
             <button 
               onClick={() => setIsSidebarOpen(!isSidebarOpen)} 
-              className="lg:hidden p-1.5 rounded-lg hover:bg-[rgb(145,145,145)] hover:text-white text-slate-600 dark:text-slate-300 transition-colors cursor-pointer"
+              className={`lg:hidden p-1.5 rounded-lg transition-colors cursor-pointer ${
+                theme === 'dark' ? 'hover:bg-slate-800 text-slate-300' : 'hover:bg-purple-800 text-white'
+              }`}
               title="Toggle Sidebar Navigation Menu"
             >
               <Menu className="w-5 h-5" />
             </button>
-
-            <Breadcrumb 
-              activeTab={activeTab} 
-              onNavigate={handleNavigation} 
-              isDark={theme === 'dark'} 
-              t={t} 
-            />
           </div>
 
           <div className="flex items-center gap-4">
@@ -820,11 +818,7 @@ export default function App() {
             {/* AI Assistant Button */}
             <button 
               onClick={() => setIsChatbotOpen(!isChatbotOpen)} 
-              className={`p-1.5 rounded-xl border transition-all cursor-pointer hover:scale-105 active:scale-95 ${
-                theme === 'dark' 
-                  ? 'border-[#2D333D] hover:bg-gray-800 text-slate-300 bg-slate-500/5' 
-                  : 'border-slate-200 hover:bg-slate-50 text-black bg-slate-100'
-              }`}
+              className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all cursor-pointer"
               title="Open AI Assistant Control Panel"
             >
               <Bot className="w-4.5 h-4.5 animate-pulse" />
@@ -833,40 +827,33 @@ export default function App() {
             {/* Theme switch */}
             <button 
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} 
-              className={`p-1.5 rounded-xl border transition-colors cursor-pointer ${
-                theme === 'dark' ? 'border-[#2D333D] hover:bg-gray-800 text-amber-400' : 'border-slate-200 hover:bg-slate-50 text-slate-600'
-              }`}
+              className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
               title={theme === 'dark' ? 'Switch to Light' : 'Switch to Dark'}
             >
-              {theme === 'dark' ? <Sun className="w-4.5 h-4.5" /> : <Moon className="w-4.5 h-4.5" />}
+              {theme === 'dark' ? <Sun className="w-4.5 h-4.5 text-amber-300" /> : <Moon className="w-4.5 h-4.5" />}
             </button>
 
-            <div className="h-6 w-px bg-slate-200 dark:bg-gray-800 hidden md:block"></div>
+            {/* Circular Bell Notification Button with Badge */}
+            <div className="relative">
+              <button className="w-9 h-9 rounded-full bg-white text-purple-900 flex items-center justify-center shadow-xs hover:bg-slate-100 cursor-pointer">
+                <Bell className="w-4.5 h-4.5" />
+              </button>
+              <span className="absolute -top-1 -right-1 w-4 h-4 bg-amber-500 text-white rounded-full text-[9px] font-black flex items-center justify-center border-2 border-purple-900">
+                1
+              </span>
+            </div>
 
-            {/* User Profile Avatar */}
-            <div className="flex items-center gap-2.5">
-              <div 
-                onClick={() => setIsProfileModalOpen(true)}
-                className="w-8 h-8 rounded-full bg-[rgb(14,145,145)] text-white flex items-center justify-center font-extrabold text-xs cursor-pointer shadow-md shadow-[rgb(14,145,145)]/20 hover:opacity-90 overflow-hidden shrink-0"
-                title="Open Admin Profile Settings"
-              >
-                {profilePhoto ? (
-                  <img src={profilePhoto} alt="Profile" className="w-full h-full object-cover rounded-full" referrerPolicy="no-referrer" />
-                ) : (
-                  profileName.split(' ').filter(Boolean).map(n => n[0]).join('').toUpperCase()
-                )}
-              </div>
-              <div className="hidden md:block leading-none text-left">
-                <div 
-                  onClick={() => setIsProfileModalOpen(true)}
-                  className="text-xs font-extrabold cursor-pointer hover:underline text-slate-900 dark:text-white"
-                >
-                  {profileName}
-                </div>
-                <span className="text-[9px] text-gray-500 font-mono mt-0.5 block">
-                  {profileAdminType}
-                </span>
-              </div>
+            {/* User Profile Avatar with White Ring */}
+            <div 
+              onClick={() => setIsProfileModalOpen(true)}
+              className="w-9 h-9 rounded-full border-2 border-white bg-purple-700 text-white flex items-center justify-center font-black text-xs cursor-pointer shadow-sm hover:opacity-90 overflow-hidden shrink-0"
+              title="Open Admin Profile Settings"
+            >
+              {profilePhoto ? (
+                <img src={profilePhoto} alt="Profile" className="w-full h-full object-cover rounded-full" referrerPolicy="no-referrer" />
+              ) : (
+                profileName.split(' ').filter(Boolean).map(n => n[0]).join('').toUpperCase()
+              )}
             </div>
           </div>
         </header>
@@ -916,6 +903,7 @@ export default function App() {
                 triggerOpenAddModal={addUserTrigger}
                 onResetTrigger={() => setAddUserTrigger(false)}
                 auditLogs={auditLogs}
+                currentUserRole={profileAdminType}
               />
             )}
 
@@ -946,6 +934,8 @@ export default function App() {
                 products={products}
                 contracts={contracts.filter(c => !c.isDeleted)}
                 documents={documents}
+                users={users}
+                licenses={licenses}
                 onAddCustomer={handleAddCustomer}
                 onEditCustomer={handleEditCustomer}
                 onDeleteCustomer={handleDeleteCustomer}
@@ -953,6 +943,11 @@ export default function App() {
                 onEditContract={handleEditContract}
                 onAddDoc={handleAddDoc}
                 onEditDoc={handleEditDoc}
+                onDeleteDoc={handleDeleteDoc}
+                onAddSubUser={handleAddUser}
+                onEditSubUser={handleEditUser}
+                onDeleteSubUser={handleDeleteUser}
+                addAuditLog={addAuditLog}
                 onGoToBilling={handleGoToBillingFromCustomer}
                 onGoToProductDetails={handleGoToProductDetailsFromCustomer}
                 t={t}
@@ -1074,7 +1069,7 @@ export default function App() {
       {!isChatbotOpen && (
         <button
           onClick={() => setIsChatbotOpen(true)}
-          className="fixed bottom-6 right-6 z-40 p-3.5 rounded-full bg-[rgb(14,145,145)] hover:bg-[rgb(12,125,125)] text-white shadow-2xl transition-all cursor-pointer hover:scale-110 active:scale-95 flex items-center justify-center border border-[rgb(14,145,145)] hover:rotate-6 group"
+          className="fixed bottom-6 right-6 z-40 p-3.5 rounded-full bg-purple-600 hover:bg-purple-700 text-white shadow-2xl transition-all cursor-pointer hover:scale-110 active:scale-95 flex items-center justify-center border border-purple-500 hover:rotate-6 group"
           title="Open AI Assistant"
         >
           <Bot className="w-6 h-6 group-hover:animate-bounce" />
@@ -1096,7 +1091,7 @@ export default function App() {
       {isProfileModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/70 backdrop-blur-xs" onClick={() => { stopCamera(); setIsProfileModalOpen(false); }}></div>
-          <div className={`relative w-full max-w-md rounded-2xl p-6 border shadow-2xl transition-all max-h-[90vh] overflow-y-auto ${theme === 'dark' ? 'bg-[#1A1D23] border-[#2D333D] text-white' : 'bg-white border-slate-200 text-slate-800'}`}>
+          <div className={`relative w-full max-w-md rounded-2xl p-6 border shadow-2xl transition-all max-h-[90vh] overflow-y-auto ${theme === 'dark' ? 'bg-[#0f172a] border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-800'}`}>
             
             {/* Modal Header */}
             <div className="flex justify-between items-center mb-6 border-b pb-3 dark:border-gray-800 border-slate-100">
@@ -1120,10 +1115,10 @@ export default function App() {
             <div className="space-y-5 text-xs">
               
               {/* PHOTO UPLOAD & CAMERA SECTION */}
-              <div className="flex flex-col items-center justify-center space-y-3 p-4 rounded-xl dark:bg-[#0F1115] bg-slate-50 border dark:border-gray-800 border-slate-100">
+              <div className="flex flex-col items-center justify-center space-y-3 p-4 rounded-xl dark:bg-[#020617] bg-slate-50 border dark:border-gray-800 border-slate-100">
                 <div className="relative">
                   {isCameraActive ? (
-                    <div className="relative w-28 h-28 rounded-full overflow-hidden border-2 border-[rgb(14,145,145)] bg-black shadow-inner flex items-center justify-center">
+                    <div className="relative w-28 h-28 rounded-full overflow-hidden border-2 border-purple-600 bg-black shadow-inner flex items-center justify-center">
                       <video 
                         ref={videoRef} 
                         autoPlay 
@@ -1133,7 +1128,7 @@ export default function App() {
                       <canvas ref={canvasRef} className="hidden" />
                     </div>
                   ) : (
-                    <div className="w-28 h-28 rounded-full overflow-hidden border-2 border-[rgb(14,145,145)]/20 bg-[rgb(14,145,145)] text-white flex items-center justify-center text-3xl font-black shadow-md">
+                    <div className="w-28 h-28 rounded-full overflow-hidden border-2 border-purple-600/20 bg-purple-600 text-white flex items-center justify-center text-3xl font-black shadow-md">
                       {profilePhoto ? (
                         <img 
                           src={profilePhoto} 
@@ -1149,7 +1144,7 @@ export default function App() {
 
                   {/* Tiny camera indicator */}
                   {!isCameraActive && (
-                    <div className="absolute bottom-0 right-0 p-1.5 rounded-full bg-[rgb(14,145,145)] text-white border-2 border-white dark:border-[#1A1D23] shadow-md">
+                    <div className="absolute bottom-0 right-0 p-1.5 rounded-full bg-purple-600 text-white border-2 border-white dark:border-[#0f172a] shadow-md">
                       <Camera className="w-3.5 h-3.5" />
                     </div>
                   )}
@@ -1232,7 +1227,7 @@ export default function App() {
                     value={profileName} 
                     onChange={e => setProfileName(e.target.value)}
                     placeholder="Enter admin name"
-                    className={`w-full p-2.5 rounded-lg border outline-hidden font-bold transition-all ${theme === 'dark' ? 'bg-[#0F1115] border-[#2D333D] focus:border-[rgb(14,145,145)] focus:bg-black' : 'bg-slate-50 border-slate-200 focus:border-[rgb(14,145,145)] focus:bg-white'}`}
+                    className={`w-full p-2.5 rounded-lg border outline-hidden font-bold transition-all ${theme === 'dark' ? 'bg-[#020617] border-slate-800 focus:border-purple-600 focus:bg-black' : 'bg-slate-50 border-slate-200 focus:border-purple-600 focus:bg-white'}`}
                   />
                 </div>
 
@@ -1247,27 +1242,22 @@ export default function App() {
                     value={profileMobile} 
                     onChange={e => setProfileMobile(e.target.value)}
                     placeholder="Enter mobile number"
-                    className={`w-full p-2.5 rounded-lg border outline-hidden font-bold transition-all ${theme === 'dark' ? 'bg-[#0F1115] border-[#2D333D] focus:border-[rgb(14,145,145)] focus:bg-black' : 'bg-slate-50 border-slate-200 focus:border-[rgb(14,145,145)] focus:bg-white'}`}
+                    className={`w-full p-2.5 rounded-lg border outline-hidden font-bold transition-all ${theme === 'dark' ? 'bg-[#020617] border-slate-800 focus:border-purple-600 focus:bg-black' : 'bg-slate-50 border-slate-200 focus:border-purple-600 focus:bg-white'}`}
                   />
                 </div>
 
-                {/* Email (NOT EDITABLE) */}
+                {/* Email Address */}
                 <div className="space-y-1 relative">
-                  <div className="flex justify-between items-center">
-                    <label className="font-extrabold flex items-center gap-1.5 text-slate-700 dark:text-gray-300">
-                      <Mail className="w-3.5 h-3.5 text-gray-400" />
-                      <span>Email Address</span>
-                    </label>
-                    <span className="text-[9px] font-black uppercase text-rose-500 bg-rose-500/10 px-1.5 py-0.2 rounded-md flex items-center gap-1">
-                      <Shield className="w-2.5 h-2.5" /> Lock
-                    </span>
-                  </div>
+                  <label className="font-extrabold flex items-center gap-1.5 text-slate-700 dark:text-gray-300">
+                    <Mail className="w-3.5 h-3.5 text-black dark:text-white" />
+                    <span>Email Address</span>
+                  </label>
                   <input 
                     type="email" 
                     value={profileEmail} 
-                    disabled
-                    readOnly
-                    className={`w-full p-2.5 rounded-lg border outline-hidden font-bold cursor-not-allowed ${theme === 'dark' ? 'bg-[#15181E] border-[#2D333D] text-gray-100' : 'bg-slate-100 border-slate-200 text-slate-800'}`}
+                    onChange={e => setProfileEmail(e.target.value)}
+                    placeholder="Enter email address"
+                    className={`w-full p-2.5 rounded-lg border outline-hidden font-bold transition-all ${theme === 'dark' ? 'bg-[#020617] border-slate-800 focus:border-purple-600 focus:bg-black' : 'bg-slate-50 border-slate-200 focus:border-purple-600 focus:bg-white'}`}
                   />
                 </div>
 
@@ -1277,7 +1267,7 @@ export default function App() {
                     <MapPin className="w-3.5 h-3.5 text-black dark:text-white" />
                     <span>Physical Address</span>
                     {isSearchingAddress && (
-                      <span className="inline-block animate-spin rounded-full h-3 w-3 border-b-2 border-[rgb(14,145,145)] ml-1"></span>
+                      <span className="inline-block animate-spin rounded-full h-3 w-3 border-b-2 border-purple-600 ml-1"></span>
                     )}
                   </label>
                   <input 
@@ -1285,12 +1275,12 @@ export default function App() {
                     value={profileAddress} 
                     onChange={e => handleAddressChange(e.target.value)}
                     placeholder="Search physical address (powered by Maps Search)"
-                    className={`w-full p-2.5 rounded-lg border outline-hidden font-bold transition-all ${theme === 'dark' ? 'bg-[#0F1115] border-[#2D333D] focus:border-[rgb(14,145,145)] focus:bg-black' : 'bg-slate-50 border-slate-200 focus:border-[rgb(14,145,145)] focus:bg-white'}`}
+                    className={`w-full p-2.5 rounded-lg border outline-hidden font-bold transition-all ${theme === 'dark' ? 'bg-[#020617] border-slate-800 focus:border-purple-600 focus:bg-black' : 'bg-slate-50 border-slate-200 focus:border-purple-600 focus:bg-white'}`}
                   />
                   
                   {/* Address suggestions autocomplete dropdown */}
                   {addressSuggestions.length > 0 && (
-                    <div className={`absolute z-50 left-0 right-0 top-full mt-1 border rounded-lg shadow-xl overflow-hidden text-left ${theme === 'dark' ? 'bg-[#15181E] border-[#2D333D] text-white' : 'bg-white border-slate-200 text-slate-800'}`}>
+                    <div className={`absolute z-50 left-0 right-0 top-full mt-1 border rounded-lg shadow-xl overflow-hidden text-left ${theme === 'dark' ? 'bg-[#0f172a] border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-800'}`}>
                       {addressSuggestions.map((item, idx) => (
                         <button
                           key={idx}
@@ -1299,7 +1289,7 @@ export default function App() {
                             setProfileAddress(item.display_name);
                             setAddressSuggestions([]);
                           }}
-                          className={`w-full text-left p-2.5 border-b last:border-0 text-[11px] leading-snug flex items-start gap-2 cursor-pointer transition-colors ${theme === 'dark' ? 'border-[#2D333D] hover:bg-gray-800' : 'border-slate-100 hover:bg-slate-50'}`}
+                          className={`w-full text-left p-2.5 border-b last:border-0 text-[11px] leading-snug flex items-start gap-2 cursor-pointer transition-colors ${theme === 'dark' ? 'border-slate-800 hover:bg-gray-800' : 'border-slate-100 hover:bg-slate-50'}`}
                         >
                           <MapPin className="w-3.5 h-3.5 text-black dark:text-white shrink-0 mt-0.5" />
                           <span>{item.display_name}</span>
@@ -1315,18 +1305,25 @@ export default function App() {
                     <Shield className="w-3.5 h-3.5 text-black dark:text-white" />
                     <span>Administrative Permission Level</span>
                   </label>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-3 gap-2">
                     <button
                       type="button"
                       onClick={() => setProfileAdminType('Super Admin')}
-                      className={`py-2 rounded-lg font-extrabold text-xs transition-all cursor-pointer border ${profileAdminType === 'Super Admin' ? 'bg-[rgb(14,145,145)] border-[rgb(14,145,145)] text-white shadow-md' : (theme === 'dark' ? 'bg-gray-800/40 border-gray-700 text-gray-400 hover:bg-gray-800' : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100')}`}
+                      className={`py-2 rounded-lg font-extrabold text-[11px] transition-all cursor-pointer border ${profileAdminType === 'Super Admin' ? 'bg-purple-600 border-purple-600 text-white shadow-md' : (theme === 'dark' ? 'bg-gray-800/40 border-gray-700 text-gray-400 hover:bg-gray-800' : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100')}`}
                     >
                       Super Admin
                     </button>
                     <button
                       type="button"
+                      onClick={() => setProfileAdminType('Admin')}
+                      className={`py-2 rounded-lg font-extrabold text-[11px] transition-all cursor-pointer border ${profileAdminType === 'Admin' ? 'bg-purple-600 border-purple-600 text-white shadow-md' : (theme === 'dark' ? 'bg-gray-800/40 border-gray-700 text-gray-400 hover:bg-gray-800' : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100')}`}
+                    >
+                      Admin
+                    </button>
+                    <button
+                      type="button"
                       onClick={() => setProfileAdminType('Sub Admin')}
-                      className={`py-2 rounded-lg font-extrabold text-xs transition-all cursor-pointer border ${profileAdminType === 'Sub Admin' ? 'bg-[rgb(14,145,145)] border-[rgb(14,145,145)] text-white shadow-md' : (theme === 'dark' ? 'bg-gray-800/40 border-gray-700 text-gray-400 hover:bg-gray-800' : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100')}`}
+                      className={`py-2 rounded-lg font-extrabold text-[11px] transition-all cursor-pointer border ${profileAdminType === 'Sub Admin' ? 'bg-purple-600 border-purple-600 text-white shadow-md' : (theme === 'dark' ? 'bg-gray-800/40 border-gray-700 text-gray-400 hover:bg-gray-800' : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100')}`}
                     >
                       Sub Admin
                     </button>
@@ -1360,7 +1357,7 @@ export default function App() {
                     }
                     triggerToast('Profile configuration saved!');
                   }}
-                  className="px-4 py-2.5 bg-[rgb(14,145,145)] hover:bg-[rgb(12,125,125)] text-white rounded-lg font-bold w-2/3 shadow-md shadow-[rgb(14,145,145)]/10 transition-all hover:scale-[1.02] cursor-pointer text-center"
+                  className="px-4 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-bold w-2/3 shadow-md shadow-purple-600/10 transition-all hover:scale-[1.02] cursor-pointer text-center"
                 >
                   Save Configuration
                 </button>

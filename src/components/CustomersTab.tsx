@@ -34,15 +34,23 @@ import {
   Paperclip,
   SlidersHorizontal,
   List,
-  LayoutGrid
+  LayoutGrid,
+  UserCheck,
+  UserCog,
+  Check,
+  Eye,
+  Filter
 } from 'lucide-react';
-import { Customer, Product, Contract, DocItem, Language } from '../types';
+import { Customer, Product, Contract, DocItem, Language, AdminUser, License, CustomerInvoice } from '../types';
+import CustomerPanel from './CustomerPanel';
 
 interface CustomersTabProps {
   customers: Customer[];
   products: Product[];
   contracts: Contract[];
   documents: DocItem[];
+  users?: AdminUser[];
+  licenses?: License[];
   onAddCustomer: (customer: Customer) => void;
   onEditCustomer: (customer: Customer) => void;
   onDeleteCustomer: (id: string) => void;
@@ -50,6 +58,11 @@ interface CustomersTabProps {
   onEditContract: (contract: Contract) => void;
   onAddDoc: (doc: DocItem) => void;
   onEditDoc: (doc: DocItem) => void;
+  onDeleteDoc?: (id: string) => void;
+  onAddSubUser?: (user: AdminUser) => void;
+  onEditSubUser?: (user: AdminUser) => void;
+  onDeleteSubUser?: (uuid: string) => void;
+  addAuditLog?: (action: string, details: string, screen: 'Users' | 'Customers' | 'Products' | 'General' | 'Licenses' | 'Support') => void;
   onGoToBilling: (customerName: string) => void;
   onGoToProductDetails?: (customerId: string, productId: string) => void;
   onGoToContractsAndLicensing?: (customerId: string) => void;
@@ -67,6 +80,8 @@ export default function CustomersTab({
   products,
   contracts,
   documents,
+  users = [],
+  licenses = [],
   onAddCustomer,
   onEditCustomer,
   onDeleteCustomer,
@@ -74,6 +89,11 @@ export default function CustomersTab({
   onEditContract,
   onAddDoc,
   onEditDoc,
+  onDeleteDoc,
+  onAddSubUser,
+  onEditSubUser,
+  onDeleteSubUser,
+  addAuditLog,
   onGoToBilling,
   onGoToProductDetails,
   onGoToContractsAndLicensing,
@@ -88,6 +108,14 @@ export default function CustomersTab({
   const [searchQuery, setSearchQuery] = useState('');
   const [customerViewMode, setCustomerViewMode] = useState<'grid' | 'list'>('grid');
   
+  // Impersonation / Dedicated Customer Panel state
+  const [impersonatedCustomerId, setImpersonatedCustomerId] = useState<string | null>(null);
+
+  const impersonatedCustomer = useMemo(() => {
+    if (!impersonatedCustomerId) return null;
+    return customers.find(c => c.id === impersonatedCustomerId) || null;
+  }, [customers, impersonatedCustomerId]);
+
   // Drill-down Detail state
   const [selectedCustomerId, setSelectedCustomerId] = useState<string | null>(null);
 
@@ -455,6 +483,33 @@ export default function CustomersTab({
   }, [selectedCustomerId]);
 
   // ----------------------------------------------------
+  // 0. IMPERSONATION / CUSTOMER PANEL RENDERING
+  // ----------------------------------------------------
+  if (impersonatedCustomer) {
+    return (
+      <CustomerPanel
+        customer={impersonatedCustomer}
+        products={products}
+        contracts={contracts}
+        documents={documents}
+        users={users}
+        licenses={licenses}
+        onBackToAdmin={() => setImpersonatedCustomerId(null)}
+        onUpdateCustomer={onEditCustomer}
+        onAddSubUser={onAddSubUser || (() => {})}
+        onEditSubUser={onEditSubUser || (() => {})}
+        onDeleteSubUser={onDeleteSubUser || (() => {})}
+        onAddContract={onAddContract}
+        onAddDoc={onAddDoc}
+        onEditDoc={onEditDoc}
+        onDeleteDoc={onDeleteDoc || (() => {})}
+        addAuditLog={addAuditLog}
+        isDark={isDark}
+      />
+    );
+  }
+
+  // ----------------------------------------------------
   // 1. DETAIL VIEW RENDERING
   // ----------------------------------------------------
   if (currentCustomer) {
@@ -463,8 +518,8 @@ export default function CustomersTab({
       <div className="space-y-6">
         {/* LOCAL TOAST NOTIFICATION */}
         {localToast && (
-          <div className="fixed bottom-5 right-5 z-50 bg-slate-950 dark:bg-slate-900 border border-[rgb(14,145,145)]/40 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-2.5">
-            <Activity className="w-4 h-4 text-[rgb(14,145,145)] animate-pulse" />
+          <div className="fixed bottom-5 right-5 z-50 bg-slate-950 dark:bg-slate-900 border border-purple-600/40 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-2.5">
+            <Activity className="w-4 h-4 text-purple-600 animate-pulse" />
             <span className="text-xs font-bold">{localToast}</span>
           </div>
         )}
@@ -473,7 +528,7 @@ export default function CustomersTab({
           <div className="flex items-center gap-3">
             <button 
               onClick={() => setSelectedCustomerId(null)}
-              className={`p-2 rounded-xl border transition-colors cursor-pointer ${isDark ? 'border-[#2D333D] hover:bg-gray-800 text-gray-300' : 'border-slate-200 hover:bg-slate-50 text-slate-600'}`}
+              className={`p-2 rounded-xl border transition-colors cursor-pointer ${isDark ? 'border-[rgb(30, 41, 59)] hover:bg-gray-800 text-gray-300' : 'border-slate-200 hover:bg-slate-50 text-slate-600'}`}
               title="Return to list"
             >
               <ArrowLeft className="w-4 h-4" />
@@ -495,6 +550,16 @@ export default function CustomersTab({
           </div>
 
           <div className="flex items-center gap-2 flex-wrap">
+            {/* Customer Panel / Admin Impersonation button */}
+            <button
+              onClick={() => setImpersonatedCustomerId(currentCustomer.id)}
+              className="px-3.5 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-sm shadow-purple-600/20"
+              title="Open Customer Panel & Admin Impersonation"
+            >
+              <UserCheck className="w-4 h-4" />
+              <span>Customer Panel</span>
+            </button>
+
             {/* Block / Unblock customer button */}
             <button
               onClick={() => handleToggleBlock(currentCustomer)}
@@ -512,17 +577,17 @@ export default function CustomersTab({
             <button
               onClick={(e) => openEditModal(currentCustomer, e)}
               className={`px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 border transition-all cursor-pointer ${
-                isDark ? 'border-[#2D333D] bg-[#1A1D23] hover:bg-gray-800 text-white' : 'border-slate-200 bg-white hover:bg-slate-50 text-slate-700'
+                isDark ? 'border-[rgb(30, 41, 59)] bg-[#0f172a] hover:bg-gray-800 text-white' : 'border-slate-200 bg-white hover:bg-slate-50 text-slate-700'
               }`}
             >
-              <Edit3 className="w-4 h-4 text-[rgb(14,145,145)]" />
+              <Edit3 className="w-4 h-4 text-purple-600" />
               <span>Modify Profile</span>
             </button>
 
             {/* Quick contracts redirect */}
             <button
               onClick={() => onGoToBilling(currentCustomer.name)}
-              className="px-3.5 py-2 bg-[rgb(14,145,145)] hover:bg-[rgb(12,125,125)] text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer"
+              className="px-3.5 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer"
             >
               <CreditCard className="w-4 h-4" />
               <span>Billing Audit</span>
@@ -546,10 +611,10 @@ export default function CustomersTab({
         {/* SECTION 1: Customer details and metadata */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Contacts and details */}
-          <div className={`p-6 rounded-2xl border lg:col-span-2 space-y-6 ${isDark ? 'bg-[#161920] border-[#2D333D]' : 'bg-white border-slate-200 shadow-2xs'}`}>
+          <div className={`p-6 rounded-2xl border lg:col-span-2 space-y-6 ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200 shadow-2xs'}`}>
             <div>
               <h3 className={`text-sm font-extrabold flex items-center gap-2 mb-1 ${isDark ? 'text-white' : 'text-black'}`}>
-                <Building2 className="w-4 h-4 text-[rgb(14,145,145)]" />
+                <Building2 className="w-4 h-4 text-purple-600" />
                 <span>Tenant Overview</span>
               </h3>
               <p className="text-[11px] text-gray-400">Headquarters location and organizational point of contacts.</p>
@@ -563,7 +628,7 @@ export default function CustomersTab({
               <div className="space-y-1">
                 <span className="text-gray-400 text-[10px] uppercase font-bold block">Support SLA Program</span>
                 <span className={`px-2 py-0.5 rounded-full text-[10px] font-black inline-block ${
-                  currentCustomer.supportTier === 'Gold Support Model' ? 'bg-amber-500/10 text-amber-500' : 'bg-[rgb(14,145,145)]/10 text-[rgb(14,145,145)]'
+                  currentCustomer.supportTier === 'Gold Support Model' ? 'bg-amber-500/10 text-amber-500' : 'bg-purple-600/10 text-purple-600'
                 }`}>
                   {currentCustomer.supportTier}
                 </span>
@@ -572,9 +637,9 @@ export default function CustomersTab({
 
             {/* Contacts matrix */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 border-t dark:border-gray-800 border-slate-100 pt-4">
-              <div className={`p-3.5 rounded-xl border ${isDark ? 'bg-[#0F1115] border-gray-800' : 'bg-slate-50 border-slate-100'}`}>
-                <span className="font-bold text-[10px] text-[rgb(14,145,145)] block uppercase tracking-wider mb-2 flex items-center gap-1">
-                  <User className="w-3 h-3" /> Technical Liaison
+              <div className={`p-3.5 rounded-xl border ${isDark ? 'bg-[#020617] border-gray-800' : 'bg-slate-50 border-slate-100'}`}>
+                <span className="font-bold text-[10px] text-purple-600 block uppercase tracking-wider mb-2 flex items-center gap-1">
+                  <User className="w-3 h-3" /> Primary Contact
                 </span>
                 <div className="text-xs font-bold">{currentCustomer.primaryContactName}</div>
                 <div className="text-[10px] font-mono text-gray-400 mt-1 space-y-0.5">
@@ -583,9 +648,9 @@ export default function CustomersTab({
                 </div>
               </div>
 
-              <div className={`p-3.5 rounded-xl border ${isDark ? 'bg-[#0F1115] border-gray-800' : 'bg-slate-50 border-slate-100'}`}>
+              <div className={`p-3.5 rounded-xl border ${isDark ? 'bg-[#020617] border-gray-800' : 'bg-slate-50 border-slate-100'}`}>
                 <span className="font-bold text-[10px] text-amber-500 block uppercase tracking-wider mb-2 flex items-center gap-1">
-                  <CreditCard className="w-3 h-3" /> Billing Office
+                  <CreditCard className="w-3 h-3" /> Billing & Invoicing
                 </span>
                 <div className="text-xs font-bold">{currentCustomer.billingContactName}</div>
                 <div className="text-[10px] font-mono text-gray-400 mt-1 space-y-0.5">
@@ -594,9 +659,9 @@ export default function CustomersTab({
                 </div>
               </div>
 
-              <div className={`p-3.5 rounded-xl border ${isDark ? 'bg-[#0F1115] border-gray-800' : 'bg-slate-50 border-slate-100'}`}>
+              <div className={`p-3.5 rounded-xl border ${isDark ? 'bg-[#020617] border-gray-800' : 'bg-slate-50 border-slate-100'}`}>
                 <span className="font-bold text-[10px] text-purple-500 block uppercase tracking-wider mb-2 flex items-center gap-1">
-                  <Phone className="w-3 h-3" /> Dedicated Support
+                  <Phone className="w-3 h-3" /> Technical Liaison
                 </span>
                 <div className="text-xs font-bold">{currentCustomer.supportContactName}</div>
                 <div className="text-[10px] font-mono text-gray-400 mt-1 space-y-0.5">
@@ -615,7 +680,7 @@ export default function CustomersTab({
           </div>
 
           {/* Quick info metrics panel */}
-          <div className={`p-6 rounded-2xl border space-y-4 ${isDark ? 'bg-[#161920] border-[#2D333D]' : 'bg-white border-slate-200 shadow-2xs'}`}>
+          <div className={`p-6 rounded-2xl border space-y-4 ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200 shadow-2xs'}`}>
             <div>
               <h3 className={`text-sm font-extrabold flex items-center gap-2 ${isDark ? 'text-white' : 'text-black'}`}>
                 <Activity className="w-4 h-4 text-emerald-500" />
@@ -627,11 +692,11 @@ export default function CustomersTab({
              <div className="space-y-3.5">
               <div 
                 onClick={() => onGoToContractsAndLicensing?.(currentCustomer.id)}
-                className={`p-3 rounded-xl ${isDark ? 'bg-black/20 hover:bg-black/40' : 'bg-slate-50 hover:bg-slate-100/80'} flex justify-between items-center cursor-pointer transition-all border border-transparent hover:border-[rgb(14,145,145)]/20`}
+                className={`p-3 rounded-xl ${isDark ? 'bg-black/20 hover:bg-black/40' : 'bg-slate-50 hover:bg-slate-100/80'} flex justify-between items-center cursor-pointer transition-all border border-transparent hover:border-purple-600/20`}
                 title="Click to view Licensing"
               >
                 <span className="text-xs font-bold text-gray-400">Total active contracts</span>
-                <span className="text-sm font-extrabold text-[rgb(14,145,145)]">{customerContracts.length}</span>
+                <span className="text-sm font-extrabold text-purple-600">{customerContracts.length}</span>
               </div>
 
               <div 
@@ -647,7 +712,7 @@ export default function CustomersTab({
 
               <div 
                 onClick={() => onGoToContractsAndLicensing?.(currentCustomer.id)}
-                className={`p-3 rounded-xl ${isDark ? 'bg-black/20 hover:bg-black/40' : 'bg-slate-50 hover:bg-slate-100/80'} flex justify-between items-center cursor-pointer transition-all border border-transparent hover:border-[rgb(14,145,145)]/20`}
+                className={`p-3 rounded-xl ${isDark ? 'bg-black/20 hover:bg-black/40' : 'bg-slate-50 hover:bg-slate-100/80'} flex justify-between items-center cursor-pointer transition-all border border-transparent hover:border-purple-600/20`}
                 title="Click to view Licensing"
               >
                 <span className="text-xs font-bold text-gray-400">Assigned licenses</span>
@@ -665,11 +730,11 @@ export default function CustomersTab({
         </div>
 
         {/* SECTION 2: LICENSES / CONTRACTS MANAGEMENT */}
-        <div className={`p-6 rounded-2xl border space-y-6 ${isDark ? 'bg-[#161920] border-[#2D333D]' : 'bg-white border-slate-200 shadow-2xs'}`}>
+        <div className={`p-6 rounded-2xl border space-y-6 ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200 shadow-2xs'}`}>
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
               <h3 className={`text-base font-black flex items-center gap-2 ${isDark ? 'text-white' : 'text-black'}`}>
-                <Briefcase className="w-5 h-5 text-[rgb(14,145,145)]" />
+                <Briefcase className="w-5 h-5 text-purple-600" />
                 <span>Authorized Active Licenses</span>
               </h3>
               <p className="text-xs text-gray-400 mt-0.5">Enterprise licenses, seat volumes, active durations, and pricing agreements.</p>
@@ -683,7 +748,7 @@ export default function CustomersTab({
                 }
                 setIsLicenseModalOpen(true);
               }}
-              className="px-3.5 py-1.5 bg-[rgb(14,145,145)] hover:bg-[rgb(12,125,125)] text-white rounded-lg text-xs font-extrabold flex items-center gap-1.5 transition-all cursor-pointer"
+              className="px-3.5 py-1.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-xs font-extrabold flex items-center gap-1.5 transition-all cursor-pointer"
             >
               <Plus className="w-4 h-4" />
               <span>Add New License</span>
@@ -699,8 +764,8 @@ export default function CustomersTab({
               {customerContracts.map((con) => (
                 <div 
                    key={con.id}
-                   className={`p-4 rounded-xl border flex flex-col justify-between gap-4 transition-all hover:border-[rgb(14,145,145)]/50 ${
-                     isDark ? 'bg-[#0F1115] border-gray-800' : 'bg-slate-50 border-slate-100'
+                   className={`p-4 rounded-xl border flex flex-col justify-between gap-4 transition-all hover:border-purple-600/50 ${
+                     isDark ? 'bg-[#020617] border-gray-800' : 'bg-slate-50 border-slate-100'
                    }`}
                 >
                   <div className="space-y-2">
@@ -718,7 +783,7 @@ export default function CustomersTab({
                             }
                           }
                         }}
-                        className={`px-2 py-0.5 rounded-md text-[9px] font-bold hover:underline cursor-pointer ${isDark ? 'bg-[rgb(14,145,145)]/10 text-[rgb(14,145,145)]' : 'bg-[rgb(14,145,145)]/10 text-[rgb(10,115,115)]'}`}
+                        className={`px-2 py-0.5 rounded-md text-[9px] font-bold hover:underline cursor-pointer ${isDark ? 'bg-purple-600/10 text-purple-600' : 'bg-purple-600/10 text-[rgb(10,115,115)]'}`}
                         title="Click to view Product Details"
                       >
                         {con.productSku}
@@ -757,13 +822,13 @@ export default function CustomersTab({
 
                   <div className="pt-2.5 border-t border-dashed dark:border-gray-800 border-slate-100 flex items-center justify-between text-[10px] font-bold text-gray-400">
                     <span className="flex items-center gap-1">
-                      <Calendar className="w-3 h-3 text-[rgb(14,145,145)]" />
+                      <Calendar className="w-3 h-3 text-purple-600" />
                       <span>{con.startDate} to {con.endDate}</span>
                     </span>
 
                     <button
                       onClick={() => onGoToContractsAndLicensing?.(currentCustomer.id)}
-                      className="text-[rgb(14,145,145)] hover:underline flex items-center gap-0.5 cursor-pointer"
+                      className="text-purple-600 hover:underline flex items-center gap-0.5 cursor-pointer"
                       title="View complete contract and granular licensing activations"
                     >
                       <span>Manage Licensing</span>
@@ -777,7 +842,7 @@ export default function CustomersTab({
         </div>
 
         {/* SECTION 3: DOCUMENT MANAGEMENT & APPROVALS */}
-        <div className={`p-6 rounded-2xl border space-y-6 ${isDark ? 'bg-[#161920] border-[#2D333D]' : 'bg-white border-slate-200 shadow-2xs'}`}>
+        <div className={`p-6 rounded-2xl border space-y-6 ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200 shadow-2xs'}`}>
           <div>
             <h3 className={`text-base font-black flex items-center gap-2 ${isDark ? 'text-white' : 'text-black'}`}>
               <FileText className="w-5 h-5 text-amber-500" />
@@ -798,10 +863,10 @@ export default function CustomersTab({
                 onClick={() => fileInputRef.current?.click()}
                 className={`p-6 rounded-xl border-2 border-dashed flex flex-col items-center justify-center text-center cursor-pointer transition-all ${
                   isDragging
-                    ? 'border-[rgb(14,145,145)] bg-[rgb(14,145,145)]/5 scale-[1.01]'
+                    ? 'border-purple-600 bg-purple-600/5 scale-[1.01]'
                     : isDark 
-                      ? 'border-[#2D333D] hover:border-[rgb(14,145,145)]/50 hover:bg-gray-800 bg-[#0F1115]' 
-                      : 'border-slate-200 hover:border-[rgb(14,145,145)]/50 hover:bg-slate-50 bg-white'
+                      ? 'border-[rgb(30, 41, 59)] hover:border-purple-600/50 hover:bg-gray-800 bg-[#020617]' 
+                      : 'border-slate-200 hover:border-purple-600/50 hover:bg-slate-50 bg-white'
                 }`}
               >
                 <input 
@@ -815,7 +880,7 @@ export default function CustomersTab({
                   className="hidden" 
                   accept=".pdf,.doc,.docx,.txt,.csv"
                 />
-                <Upload className="w-8 h-8 text-[rgb(14,145,145)] mb-3 animate-bounce" />
+                <Upload className="w-8 h-8 text-purple-600 mb-3 animate-bounce" />
                 <h4 className="text-xs font-bold">Drag and drop file here</h4>
                 <p className="text-[10px] text-gray-500 mt-1">or click to browse local files</p>
                 <p className="text-[9px] text-gray-400 font-bold mt-2 font-mono">PDF, DOCX, TXT or CSV (Max 10MB)</p>
@@ -835,8 +900,8 @@ export default function CustomersTab({
                   {customerDocs.map((doc) => (
                     <div 
                       key={doc.id}
-                      className={`p-3.5 rounded-xl border flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 transition-all hover:border-[rgb(14,145,145)]/30 ${
-                        isDark ? 'bg-[#0F1115] border-gray-800 hover:bg-[#12151B]' : 'bg-slate-50 border-slate-100 hover:bg-slate-100/50'
+                      className={`p-3.5 rounded-xl border flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 transition-all hover:border-purple-600/30 ${
+                        isDark ? 'bg-[#020617] border-gray-800 hover:bg-[#12151B]' : 'bg-slate-50 border-slate-100 hover:bg-slate-100/50'
                       }`}
                     >
                       <div className="flex items-start gap-2.5">
@@ -878,7 +943,7 @@ export default function CustomersTab({
                         <button
                           onClick={() => setPreviewingDoc(doc)}
                           className={`p-1.5 rounded-lg border transition-all cursor-pointer ${
-                            isDark ? 'border-gray-800 bg-[#161920] hover:bg-gray-800 text-gray-300' : 'border-slate-200 bg-white hover:bg-slate-50 text-slate-700'
+                            isDark ? 'border-gray-800 bg-[#0f172a] hover:bg-gray-800 text-gray-300' : 'border-slate-200 bg-white hover:bg-slate-50 text-slate-700'
                           }`}
                           title="Preview document audit records"
                         >
@@ -889,11 +954,11 @@ export default function CustomersTab({
                         <button
                           onClick={() => handleDownloadDocument(doc)}
                           className={`p-1.5 rounded-lg border transition-all cursor-pointer ${
-                            isDark ? 'border-gray-800 bg-[#161920] hover:bg-gray-800 text-gray-300' : 'border-slate-200 bg-white hover:bg-slate-50 text-slate-700'
+                            isDark ? 'border-gray-800 bg-[#0f172a] hover:bg-gray-800 text-gray-300' : 'border-slate-200 bg-white hover:bg-slate-50 text-slate-700'
                           }`}
                           title="Download document text file"
                         >
-                          <Download className="w-4 h-4 text-[rgb(14,145,145)]" />
+                          <Download className="w-4 h-4 text-purple-600" />
                         </button>
                       </div>
                     </div>
@@ -905,11 +970,11 @@ export default function CustomersTab({
         </div>
 
         {/* SECTION 4: SSO & IDP INTEGRATION */}
-        <div className={`p-6 rounded-2xl border space-y-6 ${isDark ? 'bg-[#161920] border-[#2D333D]' : 'bg-white border-slate-200 shadow-2xs'}`}>
+        <div className={`p-6 rounded-2xl border space-y-6 ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200 shadow-2xs'}`}>
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
               <h3 className={`text-base font-black flex items-center gap-2 ${isDark ? 'text-white' : 'text-black'}`}>
-                <SlidersHorizontal className="w-5 h-5 text-[rgb(14,145,145)]" />
+                <SlidersHorizontal className="w-5 h-5 text-purple-600" />
                 <span>Federated SSO & IDP Integration Settings</span>
               </h3>
               <p className="text-xs text-gray-400 mt-0.5">
@@ -998,7 +1063,7 @@ export default function CustomersTab({
                     }}
                     placeholder="e.g. enterprise.okta.com"
                     className={`w-full p-2.5 text-xs rounded-lg border outline-hidden transition-all ${
-                      isDark ? 'bg-[#0F1115] border-[#2D333D] text-white focus:border-[rgb(14,145,145)]' : 'bg-slate-50 border-slate-200 text-slate-800 focus:bg-white focus:border-[rgb(14,145,145)]'
+                      isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)] text-white focus:border-purple-600' : 'bg-slate-50 border-slate-200 text-slate-800 focus:bg-white focus:border-purple-600'
                     }`}
                   />
                 </div>
@@ -1011,7 +1076,7 @@ export default function CustomersTab({
                     onChange={(e) => setCustSsoUrl(e.target.value)}
                     placeholder="https://identity-gateway.com/sso"
                     className={`w-full p-2.5 text-xs rounded-lg border outline-hidden transition-all ${
-                      isDark ? 'bg-[#0F1115] border-[#2D333D] text-white focus:border-[rgb(14,145,145)]' : 'bg-slate-50 border-slate-200 text-slate-800 focus:bg-white focus:border-[rgb(14,145,145)]'
+                      isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)] text-white focus:border-purple-600' : 'bg-slate-50 border-slate-200 text-slate-800 focus:bg-white focus:border-purple-600'
                     }`}
                   />
                 </div>
@@ -1033,7 +1098,7 @@ export default function CustomersTab({
                     });
                     triggerLocalToast(`SSO Provider "${custSsoProvider}" configured and saved for ${currentCustomer.name}!`);
                   }}
-                  className="px-4 py-2 bg-[rgb(14,145,145)] hover:bg-[rgb(12,125,125)] text-white rounded-lg text-xs font-bold cursor-pointer transition-all shadow-sm"
+                  className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-xs font-bold cursor-pointer transition-all shadow-sm"
                 >
                   Save SSO Configuration
                 </button>
@@ -1050,7 +1115,7 @@ export default function CustomersTab({
                   }}
                   disabled={ssoTesting}
                   className={`px-4 py-2 rounded-lg text-xs font-bold cursor-pointer transition-all border ${
-                    isDark ? 'border-[#2D333D] bg-gray-800 text-white hover:bg-gray-700' : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
+                    isDark ? 'border-[rgb(30, 41, 59)] bg-gray-800 text-white hover:bg-gray-700' : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
                   } disabled:opacity-50`}
                 >
                   {ssoTesting ? 'Handshaking...' : 'Test SSO Link'}
@@ -1061,7 +1126,7 @@ export default function CustomersTab({
             {/* SSO Guidance & Test Panel */}
             <div className={`p-4 rounded-xl border space-y-4 ${isDark ? 'bg-black/20 border-gray-800' : 'bg-slate-50 border-slate-100'}`}>
               <div>
-                <h4 className="text-xs font-extrabold uppercase tracking-wide text-[rgb(14,145,145)]">SAML 2.0 / OIDC Integration</h4>
+                <h4 className="text-xs font-extrabold uppercase tracking-wide text-purple-600">SAML 2.0 / OIDC Integration</h4>
                 <p className="text-[11px] text-gray-400 mt-1 leading-relaxed">
                   Enterprise Tenants have the ability to manage their own IDP provider. B&J Admins can also pre-configure SSO/IDP profiles on behalf of the customer using this panel. Ensure Auth domains are unique to prevent routing conflicts.
                 </p>
@@ -1084,7 +1149,7 @@ export default function CustomersTab({
         </div>
 
         {/* CORPORATE HIERARCHY TREE VISUALIZATION (PAGE 5 REQUIREMENT) */}
-        <div className={`p-6 rounded-xl border ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200 shadow-2xs'}`}>
+        <div className={`p-6 rounded-xl border ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200 shadow-2xs'}`}>
           <div className="mb-4">
             <h4 className={`text-base font-extrabold flex items-center gap-2 ${isDark ? 'text-white' : 'text-black'}`}>
               <Building2 className="w-5 h-5 text-amber-500" />
@@ -1128,20 +1193,20 @@ export default function CustomersTab({
                   {/* Selected Customer segment (Always visible, highlighted) */}
                   <div className={`p-4 rounded-xl border relative transition-all ${
                     isDark 
-                      ? 'bg-[#1E2530] border-[rgb(14,145,145)] ring-2 ring-[rgb(14,145,145)]/20 shadow-lg' 
-                      : 'bg-white border-[rgb(14,145,145)] ring-2 ring-[rgb(14,145,145)]/20 shadow-md'
+                      ? 'bg-[#1E2530] border-purple-600 ring-2 ring-[purple-600]/20 shadow-lg' 
+                      : 'bg-white border-purple-600 ring-2 ring-[purple-600]/20 shadow-md'
                   }`}>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <div className="w-3 h-3 rounded-full bg-[rgb(14,145,145)] ring-4 ring-[rgb(14,145,145)]/20" />
+                        <div className="w-3 h-3 rounded-full bg-purple-600 ring-4 ring-[purple-600]/20" />
                         <div>
                           <h5 className={`font-extrabold text-sm ${isDark ? 'text-white' : 'text-slate-800'}`}>
                             {currentCustomer.name}
                           </h5>
-                          <span className="text-[10px] text-[rgb(14,145,145)] font-mono font-bold">SELECTED CUSTOMER (ID: {currentCustomer.id})</span>
+                          <span className="text-[10px] text-purple-600 font-mono font-bold">SELECTED CUSTOMER (ID: {currentCustomer.id})</span>
                         </div>
                       </div>
-                      <span className="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-[rgb(14,145,145)]/15 text-[rgb(14,145,145)] font-mono">
+                      <span className="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-purple-600/15 text-purple-600 font-mono">
                         Active View
                       </span>
                     </div>
@@ -1165,8 +1230,8 @@ export default function CustomersTab({
                                 e.stopPropagation();
                                 setSelectedCustomerId(child.id);
                               }}
-                              className={`p-3 rounded-lg border cursor-pointer hover:border-[rgb(14,145,145)] transition-all flex-1 max-w-md ${
-                                isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200 shadow-2xs'
+                              className={`p-3 rounded-lg border cursor-pointer hover:border-purple-600 transition-all flex-1 max-w-md ${
+                                isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200 shadow-2xs'
                               }`}
                             >
                               <div className="flex items-center gap-2">
@@ -1197,11 +1262,11 @@ export default function CustomersTab({
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div className="absolute inset-0 bg-black/60 backdrop-blur-xs" onClick={() => setIsLicenseModalOpen(false)}></div>
             <div className={`relative w-full max-w-md rounded-2xl p-6 border shadow-2xl ${
-              isDark ? 'bg-[#1A1D23] border-[#2D333D] text-white' : 'bg-white border-slate-200 text-slate-800'
+              isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)] text-white' : 'bg-white border-slate-200 text-slate-800'
             }`}>
               <div className="flex justify-between items-center mb-4">
                 <h3 className="font-extrabold text-base flex items-center gap-2">
-                  <Briefcase className="w-5 h-5 text-[rgb(14,145,145)]" />
+                  <Briefcase className="w-5 h-5 text-purple-600" />
                   <span>Provision New License</span>
                 </h3>
                 <button onClick={() => setIsLicenseModalOpen(false)} className="p-1 rounded-lg hover:bg-black/10 cursor-pointer">
@@ -1217,7 +1282,7 @@ export default function CustomersTab({
                     required
                     value={licenseName}
                     onChange={(e) => setLicenseName(e.target.value)}
-                    className={`w-full p-2.5 rounded-lg border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50 border-slate-200'}`}
+                    className={`w-full p-2.5 rounded-lg border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200'}`}
                     placeholder="e.g. Cyberdyne Cloud Engine Advanced Tier"
                   />
                 </div>
@@ -1244,7 +1309,7 @@ export default function CustomersTab({
                       min={1}
                       value={licensePurchasedUnits}
                       onChange={(e) => setLicensePurchasedUnits(Number(e.target.value))}
-                      className={`w-full p-2.5 rounded-lg border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50 border-slate-200'}`}
+                      className={`w-full p-2.5 rounded-lg border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200'}`}
                     />
                   </div>
 
@@ -1257,7 +1322,7 @@ export default function CustomersTab({
                       max={licensePurchasedUnits}
                       value={licenseActiveUnits}
                       onChange={(e) => setLicenseActiveUnits(Number(e.target.value))}
-                      className={`w-full p-2.5 rounded-lg border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50 border-slate-200'}`}
+                      className={`w-full p-2.5 rounded-lg border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200'}`}
                     />
                   </div>
                 </div>
@@ -1273,7 +1338,7 @@ export default function CustomersTab({
                         min={1}
                         value={licenseUnitPrice}
                         onChange={(e) => setLicenseUnitPrice(Number(e.target.value))}
-                        className={`w-full pl-6 pr-2.5 py-2.5 rounded-lg border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50 border-slate-200'}`}
+                        className={`w-full pl-6 pr-2.5 py-2.5 rounded-lg border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200'}`}
                       />
                     </div>
                   </div>
@@ -1302,7 +1367,7 @@ export default function CustomersTab({
                     required
                     value={licenseStartDate}
                     onChange={(e) => setLicenseStartDate(e.target.value)}
-                    className={`w-full p-2.5 rounded-lg border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50 border-slate-200'}`}
+                    className={`w-full p-2.5 rounded-lg border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200'}`}
                   />
                 </div>
 
@@ -1323,7 +1388,7 @@ export default function CustomersTab({
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-2 bg-[rgb(14,145,145)] hover:bg-[rgb(12,125,125)] text-white rounded-lg font-black cursor-pointer"
+                    className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-black cursor-pointer"
                   >
                     Provision License
                   </button>
@@ -1338,7 +1403,7 @@ export default function CustomersTab({
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div className="absolute inset-0 bg-black/60 backdrop-blur-xs" onClick={() => setPreviewingDoc(null)}></div>
             <div className={`relative w-full max-w-xl rounded-2xl p-6 border shadow-2xl ${
-              isDark ? 'bg-[#1A1D23] border-[#2D333D] text-white' : 'bg-white border-slate-200 text-slate-800'
+              isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)] text-white' : 'bg-white border-slate-200 text-slate-800'
             }`}>
               <div className="flex justify-between items-center mb-4 border-b dark:border-gray-800 border-slate-100 pb-3">
                 <div className="flex items-center gap-2">
@@ -1354,7 +1419,7 @@ export default function CustomersTab({
               </div>
 
               <div className={`p-6 rounded-xl border space-y-4 max-h-96 overflow-y-auto ${
-                isDark ? 'bg-[#0F1115] border-gray-800 text-gray-200' : 'bg-slate-50 border-slate-100 text-slate-800'
+                isDark ? 'bg-[#020617] border-gray-800 text-gray-200' : 'bg-slate-50 border-slate-100 text-slate-800'
               }`}>
                 <div className="text-center pb-4 border-b dark:border-gray-800 border-slate-100 space-y-1">
                   <h2 className="text-base font-extrabold tracking-tight">B&J ENTERPRISE LICENSING BOARD</h2>
@@ -1385,7 +1450,7 @@ export default function CustomersTab({
                       handleDownloadDocument(previewingDoc);
                       setPreviewingDoc(null);
                     }}
-                    className="px-3.5 py-2 bg-[rgb(14,145,145)] hover:bg-[rgb(12,125,125)] text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-all cursor-pointer"
+                    className="px-3.5 py-2 bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-all cursor-pointer"
                   >
                     <Download className="w-3.5 h-3.5" />
                     <span>Download Asset</span>
@@ -1401,11 +1466,11 @@ export default function CustomersTab({
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div className="absolute inset-0 bg-black/60 backdrop-blur-xs" onClick={() => { setIsEmailModalOpen(false); setEmailCustomer(null); }}></div>
             <div className={`relative w-full max-w-lg rounded-2xl p-6 border shadow-2xl transition-all ${
-              isDark ? 'bg-[#1A1D23] border-[#2D333D] text-white' : 'bg-white border-slate-200 text-slate-800'
+              isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)] text-white' : 'bg-white border-slate-200 text-slate-800'
             }`}>
               <div className="flex justify-between items-center mb-4 pb-3 border-b border-dashed dark:border-gray-800 border-slate-100">
                 <h3 className="font-extrabold text-base flex items-center gap-2">
-                  <Mail className="w-5 h-5 text-[rgb(14,145,145)]" />
+                  <Mail className="w-5 h-5 text-purple-600" />
                   <span>Send Email Correspondence</span>
                 </h3>
                 <button 
@@ -1420,7 +1485,7 @@ export default function CustomersTab({
                 {/* Recipient info */}
                 <div className="space-y-1">
                   <label className="text-gray-400 text-[10px] uppercase font-bold block">To (Primary Contact Email)</label>
-                  <div className={`w-full p-2.5 rounded-lg border flex items-center justify-between font-mono ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50 border-slate-200'}`}>
+                  <div className={`w-full p-2.5 rounded-lg border flex items-center justify-between font-mono ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200'}`}>
                     <span className="font-bold">{emailCustomer.primaryContactEmail}</span>
                     <span className="text-[10px] opacity-75">({emailCustomer.primaryContactName})</span>
                   </div>
@@ -1434,7 +1499,7 @@ export default function CustomersTab({
                     required
                     value={emailSubject}
                     onChange={(e) => setEmailSubject(e.target.value)}
-                    className={`w-full p-2.5 rounded-lg border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50 border-slate-200'}`}
+                    className={`w-full p-2.5 rounded-lg border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200'}`}
                     placeholder="Enter email subject"
                   />
                 </div>
@@ -1447,7 +1512,7 @@ export default function CustomersTab({
                     rows={6}
                     value={emailMessage}
                     onChange={(e) => setEmailMessage(e.target.value)}
-                    className={`w-full p-2.5 rounded-lg border outline-hidden font-sans resize-none ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50 border-slate-200'}`}
+                    className={`w-full p-2.5 rounded-lg border outline-hidden font-sans resize-none ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200'}`}
                     placeholder="Compose message..."
                   />
                 </div>
@@ -1474,7 +1539,7 @@ export default function CustomersTab({
                           : 'border-slate-200 bg-white hover:bg-slate-50 text-slate-700'
                       }`}
                     >
-                      <Paperclip className="w-3.5 h-3.5 text-[rgb(14,145,145)]" />
+                      <Paperclip className="w-3.5 h-3.5 text-purple-600" />
                       <span>Attach File</span>
                     </label>
 
@@ -1507,7 +1572,7 @@ export default function CustomersTab({
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-2 bg-[rgb(14,145,145)] hover:bg-[rgb(12,125,125)] text-white rounded-lg font-black flex items-center gap-1.5 cursor-pointer"
+                    className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-black flex items-center gap-1.5 cursor-pointer"
                   >
                     <Send className="w-3.5 h-3.5" />
                     <span>Send Email</span>
@@ -1529,8 +1594,8 @@ export default function CustomersTab({
     <div className="space-y-6">
       {/* LOCAL TOAST NOTIFICATION */}
       {localToast && (
-        <div className="fixed bottom-5 right-5 z-50 bg-slate-950 dark:bg-slate-900 border border-[rgb(14,145,145)]/40 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-2.5">
-          <Activity className="w-4 h-4 text-[rgb(14,145,145)] animate-pulse" />
+        <div className="fixed bottom-5 right-5 z-50 bg-slate-950 dark:bg-slate-900 border border-purple-600/40 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-2.5">
+          <Activity className="w-4 h-4 text-purple-600 animate-pulse" />
           <span className="text-xs font-bold">{localToast}</span>
         </div>
       )}
@@ -1545,14 +1610,14 @@ export default function CustomersTab({
             type="text" 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className={`w-full pl-9 pr-4 py-2 text-xs rounded-lg border outline-hidden transition-all ${isDark ? 'bg-[#1A1D23] border-[#2D333D] text-white focus:border-[rgb(14,145,145)]' : 'bg-white border-slate-200 text-slate-800 focus:border-[rgb(14,145,145)] shadow-2xs'}`}
+            className={`w-full pl-9 pr-4 py-2 text-xs rounded-lg border outline-hidden transition-all ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)] text-white focus:border-purple-600' : 'bg-white border-slate-200 text-slate-800 focus:border-purple-600 shadow-2xs'}`}
             placeholder="Search enterprise clients..."
           />
         </div>
 
         <button
           onClick={openAddModal}
-          className="px-4 py-2 bg-[rgb(14,145,145)] hover:bg-[rgb(12,125,125)] text-white rounded-lg text-xs font-bold flex items-center gap-2 shadow-md shadow-[rgb(14,145,145)]/10 transition-all cursor-pointer"
+          className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-xs font-bold flex items-center gap-2 shadow-md shadow-purple-600/10 transition-all cursor-pointer"
         >
           <Plus className="w-4 h-4" />
           <span>{t.addNewCustomer}</span>
@@ -1570,7 +1635,7 @@ export default function CustomersTab({
             onClick={() => setCustomerViewMode('list')}
             className={`p-1.5 rounded-md transition-all cursor-pointer ${
               customerViewMode === 'list'
-                ? 'bg-[rgb(14,145,145)] text-white shadow-xs'
+                ? 'bg-purple-600 text-white shadow-xs'
                 : 'text-slate-400 hover:text-slate-600 dark:hover:text-white'
             }`}
             title="List Layout View"
@@ -1581,7 +1646,7 @@ export default function CustomersTab({
             onClick={() => setCustomerViewMode('grid')}
             className={`p-1.5 rounded-md transition-all cursor-pointer ${
               customerViewMode === 'grid'
-                ? 'bg-[rgb(14,145,145)] text-white shadow-xs'
+                ? 'bg-purple-600 text-white shadow-xs'
                 : 'text-slate-400 hover:text-slate-600 dark:hover:text-white'
             }`}
             title="Grid Cards View"
@@ -1602,12 +1667,12 @@ export default function CustomersTab({
             <div 
               key={cust.id}
               onClick={() => setSelectedCustomerId(cust.id)}
-              className={`group p-6 rounded-xl border transition-all duration-300 cursor-pointer hover:scale-102 hover:shadow-xl hover:shadow-[rgb(14,145,145)]/10 ${
+              className={`group p-6 rounded-xl border transition-all duration-300 cursor-pointer hover:scale-102 hover:shadow-xl hover:shadow-purple-600/10 ${
                 isBlocked
                   ? 'border-rose-500/30 bg-rose-500/5 hover:border-rose-500/50'
                   : isDark 
-                    ? 'bg-[#1A1D23] border-[#2D333D] hover:border-[rgb(14,145,145)]/50' 
-                    : 'bg-white border-slate-200 shadow-2xs hover:border-[rgb(14,145,145)]'
+                    ? 'bg-[#0f172a] border-[rgb(30, 41, 59)] hover:border-purple-600/50' 
+                    : 'bg-white border-slate-200 shadow-2xs hover:border-purple-600'
               }`}
             >
               <div className="flex flex-col lg:flex-row justify-between gap-6">
@@ -1617,8 +1682,8 @@ export default function CustomersTab({
                   <div className="flex items-center gap-2">
                     <div className={`p-2 rounded-lg transition-colors duration-300 ${
                       isDark 
-                        ? 'bg-[rgb(14,145,145)]/10 text-[rgb(14,145,145)] group-hover:bg-[rgb(14,145,145)] group-hover:text-white' 
-                        : 'bg-[rgb(14,145,145)]/10 text-[rgb(10,115,115)] group-hover:bg-[rgb(12,125,125)] group-hover:text-white'
+                        ? 'bg-purple-600/10 text-purple-600 group-hover:bg-purple-600 group-hover:text-white' 
+                        : 'bg-purple-600/10 text-[rgb(10,115,115)] group-hover:bg-purple-700 group-hover:text-white'
                     }`}>
                       <Building2 className="w-5 h-5" />
                     </div>
@@ -1643,7 +1708,7 @@ export default function CustomersTab({
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-extrabold ${cust.supportTier === 'Gold Support Model' ? 'bg-amber-500/10 text-amber-500' : 'bg-[rgb(14,145,145)]/10 text-[rgb(14,145,145)]'}`}>
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-extrabold ${cust.supportTier === 'Gold Support Model' ? 'bg-amber-500/10 text-amber-500' : 'bg-purple-600/10 text-purple-600'}`}>
                       {cust.supportTier}
                     </span>
                     <button 
@@ -1651,7 +1716,7 @@ export default function CustomersTab({
                         e.stopPropagation(); // Avoid card click drill-down
                         onGoToBilling(cust.name);
                       }}
-                      className={`text-[11px] font-bold text-[rgb(14,145,145)] hover:underline flex items-center gap-1 cursor-pointer`}
+                      className={`text-[11px] font-bold text-purple-600 hover:underline flex items-center gap-1 cursor-pointer`}
                     >
                       <span>Contracts & Usage</span>
                       <ArrowRight className="w-3.5 h-3.5" />
@@ -1666,7 +1731,7 @@ export default function CustomersTab({
                     return (
                       <div className="pt-2.5 border-t border-dashed dark:border-gray-800 border-slate-100 space-y-1.5 text-[11px]">
                         {parent && (
-                          <div className="flex items-center gap-1.5 text-[rgb(14,145,145)]">
+                          <div className="flex items-center gap-1.5 text-purple-600">
                             <span className="font-extrabold uppercase text-[9px] tracking-wider text-gray-500">Parent Corp:</span>
                             <span className="font-semibold">{parent.name}</span>
                           </div>
@@ -1692,8 +1757,18 @@ export default function CustomersTab({
                 <div className="flex items-start justify-end shrink-0" onClick={(e) => e.stopPropagation()}>
                   <div className="flex items-center gap-1">
                     <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setImpersonatedCustomerId(cust.id);
+                      }}
+                      className="p-1.5 rounded-md bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 transition-colors cursor-pointer"
+                      title="Open Customer Panel (Admin Impersonation)"
+                    >
+                      <UserCheck className="w-4 h-4" />
+                    </button>
+                    <button
                       onClick={(e) => openEditModal(cust, e)}
-                      className="p-1.5 rounded-md hover:bg-[rgb(14,145,145)]/10 text-[rgb(14,145,145)] transition-colors cursor-pointer"
+                      className="p-1.5 rounded-md hover:bg-purple-600/10 text-purple-600 transition-colors cursor-pointer"
                       title="Modify Client Entity"
                     >
                       <Edit3 className="w-4 h-4" />
@@ -1714,7 +1789,7 @@ export default function CustomersTab({
                     </button>
                     <button
                       onClick={(e) => openEmailModal(cust, e)}
-                      className="p-1.5 rounded-md hover:bg-[rgb(14,145,145)]/10 text-[rgb(14,145,145)] transition-colors cursor-pointer"
+                      className="p-1.5 rounded-md hover:bg-purple-600/10 text-purple-600 transition-colors cursor-pointer"
                       title="Send Email to Customer"
                     >
                       <Mail className="w-4 h-4" />
@@ -1739,7 +1814,7 @@ export default function CustomersTab({
               )}
 
               {/* Click to open label */}
-              <div className="mt-4 pt-2 border-t dark:border-gray-800 border-slate-100 flex items-center justify-between text-[10px] font-bold text-[rgb(14,145,145)]">
+              <div className="mt-4 pt-2 border-t dark:border-gray-800 border-slate-100 flex items-center justify-between text-[10px] font-bold text-purple-600">
                 <span className="flex items-center gap-1">
                   <Activity className="w-3.5 h-3.5 text-emerald-500" />
                   <span>Licensed assets: {contracts.filter(c => c.customerId === cust.id).length} active</span>
@@ -1752,7 +1827,7 @@ export default function CustomersTab({
 
       {/* PAGINATION CONTROLS */}
       {filteredCustomers.length > 0 && (
-        <div className={`flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t ${isDark ? 'border-[#2D333D]' : 'border-slate-200'} text-xs`}>
+        <div className={`flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t ${isDark ? 'border-[rgb(30, 41, 59)]' : 'border-slate-200'} text-xs`}>
           <div className="text-slate-500 dark:text-gray-400 font-medium">
             Showing <span className="font-bold text-slate-800 dark:text-white">{(safeCurrentPage - 1) * itemsPerPage + 1}</span> to <span className="font-bold text-slate-800 dark:text-white">{Math.min(safeCurrentPage * itemsPerPage, filteredCustomers.length)}</span> of <span className="font-bold text-slate-800 dark:text-white">{filteredCustomers.length}</span> entries
           </div>
@@ -1764,9 +1839,9 @@ export default function CustomersTab({
               disabled={safeCurrentPage === 1}
               className={`p-2 px-3 rounded-lg border font-bold flex items-center gap-1.5 cursor-pointer transition-all ${
                 safeCurrentPage === 1
-                  ? 'opacity-40 cursor-not-allowed border-slate-200 text-slate-400 dark:border-[#2D333D]'
+                  ? 'opacity-40 cursor-not-allowed border-slate-200 text-slate-400 dark:border-[rgb(30, 41, 59)]'
                   : isDark 
-                    ? 'bg-[#1A1D23] border-[#2D333D] text-white hover:bg-slate-800' 
+                    ? 'bg-[#0f172a] border-[rgb(30, 41, 59)] text-white hover:bg-slate-800' 
                     : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
               }`}
               title="Previous Page"
@@ -1783,9 +1858,9 @@ export default function CustomersTab({
                   onClick={() => setCurrentPage(pg)}
                   className={`w-8 h-8 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                     pg === safeCurrentPage
-                      ? 'bg-[rgb(14,145,145)] text-white shadow-xs font-extrabold'
+                      ? 'bg-purple-600 text-white shadow-xs font-extrabold'
                       : isDark
-                        ? 'bg-[#1A1D23] border border-[#2D333D] text-gray-300 hover:bg-slate-800'
+                        ? 'bg-[#0f172a] border border-[rgb(30, 41, 59)] text-gray-300 hover:bg-slate-800'
                         : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
                   }`}
                 >
@@ -1800,9 +1875,9 @@ export default function CustomersTab({
               disabled={safeCurrentPage === totalPages}
               className={`p-2 px-3 rounded-lg border font-bold flex items-center gap-1.5 cursor-pointer transition-all ${
                 safeCurrentPage === totalPages
-                  ? 'opacity-40 cursor-not-allowed border-slate-200 text-slate-400 dark:border-[#2D333D]'
+                  ? 'opacity-40 cursor-not-allowed border-slate-200 text-slate-400 dark:border-[rgb(30, 41, 59)]'
                   : isDark 
-                    ? 'bg-[#1A1D23] border-[#2D333D] text-white hover:bg-slate-800' 
+                    ? 'bg-[#0f172a] border-[rgb(30, 41, 59)] text-white hover:bg-slate-800' 
                     : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
               }`}
               title="Next Page"
@@ -1818,7 +1893,7 @@ export default function CustomersTab({
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-xs" onClick={() => setIsModalOpen(false)}></div>
-          <div className={`relative w-full max-w-2xl rounded-2xl p-6 border shadow-2xl overflow-y-auto max-h-[90vh] ${isDark ? 'bg-[#1A1D23] border-[#2D333D] text-white' : 'bg-white border-slate-200 text-slate-800'}`}>
+          <div className={`relative w-full max-w-2xl rounded-2xl p-6 border shadow-2xl overflow-y-auto max-h-[90vh] ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)] text-white' : 'bg-white border-slate-200 text-slate-800'}`}>
             <div className="flex justify-between items-center mb-4">
               <h3 className="font-extrabold text-base">
                 {editingCustomer ? 'Modify Client Profile' : 'Onboard Enterprise Customer'}
@@ -1839,7 +1914,7 @@ export default function CustomersTab({
                     required
                     value={name} 
                     onChange={e => setName(e.target.value)}
-                    className={`w-full p-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50 border-slate-200'}`}
+                    className={`w-full p-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200'}`}
                   />
                 </div>
                 <div className="space-y-1">
@@ -1864,7 +1939,7 @@ export default function CustomersTab({
                     required
                     value={address} 
                     onChange={e => setAddress(e.target.value)}
-                    className={`w-full p-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50 border-slate-200'}`}
+                    className={`w-full p-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200'}`}
                   />
                 </div>
                 <div className="space-y-1">
@@ -1885,83 +1960,83 @@ export default function CustomersTab({
 
               {/* Contacts Grid */}
               <div className="border-t pt-4 dark:border-gray-800 border-slate-100">
-                <h4 className="font-bold text-[rgb(14,145,145)] mb-2 uppercase tracking-wide">Contacts Matrix</h4>
+                <h4 className="font-bold text-purple-600 mb-2 uppercase tracking-wide">Contacts Matrix</h4>
                 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {/* Primary Contact */}
                   <div className="space-y-2 p-3 rounded-lg border dark:border-gray-800 border-slate-100">
-                    <span className="font-bold block text-slate-500 border-b pb-1 dark:border-gray-800">Primary Technical</span>
+                    <span className="font-bold block text-slate-500 border-b pb-1 dark:border-gray-800">Primary Contact</span>
                     <div className="space-y-1">
                       <label className="block">Name</label>
                       <input 
                         type="text" required value={primaryContactName} onChange={e => setPrimaryContactName(e.target.value)}
-                        className={`w-full p-1 rounded border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50 border-slate-200'}`}
+                        className={`w-full p-1 rounded border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200'}`}
                       />
                     </div>
                     <div className="space-y-1">
                       <label className="block">Email</label>
                       <input 
                         type="email" required value={primaryContactEmail} onChange={e => setPrimaryContactEmail(e.target.value)}
-                        className={`w-full p-1 rounded border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50 border-slate-200'}`}
+                        className={`w-full p-1 rounded border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200'}`}
                       />
                     </div>
                     <div className="space-y-1">
                       <label className="block">Phone</label>
                       <input 
                         type="text" required value={primaryContactPhone} onChange={e => setPrimaryContactPhone(e.target.value)}
-                        className={`w-full p-1 rounded border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50 border-slate-200'}`}
+                        className={`w-full p-1 rounded border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200'}`}
                       />
                     </div>
                   </div>
 
                   {/* Billing Contact */}
                   <div className="space-y-2 p-3 rounded-lg border dark:border-gray-800 border-slate-100">
-                    <span className="font-bold block text-slate-500 border-b pb-1 dark:border-gray-800">Finance & Billing</span>
+                    <span className="font-bold block text-slate-500 border-b pb-1 dark:border-gray-800">Billing & Invoicing</span>
                     <div className="space-y-1">
                       <label className="block">Name</label>
                       <input 
                         type="text" required value={billingContactName} onChange={e => setBillingContactName(e.target.value)}
-                        className={`w-full p-1 rounded border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50 border-slate-200'}`}
+                        className={`w-full p-1 rounded border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200'}`}
                       />
                     </div>
                     <div className="space-y-1">
                       <label className="block">Email</label>
                       <input 
                         type="email" required value={billingContactEmail} onChange={e => setBillingContactEmail(e.target.value)}
-                        className={`w-full p-1 rounded border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50 border-slate-200'}`}
+                        className={`w-full p-1 rounded border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200'}`}
                       />
                     </div>
                     <div className="space-y-1">
                       <label className="block">Phone</label>
                       <input 
                         type="text" required value={billingContactPhone} onChange={e => setBillingContactPhone(e.target.value)}
-                        className={`w-full p-1 rounded border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50 border-slate-200'}`}
+                        className={`w-full p-1 rounded border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200'}`}
                       />
                     </div>
                   </div>
 
                   {/* Support Contact */}
                   <div className="space-y-2 p-3 rounded-lg border dark:border-gray-800 border-slate-100">
-                    <span className="font-bold block text-slate-500 border-b pb-1 dark:border-gray-800">Active SLA Support</span>
+                    <span className="font-bold block text-slate-500 border-b pb-1 dark:border-gray-800">Technical Liaison</span>
                     <div className="space-y-1">
                       <label className="block">Name</label>
                       <input 
                         type="text" required value={supportContactName} onChange={e => setSupportContactName(e.target.value)}
-                        className={`w-full p-1 rounded border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50 border-slate-200'}`}
+                        className={`w-full p-1 rounded border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200'}`}
                       />
                     </div>
                     <div className="space-y-1">
                       <label className="block">Email</label>
                       <input 
                         type="email" required value={supportContactEmail} onChange={e => setSupportContactEmail(e.target.value)}
-                        className={`w-full p-1 rounded border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50 border-slate-200'}`}
+                        className={`w-full p-1 rounded border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200'}`}
                       />
                     </div>
                     <div className="space-y-1">
                       <label className="block">Phone</label>
                       <input 
                         type="text" required value={supportContactPhone} onChange={e => setSupportContactPhone(e.target.value)}
-                        className={`w-full p-1 rounded border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50 border-slate-200'}`}
+                        className={`w-full p-1 rounded border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200'}`}
                       />
                     </div>
                   </div>
@@ -1974,7 +2049,7 @@ export default function CustomersTab({
                   value={notes} 
                   onChange={e => setNotes(e.target.value)}
                   rows={2}
-                  className={`w-full p-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50 border-slate-200'}`}
+                  className={`w-full p-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200'}`}
                 />
               </div>
 
@@ -1988,7 +2063,7 @@ export default function CustomersTab({
                 </button>
                 <button 
                   type="submit"
-                  className="px-4 py-2 bg-[rgb(14,145,145)] hover:bg-[rgb(12,125,125)] text-white rounded-lg font-bold cursor-pointer"
+                  className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-bold cursor-pointer"
                 >
                   {t.save}
                 </button>
@@ -2003,11 +2078,11 @@ export default function CustomersTab({
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-xs" onClick={() => { setIsEmailModalOpen(false); setEmailCustomer(null); }}></div>
           <div className={`relative w-full max-w-lg rounded-2xl p-6 border shadow-2xl transition-all ${
-            isDark ? 'bg-[#1A1D23] border-[#2D333D] text-white' : 'bg-white border-slate-200 text-slate-800'
+            isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)] text-white' : 'bg-white border-slate-200 text-slate-800'
           }`}>
             <div className="flex justify-between items-center mb-4 pb-3 border-b border-dashed dark:border-gray-800 border-slate-100">
               <h3 className="font-extrabold text-base flex items-center gap-2">
-                <Mail className="w-5 h-5 text-[rgb(14,145,145)]" />
+                <Mail className="w-5 h-5 text-purple-600" />
                 <span>Send Email Correspondence</span>
               </h3>
               <button 
@@ -2022,7 +2097,7 @@ export default function CustomersTab({
               {/* Recipient info */}
               <div className="space-y-1">
                 <label className="text-gray-400 text-[10px] uppercase font-bold block">To (Primary Contact Email)</label>
-                <div className={`w-full p-2.5 rounded-lg border flex items-center justify-between font-mono ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50 border-slate-200'}`}>
+                <div className={`w-full p-2.5 rounded-lg border flex items-center justify-between font-mono ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200'}`}>
                   <span className="font-bold">{emailCustomer.primaryContactEmail}</span>
                   <span className="text-[10px] opacity-75">({emailCustomer.primaryContactName})</span>
                 </div>
@@ -2036,7 +2111,7 @@ export default function CustomersTab({
                   required
                   value={emailSubject}
                   onChange={(e) => setEmailSubject(e.target.value)}
-                  className={`w-full p-2.5 rounded-lg border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50 border-slate-200'}`}
+                  className={`w-full p-2.5 rounded-lg border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200'}`}
                   placeholder="Enter email subject"
                 />
               </div>
@@ -2049,7 +2124,7 @@ export default function CustomersTab({
                   rows={6}
                   value={emailMessage}
                   onChange={(e) => setEmailMessage(e.target.value)}
-                  className={`w-full p-2.5 rounded-lg border outline-hidden font-sans resize-none ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50 border-slate-200'}`}
+                  className={`w-full p-2.5 rounded-lg border outline-hidden font-sans resize-none ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200'}`}
                   placeholder="Compose message..."
                 />
               </div>
@@ -2076,7 +2151,7 @@ export default function CustomersTab({
                         : 'border-slate-200 bg-white hover:bg-slate-50 text-slate-700'
                     }`}
                   >
-                    <Paperclip className="w-3.5 h-3.5 text-[rgb(14,145,145)]" />
+                    <Paperclip className="w-3.5 h-3.5 text-purple-600" />
                     <span>Attach File</span>
                   </label>
 
@@ -2109,7 +2184,7 @@ export default function CustomersTab({
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-[rgb(14,145,145)] hover:bg-[rgb(12,125,125)] text-white rounded-lg font-black flex items-center gap-1.5 cursor-pointer"
+                  className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-black flex items-center gap-1.5 cursor-pointer"
                 >
                   <Send className="w-3.5 h-3.5" />
                   <span>Send Email</span>

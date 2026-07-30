@@ -800,9 +800,9 @@ export default function LicensesTab({
   const renderContractFormContent = () => (
     <div className="space-y-6 text-xs font-medium">
       {/* SECTION 1: CONTRACT OVERVIEW */}
-      <div className={`p-4 sm:p-5 rounded-xl border ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50/80 border-slate-200'} space-y-4`}>
-        <div className="flex items-center gap-2 border-b pb-3 dark:border-[#2D333D] border-slate-200">
-          <FileText className="w-4 h-4 text-[rgb(14,145,145)] shrink-0" />
+      <div className={`p-4 sm:p-5 rounded-xl border ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50/80 border-slate-200'} space-y-4`}>
+        <div className="flex items-center gap-2 border-b pb-3 dark:border-[rgb(30, 41, 59)] border-slate-200">
+          <FileText className="w-4 h-4 text-purple-600 shrink-0" />
           <h4 className="font-bold text-xs sm:text-sm uppercase tracking-wider text-slate-900 dark:text-white">
             Contract Overview
           </h4>
@@ -817,7 +817,7 @@ export default function LicensesTab({
               type="text" 
               value={contractName}
               onChange={(e) => setContractName(e.target.value)}
-              className={`w-full px-3 py-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#1A1D23] border-[#2D333D] text-white' : 'bg-white border-slate-200'}`}
+              className={`w-full px-3 py-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)] text-white' : 'bg-white border-slate-200'}`}
               placeholder="e.g. FY27 Enterprise Software & Support License"
               required
             />
@@ -854,7 +854,7 @@ export default function LicensesTab({
                   setContractEndDate(calculateEndDate(e.target.value, 12));
                 }
               }}
-              className={`w-full px-3 py-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#1A1D23] border-[#2D333D] text-white' : 'bg-white border-slate-200'}`}
+              className={`w-full px-3 py-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)] text-white' : 'bg-white border-slate-200'}`}
               required
             />
           </div>
@@ -867,7 +867,7 @@ export default function LicensesTab({
               type="date" 
               value={contractEndDate}
               onChange={(e) => setContractEndDate(e.target.value)}
-              className={`w-full px-3 py-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#1A1D23] border-[#2D333D] text-white' : 'bg-white border-slate-200'}`}
+              className={`w-full px-3 py-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)] text-white' : 'bg-white border-slate-200'}`}
               required
             />
           </div>
@@ -880,7 +880,7 @@ export default function LicensesTab({
           <textarea 
             value={contractDesc}
             onChange={(e) => setContractDesc(e.target.value)}
-            className={`w-full px-3 py-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#1A1D23] border-[#2D333D] text-white' : 'bg-white border-slate-200'}`}
+            className={`w-full px-3 py-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)] text-white' : 'bg-white border-slate-200'}`}
             placeholder="Enter contract scope, legal terms, or agreement notes..."
             rows={2}
           />
@@ -888,10 +888,10 @@ export default function LicensesTab({
       </div>
 
       {/* SECTION 2: CUSTOMER DETAILS (READ-ONLY) */}
-      <div className={`p-4 sm:p-5 rounded-xl border ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50/80 border-slate-200'} space-y-4`}>
-        <div className="flex items-center justify-between border-b pb-3 dark:border-[#2D333D] border-slate-200">
+      <div className={`p-4 sm:p-5 rounded-xl border ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50/80 border-slate-200'} space-y-4`}>
+        <div className="flex items-center justify-between border-b pb-3 dark:border-[rgb(30, 41, 59)] border-slate-200">
           <div className="flex items-center gap-2">
-            <Building2 className="w-4 h-4 text-[rgb(14,145,145)] shrink-0" />
+            <Building2 className="w-4 h-4 text-purple-600 shrink-0" />
             <h4 className="font-bold text-xs sm:text-sm uppercase tracking-wider text-slate-900 dark:text-white">
               Customer Details <span className="text-[10px] font-normal text-slate-400">(Read-Only Loaded from Customer Record)</span>
             </h4>
@@ -910,8 +910,8 @@ export default function LicensesTab({
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {/* Primary Contact */}
-            <div className={`p-3.5 rounded-lg border ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200'} space-y-2`}>
-              <div className="font-extrabold text-[11px] text-[rgb(14,145,145)] uppercase tracking-wider flex items-center gap-1.5">
+            <div className={`p-3.5 rounded-lg border ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200'} space-y-2`}>
+              <div className="font-extrabold text-[11px] text-purple-600 uppercase tracking-wider flex items-center gap-1.5">
                 <User className="w-3.5 h-3.5" />
                 <span>Primary Contact</span>
               </div>
@@ -923,8 +923,8 @@ export default function LicensesTab({
             </div>
 
             {/* Billing Contact */}
-            <div className={`p-3.5 rounded-lg border ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200'} space-y-2`}>
-              <div className="font-extrabold text-[11px] text-[rgb(14,145,145)] uppercase tracking-wider flex items-center gap-1.5">
+            <div className={`p-3.5 rounded-lg border ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200'} space-y-2`}>
+              <div className="font-extrabold text-[11px] text-purple-600 uppercase tracking-wider flex items-center gap-1.5">
                 <DollarSign className="w-3.5 h-3.5" />
                 <span>Billing Contact</span>
               </div>
@@ -936,8 +936,8 @@ export default function LicensesTab({
             </div>
 
             {/* Technical Contact */}
-            <div className={`p-3.5 rounded-lg border ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200'} space-y-2`}>
-              <div className="font-extrabold text-[11px] text-[rgb(14,145,145)] uppercase tracking-wider flex items-center gap-1.5">
+            <div className={`p-3.5 rounded-lg border ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200'} space-y-2`}>
+              <div className="font-extrabold text-[11px] text-purple-600 uppercase tracking-wider flex items-center gap-1.5">
                 <ShieldCheck className="w-3.5 h-3.5" />
                 <span>Technical Contact</span>
               </div>
@@ -952,10 +952,10 @@ export default function LicensesTab({
       </div>
 
       {/* SECTION 3: PRODUCT DETAILS (1 OR MORE PRODUCTS) */}
-      <div className={`p-4 sm:p-5 rounded-xl border ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50/80 border-slate-200'} space-y-4`}>
-        <div className="flex items-center justify-between border-b pb-3 dark:border-[#2D333D] border-slate-200">
+      <div className={`p-4 sm:p-5 rounded-xl border ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50/80 border-slate-200'} space-y-4`}>
+        <div className="flex items-center justify-between border-b pb-3 dark:border-[rgb(30, 41, 59)] border-slate-200">
           <div className="flex items-center gap-2">
-            <Layers className="w-4 h-4 text-[rgb(14,145,145)] shrink-0" />
+            <Layers className="w-4 h-4 text-purple-600 shrink-0" />
             <h4 className="font-bold text-xs sm:text-sm uppercase tracking-wider text-slate-900 dark:text-white">
               Product Details & Contract Pricing
             </h4>
@@ -966,11 +966,11 @@ export default function LicensesTab({
         </div>
 
         {/* Configure Product Line Item Controls */}
-        <div className={`p-5 rounded-xl border shadow-xs ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200'} space-y-5`}>
+        <div className={`p-5 rounded-xl border shadow-xs ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200'} space-y-5`}>
           {/* Header Bar */}
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b pb-3 dark:border-[#2D333D] border-slate-200">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b pb-3 dark:border-[rgb(30, 41, 59)] border-slate-200">
             <div className="flex items-center gap-2">
-              <div className="p-1.5 rounded-lg bg-[rgb(14,145,145)]/10 text-[rgb(14,145,145)]">
+              <div className="p-1.5 rounded-lg bg-purple-600/10 text-purple-600">
                 <Layers className="w-4 h-4" />
               </div>
               <div>
@@ -983,9 +983,9 @@ export default function LicensesTab({
               </div>
             </div>
             
-            <div className="flex items-center gap-2 bg-slate-50 dark:bg-[#0F1115] px-3 py-1.5 rounded-lg border border-slate-200 dark:border-[#2D333D]">
+            <div className="flex items-center gap-2 bg-slate-50 dark:bg-[#020617] px-3 py-1.5 rounded-lg border border-slate-200 dark:border-[rgb(30, 41, 59)]">
               <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">Line Subtotal:</span>
-              <span className="text-xs font-mono font-bold text-[rgb(14,145,145)]">
+              <span className="text-xs font-mono font-bold text-purple-600">
                 ${(lineContractedPrice * lineUnits).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </span>
             </div>
@@ -995,7 +995,7 @@ export default function LicensesTab({
           <div className="space-y-4">
             {/* Group 1: Product & SKU Selection */}
             <div>
-              <div className="text-[10px] font-bold text-[rgb(14,145,145)] uppercase tracking-wider mb-2 flex items-center gap-1.5">
+              <div className="text-[10px] font-bold text-purple-600 uppercase tracking-wider mb-2 flex items-center gap-1.5">
                 <Package className="w-3.5 h-3.5" />
                 <span>Product & SKU Selection</span>
               </div>
@@ -1043,7 +1043,7 @@ export default function LicensesTab({
                       placeholder="Auto-captured ID"
                       className={`w-full px-3 py-2 rounded-lg border text-xs font-mono font-bold outline-hidden ${
                         isDark 
-                          ? 'bg-[#0F1115] border-[#2D333D] text-emerald-400 placeholder-slate-600' 
+                          ? 'bg-[#020617] border-[rgb(30, 41, 59)] text-emerald-400 placeholder-slate-600' 
                           : 'bg-slate-100 border-slate-200 text-emerald-700 placeholder-slate-400'
                       }`}
                     />
@@ -1057,7 +1057,7 @@ export default function LicensesTab({
               <>
                 {/* Group 2: Pricing & Volume */}
                 <div>
-                  <div className="text-[10px] font-bold text-[rgb(14,145,145)] uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                  <div className="text-[10px] font-bold text-purple-600 uppercase tracking-wider mb-2 flex items-center gap-1.5">
                     <DollarSign className="w-3.5 h-3.5" />
                     <span>Pricing & License Units</span>
                   </div>
@@ -1072,7 +1072,7 @@ export default function LicensesTab({
                         readOnly
                         className={`w-full px-3 py-2 rounded-lg border text-xs font-mono font-bold outline-hidden ${
                           isDark 
-                            ? 'bg-[#0F1115] border-[#2D333D] text-slate-400' 
+                            ? 'bg-[#020617] border-[rgb(30, 41, 59)] text-slate-400' 
                             : 'bg-slate-100 border-slate-200 text-slate-600'
                         }`}
                       />
@@ -1086,9 +1086,9 @@ export default function LicensesTab({
                         type="number"
                         value={lineContractedPrice}
                         onChange={(e) => setLineContractedPrice(Number(e.target.value))}
-                        className={`w-full px-3 py-2 rounded-lg border text-xs font-mono font-bold outline-hidden focus:ring-2 focus:ring-[rgb(14,145,145)]/40 ${
+                        className={`w-full px-3 py-2 rounded-lg border text-xs font-mono font-bold outline-hidden focus:ring-2 focus:ring-purple-600/40 ${
                           isDark 
-                            ? 'bg-[#0F1115] border-[#2D333D] text-white' 
+                            ? 'bg-[#020617] border-[rgb(30, 41, 59)] text-white' 
                             : 'bg-white border-slate-300 text-slate-900'
                         }`}
                       />
@@ -1103,9 +1103,9 @@ export default function LicensesTab({
                         value={lineUnits}
                         onChange={(e) => setLineUnits(Number(e.target.value))}
                         min={1}
-                        className={`w-full px-3 py-2 rounded-lg border text-xs font-bold outline-hidden focus:ring-2 focus:ring-[rgb(14,145,145)]/40 ${
+                        className={`w-full px-3 py-2 rounded-lg border text-xs font-bold outline-hidden focus:ring-2 focus:ring-purple-600/40 ${
                           isDark 
-                            ? 'bg-[#0F1115] border-[#2D333D] text-white' 
+                            ? 'bg-[#020617] border-[rgb(30, 41, 59)] text-white' 
                             : 'bg-white border-slate-300 text-slate-900'
                         }`}
                       />
@@ -1115,7 +1115,7 @@ export default function LicensesTab({
 
                 {/* Group 3: Duration & Term */}
                 <div>
-                  <div className="text-[10px] font-bold text-[rgb(14,145,145)] uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                  <div className="text-[10px] font-bold text-purple-600 uppercase tracking-wider mb-2 flex items-center gap-1.5">
                     <Calendar className="w-3.5 h-3.5" />
                     <span>Contract Duration & Validity</span>
                   </div>
@@ -1129,9 +1129,9 @@ export default function LicensesTab({
                         value={lineStartDate}
                         max={lineEndDate || undefined}
                         onChange={(e) => handleLineStartDateChange(e.target.value)}
-                        className={`w-full px-3 py-2 rounded-lg border text-xs outline-hidden focus:ring-2 focus:ring-[rgb(14,145,145)]/40 ${
+                        className={`w-full px-3 py-2 rounded-lg border text-xs outline-hidden focus:ring-2 focus:ring-purple-600/40 ${
                           isDark 
-                            ? 'bg-[#0F1115] border-[#2D333D] text-white' 
+                            ? 'bg-[#020617] border-[rgb(30, 41, 59)] text-white' 
                             : 'bg-white border-slate-300 text-slate-900'
                         }`}
                       />
@@ -1146,9 +1146,9 @@ export default function LicensesTab({
                         value={lineEndDate}
                         min={minEndDate}
                         onChange={(e) => handleLineEndDateChange(e.target.value)}
-                        className={`w-full px-3 py-2 rounded-lg border text-xs outline-hidden focus:ring-2 focus:ring-[rgb(14,145,145)]/40 ${
+                        className={`w-full px-3 py-2 rounded-lg border text-xs outline-hidden focus:ring-2 focus:ring-purple-600/40 ${
                           isDark 
-                            ? 'bg-[#0F1115] border-[#2D333D] text-white' 
+                            ? 'bg-[#020617] border-[rgb(30, 41, 59)] text-white' 
                             : 'bg-white border-slate-300 text-slate-900'
                         }`}
                       />
@@ -1165,7 +1165,7 @@ export default function LicensesTab({
                         placeholder="Auto-calculated"
                         className={`w-full px-3 py-2 rounded-lg border text-xs font-bold outline-hidden ${
                           isDark 
-                            ? 'bg-[#0F1115] border-[#2D333D] text-emerald-400' 
+                            ? 'bg-[#020617] border-[rgb(30, 41, 59)] text-emerald-400' 
                             : 'bg-slate-100 border-slate-200 text-emerald-700'
                         }`}
                       />
@@ -1174,7 +1174,7 @@ export default function LicensesTab({
                 </div>
 
                 {/* Save Action Footer */}
-                <div className="flex items-center justify-between pt-3 border-t dark:border-[#2D333D] border-slate-200">
+                <div className="flex items-center justify-between pt-3 border-t dark:border-[rgb(30, 41, 59)] border-slate-200">
                   <div className="text-xs text-slate-500 dark:text-gray-400 flex items-center gap-1.5">
                     <span>Calculated Line Subtotal:</span>
                     <span className="font-mono font-bold text-slate-900 dark:text-white">
@@ -1185,7 +1185,7 @@ export default function LicensesTab({
                   <button
                     type="button"
                     onClick={handleAddLineItem}
-                    className="px-4 py-2 bg-[rgb(14,145,145)] hover:bg-[rgb(12,125,125)] text-white font-bold text-xs rounded-lg flex items-center gap-2 cursor-pointer shadow-xs hover:shadow-md transition-all active:scale-[0.98]"
+                    className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs rounded-lg flex items-center gap-2 cursor-pointer shadow-xs hover:shadow-md transition-all active:scale-[0.98]"
                   >
                     <Plus className="w-4 h-4" />
                     <span>Add Product to Contract</span>
@@ -1202,9 +1202,9 @@ export default function LicensesTab({
             No products added to contract line items yet. Configure above and click "Add Product to Contract".
           </div>
         ) : (
-          <div className="overflow-x-auto border rounded-xl dark:border-[#2D333D]">
+          <div className="overflow-x-auto border rounded-xl dark:border-[rgb(30, 41, 59)]">
             <table className="w-full text-left text-xs">
-              <thead className={`font-bold uppercase tracking-wider ${isDark ? 'bg-[#1A1D23] text-gray-400 border-b border-[#2D333D]' : 'bg-slate-100 text-slate-600 border-b border-slate-200'}`}>
+              <thead className={`font-bold uppercase tracking-wider ${isDark ? 'bg-[#0f172a] text-gray-400 border-b border-[rgb(30, 41, 59)]' : 'bg-slate-100 text-slate-600 border-b border-slate-200'}`}>
                 <tr>
                   <th className="p-3">Product ID</th>
                   <th className="p-3">Product Name & SKU</th>
@@ -1217,7 +1217,7 @@ export default function LicensesTab({
                   <th className="p-3 text-center">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y dark:divide-[#2D333D] divide-slate-200 font-medium">
+              <tbody className="divide-y dark:divide-[rgb(30, 41, 59)] divide-slate-200 font-medium">
                 {lineItems.map((item, idx) => {
                   const subtotal = item.contractedPrice * item.units;
                   return (
@@ -1244,7 +1244,7 @@ export default function LicensesTab({
                       <td className="p-3 text-center font-bold">
                         {item.units}
                       </td>
-                      <td className="p-3 text-right font-mono font-extrabold text-[rgb(14,145,145)]">
+                      <td className="p-3 text-right font-mono font-extrabold text-purple-600">
                         ${subtotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                       </td>
                       <td className="p-3 text-center">
@@ -1277,9 +1277,9 @@ export default function LicensesTab({
       </div>
 
       {/* SECTION 4: ADDITIONAL CONTRACT NOTES & ATTACHMENTS */}
-      <div className={`p-4 sm:p-5 rounded-xl border ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50/80 border-slate-200'} space-y-4`}>
-        <div className="flex items-center gap-2 border-b pb-3 dark:border-[#2D333D] border-slate-200">
-          <FileText className="w-4 h-4 text-[rgb(14,145,145)] shrink-0" />
+      <div className={`p-4 sm:p-5 rounded-xl border ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50/80 border-slate-200'} space-y-4`}>
+        <div className="flex items-center gap-2 border-b pb-3 dark:border-[rgb(30, 41, 59)] border-slate-200">
+          <FileText className="w-4 h-4 text-purple-600 shrink-0" />
           <h4 className="font-bold text-xs sm:text-sm uppercase tracking-wider text-slate-900 dark:text-white">
             Additional Contract Notes & File Attachments
           </h4>
@@ -1292,7 +1292,7 @@ export default function LicensesTab({
           <textarea 
             value={contractNotes}
             onChange={(e) => setContractNotes(e.target.value)}
-            className={`w-full px-3 py-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#1A1D23] border-[#2D333D] text-white' : 'bg-white border-slate-200'}`}
+            className={`w-full px-3 py-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)] text-white' : 'bg-white border-slate-200'}`}
             placeholder="Add any additional remarks, custom covenants, payment milestone schedules, or special notes..."
             rows={3}
           />
@@ -1319,10 +1319,10 @@ export default function LicensesTab({
               {contractAttachments.map(att => (
                 <div 
                   key={att.id}
-                  className={`flex items-center justify-between p-3 rounded-lg border ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200'}`}
+                  className={`flex items-center justify-between p-3 rounded-lg border ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200'}`}
                 >
                   <div className="flex items-center gap-2.5">
-                    <FileText className="w-4 h-4 text-[rgb(14,145,145)] shrink-0" />
+                    <FileText className="w-4 h-4 text-purple-600 shrink-0" />
                     <div>
                       <div className="font-bold text-slate-900 dark:text-white text-xs">{att.fileName}</div>
                       <div className="text-[10px] text-slate-400 font-mono">{att.fileSize} • Uploaded {att.uploadDate}</div>
@@ -1434,7 +1434,7 @@ export default function LicensesTab({
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
           <h2 className="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
-            <FileText className="w-5 h-5 text-[rgb(14,145,145)]" />
+            <FileText className="w-5 h-5 text-purple-600" />
             <span>Licensing Hub</span>
           </h2>
           <p className="text-xs text-slate-500 dark:text-gray-400 mt-1 font-medium">
@@ -1446,7 +1446,7 @@ export default function LicensesTab({
           {activeSubSection === 'contracts' && !selectedContractId && (
             <button
               onClick={handleOpenAddContract}
-              className="px-4 py-2 bg-[rgb(14,145,145)] hover:bg-[rgb(12,125,125)] text-white rounded-lg text-xs font-bold flex items-center gap-2 shadow-md shadow-[rgb(14,145,145)]/10 transition-all cursor-pointer shrink-0 animate-fade-in"
+              className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-xs font-bold flex items-center gap-2 shadow-md shadow-purple-600/10 transition-all cursor-pointer shrink-0 animate-fade-in"
             >
               <Plus className="w-4 h-4" />
               <span>Create New Contract</span>
@@ -1456,7 +1456,7 @@ export default function LicensesTab({
           {activeSubSection === 'mappings' && (
             <button
               onClick={handleOpenAddMappingModal}
-              className="px-4 py-2 bg-[rgb(14,145,145)] hover:bg-[rgb(12,125,125)] text-white rounded-lg text-xs font-bold flex items-center gap-2 shadow-md shadow-[rgb(14,145,145)]/10 transition-all cursor-pointer shrink-0 animate-fade-in"
+              className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-xs font-bold flex items-center gap-2 shadow-md shadow-purple-600/10 transition-all cursor-pointer shrink-0 animate-fade-in"
             >
               <Plus className="w-4 h-4" />
               <span>Associate Product to Customer</span>
@@ -1466,7 +1466,7 @@ export default function LicensesTab({
       </div>
 
       {/* SUB-SECTION TAB NAVIGATION */}
-      <div className="flex border-b border-slate-200 dark:border-[#2D333D] gap-1 overflow-x-auto pb-px">
+      <div className="flex border-b border-slate-200 dark:border-[rgb(30, 41, 59)] gap-1 overflow-x-auto pb-px">
         <button
           onClick={() => {
             setActiveSubSection('contracts');
@@ -1476,7 +1476,7 @@ export default function LicensesTab({
           }}
           className={`px-4 py-2.5 text-xs font-bold border-b-2 transition-all cursor-pointer flex items-center gap-2 shrink-0 ${
             activeSubSection === 'contracts'
-              ? 'border-[rgb(14,145,145)] text-[rgb(14,145,145)] bg-slate-50 dark:bg-slate-900/40 rounded-t-lg'
+              ? 'border-purple-600 text-purple-600 bg-slate-50 dark:bg-slate-900/40 rounded-t-lg'
               : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-gray-400 dark:hover:text-white'
           }`}
         >
@@ -1491,7 +1491,7 @@ export default function LicensesTab({
           }}
           className={`px-4 py-2.5 text-xs font-bold border-b-2 transition-all cursor-pointer flex items-center gap-2 shrink-0 ${
             activeSubSection === 'mappings'
-              ? 'border-[rgb(14,145,145)] text-[rgb(14,145,145)] bg-slate-50 dark:bg-slate-900/40 rounded-t-lg'
+              ? 'border-purple-600 text-purple-600 bg-slate-50 dark:bg-slate-900/40 rounded-t-lg'
               : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-gray-400 dark:hover:text-white'
           }`}
         >
@@ -1530,7 +1530,7 @@ export default function LicensesTab({
             />
           ) : selectedContractId ? (
             /* DETAILED VIEW CAPABILITY (DOCK OR OVERLAY LAYOUT) */
-            <div className={`p-6 rounded-2xl border transition-all duration-300 ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200 shadow-md'}`}>
+            <div className={`p-6 rounded-2xl border transition-all duration-300 ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200 shadow-md'}`}>
               
               {/* Back button header */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b dark:border-gray-800 border-slate-100 mb-6">
@@ -1594,7 +1594,7 @@ export default function LicensesTab({
                     </button>
                     <button 
                       type="submit" 
-                      className="px-6 py-2.5 bg-[rgb(14,145,145)] hover:bg-[rgb(12,125,125)] text-white rounded-lg cursor-pointer font-extrabold shadow-md transition-all"
+                      className="px-6 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg cursor-pointer font-extrabold shadow-md transition-all"
                     >
                       Save Contract Modifications
                     </button>
@@ -1630,7 +1630,7 @@ export default function LicensesTab({
                       <div className="flex flex-col md:flex-row justify-between md:items-center gap-4 bg-slate-50 dark:bg-slate-900/60 p-5 rounded-xl border dark:border-gray-800 border-slate-100">
                         <div>
                           <h3 className="text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
-                            <FileText className="w-5 h-5 text-[rgb(14,145,145)]" />
+                            <FileText className="w-5 h-5 text-purple-600" />
                             <span>{selCon.name}</span>
                           </h3>
                           <div className="flex items-center gap-3 text-xs text-gray-400 font-mono mt-1">
@@ -1652,31 +1652,31 @@ export default function LicensesTab({
 
                       {/* Customer Contact Details Card */}
                       {cust && (
-                        <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50/80 border-slate-200'} space-y-3`}>
-                          <div className="flex items-center gap-2 border-b pb-2 dark:border-[#2D333D] border-slate-200">
-                            <Building2 className="w-4 h-4 text-[rgb(14,145,145)]" />
+                        <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50/80 border-slate-200'} space-y-3`}>
+                          <div className="flex items-center gap-2 border-b pb-2 dark:border-[rgb(30, 41, 59)] border-slate-200">
+                            <Building2 className="w-4 h-4 text-purple-600" />
                             <h4 className="font-bold text-xs uppercase tracking-wider text-slate-900 dark:text-white">
                               Customer Contact Details ({cust.name})
                             </h4>
                           </div>
 
                           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                            <div className={`p-3 rounded-lg border ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200'}`}>
-                              <div className="font-bold text-[10px] text-[rgb(14,145,145)] uppercase mb-1">Primary Contact</div>
+                            <div className={`p-3 rounded-lg border ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200'}`}>
+                              <div className="font-bold text-[10px] text-purple-600 uppercase mb-1">Primary Contact</div>
                               <div className="font-bold text-slate-900 dark:text-white">{cust.primaryContactName || 'N/A'}</div>
                               <div className="text-slate-400 text-[11px] font-mono">{cust.primaryContactPhone || 'N/A'}</div>
                               <div className="text-slate-400 text-[11px] font-mono">{cust.primaryContactEmail || 'N/A'}</div>
                             </div>
 
-                            <div className={`p-3 rounded-lg border ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200'}`}>
-                              <div className="font-bold text-[10px] text-[rgb(14,145,145)] uppercase mb-1">Billing Contact</div>
+                            <div className={`p-3 rounded-lg border ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200'}`}>
+                              <div className="font-bold text-[10px] text-purple-600 uppercase mb-1">Billing Contact</div>
                               <div className="font-bold text-slate-900 dark:text-white">{cust.billingContactName || 'N/A'}</div>
                               <div className="text-slate-400 text-[11px] font-mono">{cust.billingContactPhone || 'N/A'}</div>
                               <div className="text-slate-400 text-[11px] font-mono">{cust.billingContactEmail || 'N/A'}</div>
                             </div>
 
-                            <div className={`p-3 rounded-lg border ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200'}`}>
-                              <div className="font-bold text-[10px] text-[rgb(14,145,145)] uppercase mb-1">Technical Contact</div>
+                            <div className={`p-3 rounded-lg border ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200'}`}>
+                              <div className="font-bold text-[10px] text-purple-600 uppercase mb-1">Technical Contact</div>
                               <div className="font-bold text-slate-900 dark:text-white">{cust.supportContactName || 'N/A'}</div>
                               <div className="text-slate-400 text-[11px] font-mono">{cust.supportContactPhone || 'N/A'}</div>
                               <div className="text-slate-400 text-[11px] font-mono">{cust.supportContactEmail || 'N/A'}</div>
@@ -1686,17 +1686,17 @@ export default function LicensesTab({
                       )}
 
                       {/* Products Line Items Table */}
-                      <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50/80 border-slate-200'} space-y-3`}>
-                        <div className="flex items-center gap-2 border-b pb-2 dark:border-[#2D333D] border-slate-200">
-                          <Layers className="w-4 h-4 text-[rgb(14,145,145)]" />
+                      <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50/80 border-slate-200'} space-y-3`}>
+                        <div className="flex items-center gap-2 border-b pb-2 dark:border-[rgb(30, 41, 59)] border-slate-200">
+                          <Layers className="w-4 h-4 text-purple-600" />
                           <h4 className="font-bold text-xs uppercase tracking-wider text-slate-900 dark:text-white">
                             Licensed Products & Contract Pricing ({items.length} Product Line Items)
                           </h4>
                         </div>
 
-                        <div className="overflow-x-auto border rounded-xl dark:border-[#2D333D]">
+                        <div className="overflow-x-auto border rounded-xl dark:border-[rgb(30, 41, 59)]">
                           <table className="w-full text-left text-xs">
-                            <thead className={`font-bold uppercase tracking-wider ${isDark ? 'bg-[#1A1D23] text-gray-400 border-b border-[#2D333D]' : 'bg-slate-100 text-slate-600 border-b border-slate-200'}`}>
+                            <thead className={`font-bold uppercase tracking-wider ${isDark ? 'bg-[#0f172a] text-gray-400 border-b border-[rgb(30, 41, 59)]' : 'bg-slate-100 text-slate-600 border-b border-slate-200'}`}>
                               <tr>
                                 <th className="p-3">Product Name & SKU</th>
                                 <th className="p-3">License Period</th>
@@ -1707,7 +1707,7 @@ export default function LicensesTab({
                                 <th className="p-3 text-right">Subtotal</th>
                               </tr>
                             </thead>
-                            <tbody className="divide-y dark:divide-[#2D333D] divide-slate-200 font-medium">
+                            <tbody className="divide-y dark:divide-[rgb(30, 41, 59)] divide-slate-200 font-medium">
                               {items.map((it, i) => (
                                 <tr key={it.id || i} className={isDark ? 'hover:bg-slate-900/50' : 'hover:bg-slate-50'}>
                                   <td className="p-3">
@@ -1719,7 +1719,7 @@ export default function LicensesTab({
                                   <td className="p-3 text-right font-mono text-slate-400">${it.defaultPrice.toFixed(2)}</td>
                                   <td className="p-3 text-right font-mono font-bold text-slate-900 dark:text-white">${it.contractedPrice.toFixed(2)}</td>
                                   <td className="p-3 text-center font-bold">{it.units}</td>
-                                  <td className="p-3 text-right font-mono font-extrabold text-[rgb(14,145,145)]">
+                                  <td className="p-3 text-right font-mono font-extrabold text-purple-600">
                                     ${(it.contractedPrice * it.units).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                                   </td>
                                 </tr>
@@ -1731,23 +1731,23 @@ export default function LicensesTab({
 
                       {/* Notes and Attachments */}
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50/80 border-slate-200'} space-y-2`}>
+                        <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50/80 border-slate-200'} space-y-2`}>
                           <h4 className="font-bold text-xs uppercase tracking-wider text-slate-400">Contract Scope & Notes</h4>
                           <p className="text-xs text-slate-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap">
                             {selCon.notes || selCon.description || 'No notes specified.'}
                           </p>
                         </div>
 
-                        <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50/80 border-slate-200'} space-y-2`}>
+                        <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50/80 border-slate-200'} space-y-2`}>
                           <h4 className="font-bold text-xs uppercase tracking-wider text-slate-400">Attached Documents</h4>
                           {(!selCon.attachments || selCon.attachments.length === 0) ? (
                             <p className="text-xs text-slate-400 italic">No document attachments uploaded.</p>
                           ) : (
                             <div className="space-y-2">
                               {selCon.attachments.map(att => (
-                                <div key={att.id} className={`flex items-center justify-between p-2.5 rounded-lg border ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200'}`}>
+                                <div key={att.id} className={`flex items-center justify-between p-2.5 rounded-lg border ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200'}`}>
                                   <div className="flex items-center gap-2">
-                                    <FileText className="w-4 h-4 text-[rgb(14,145,145)]" />
+                                    <FileText className="w-4 h-4 text-purple-600" />
                                     <div>
                                       <div className="font-bold text-slate-900 dark:text-white text-xs">{att.fileName}</div>
                                       <div className="text-[10px] text-slate-400 font-mono">{att.fileSize} • {att.uploadDate}</div>
@@ -1776,7 +1776,7 @@ export default function LicensesTab({
             <div className="space-y-6">
               
               {/* ADVANCED FILTER BAR */}
-              <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200'} shadow-2xs space-y-4`}>
+              <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200'} shadow-2xs space-y-4`}>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-xs font-semibold">
                   
                   {/* Status Selection */}
@@ -1834,8 +1834,8 @@ export default function LicensesTab({
                         onChange={(e) => setContractSearchQuery(e.target.value)}
                         className={`w-full pl-9 pr-4 py-2 text-xs rounded-lg border outline-hidden transition-all ${
                           isDark 
-                            ? 'bg-[#0F1115] border-[#2D333D] text-white focus:border-[rgb(14,145,145)]' 
-                            : 'bg-slate-50 border-slate-200 text-slate-800 focus:border-[rgb(14,145,145)]'
+                            ? 'bg-[#020617] border-[rgb(30, 41, 59)] text-white focus:border-purple-600' 
+                            : 'bg-slate-50 border-slate-200 text-slate-800 focus:border-purple-600'
                         }`}
                         placeholder="Search customer, title, SKU..."
                       />
@@ -1855,7 +1855,7 @@ export default function LicensesTab({
                       onClick={() => setContractViewMode('table')}
                       className={`p-1.5 rounded-md transition-all cursor-pointer ${
                         contractViewMode === 'table'
-                          ? 'bg-[rgb(14,145,145)] text-white shadow-xs'
+                          ? 'bg-purple-600 text-white shadow-xs'
                           : 'text-slate-400 hover:text-slate-600 dark:hover:text-white'
                       }`}
                       title="Table Layout View"
@@ -1866,7 +1866,7 @@ export default function LicensesTab({
                       onClick={() => setContractViewMode('card')}
                       className={`p-1.5 rounded-md transition-all cursor-pointer ${
                         contractViewMode === 'card'
-                          ? 'bg-[rgb(14,145,145)] text-white shadow-xs'
+                          ? 'bg-purple-600 text-white shadow-xs'
                           : 'text-slate-400 hover:text-slate-600 dark:hover:text-white'
                       }`}
                       title="Grid Cards View"
@@ -1883,7 +1883,7 @@ export default function LicensesTab({
                   onClick={() => setActiveDetailView('active-contracts')}
                   className={`p-4 rounded-xl border transition-all duration-300 cursor-pointer group shadow-2xs ${
                     isDark 
-                      ? 'bg-[#1A1D23] border-[#2D333D] hover:border-emerald-500 hover:bg-[#1E2530]' 
+                      ? 'bg-[#0f172a] border-[rgb(30, 41, 59)] hover:border-emerald-500 hover:bg-[#1E2530]' 
                       : 'bg-white border-slate-200 hover:border-emerald-500 hover:shadow-md'
                   }`}
                   title="Click to open Active Contract Agreements details page"
@@ -1902,13 +1902,13 @@ export default function LicensesTab({
                   onClick={() => setActiveDetailView('contracted-revenue')}
                   className={`p-4 rounded-xl border transition-all duration-300 cursor-pointer group shadow-2xs ${
                     isDark 
-                      ? 'bg-[#1A1D23] border-[#2D333D] hover:border-[rgb(14,145,145)] hover:bg-[#1E2530]' 
-                      : 'bg-white border-slate-200 hover:border-[rgb(14,145,145)] hover:shadow-md'
+                      ? 'bg-[#0f172a] border-[rgb(30, 41, 59)] hover:border-purple-600 hover:bg-[#1E2530]' 
+                      : 'bg-white border-slate-200 hover:border-purple-600 hover:shadow-md'
                   }`}
                   title="Click to open Total Contracted Revenue details page"
                 >
-                  <p className="text-[10px] uppercase font-mono font-bold text-slate-400 group-hover:text-[rgb(14,145,145)] transition-colors">Total Contracted Revenue</p>
-                  <p className="text-2xl font-black mt-1 text-[rgb(14,145,145)]">
+                  <p className="text-[10px] uppercase font-mono font-bold text-slate-400 group-hover:text-purple-600 transition-colors">Total Contracted Revenue</p>
+                  <p className="text-2xl font-black mt-1 text-purple-600">
                     ${contracts.reduce((sum, c) => sum + (c.unitPrice * c.purchasedUnits * c.termMonths), 0).toLocaleString()}
                   </p>
                   <div className="text-[9px] text-teal-600 dark:text-teal-400 font-bold mt-2 flex items-center gap-1 group-hover:underline">
@@ -1917,7 +1917,7 @@ export default function LicensesTab({
                   </div>
                 </div>
 
-                <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200'} shadow-2xs`}>
+                <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200'} shadow-2xs`}>
                   <p className="text-[10px] uppercase font-mono font-bold text-slate-400">Total Seats Bound</p>
                   <p className="text-2xl font-black mt-1 text-indigo-500">
                     {contracts.reduce((sum, c) => sum + c.purchasedUnits, 0).toLocaleString()} Seats
@@ -1930,7 +1930,7 @@ export default function LicensesTab({
 
               {/* BULK ACTION BAR WHEN ITEMS CHECKED */}
               {selectedContractIds.length > 0 && (
-                <div className="flex items-center justify-between p-3 px-4 bg-[rgb(14,145,145)]/10 border border-[rgb(14,145,145)]/30 rounded-xl text-xs font-bold text-[rgb(14,145,145)]">
+                <div className="flex items-center justify-between p-3 px-4 bg-purple-600/10 border border-purple-600/30 rounded-xl text-xs font-bold text-purple-600">
                   <div className="flex items-center gap-2">
                     <CheckCircle className="w-4 h-4" />
                     <span>{selectedContractIds.length} customer contract(s) selected</span>
@@ -1961,17 +1961,17 @@ export default function LicensesTab({
               {/* TABLE OR CARD RENDERING FOR CONTRACTS */}
               {contractViewMode === 'table' ? (
                 /* 1. TABLE LAYOUT */
-                <div className={`border rounded-xl overflow-hidden shadow-2xs ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200'}`}>
+                <div className={`border rounded-xl overflow-hidden shadow-2xs ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200'}`}>
                   <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse text-xs">
                       <thead>
-                        <tr className={`border-b text-[10px] uppercase font-mono tracking-wider font-extrabold ${isDark ? 'bg-[#0F1115]/60 border-[#2D333D] text-gray-400' : 'bg-slate-50/70 border-slate-100 text-slate-500'}`}>
+                        <tr className={`border-b text-[10px] uppercase font-mono tracking-wider font-extrabold ${isDark ? 'bg-[#020617]/60 border-[rgb(30, 41, 59)] text-gray-400' : 'bg-slate-50/70 border-slate-100 text-slate-500'}`}>
                           <th className="px-3 py-3.5 text-center w-10">
                             <input 
                               type="checkbox" 
                               checked={isAllOnPageSelected}
                               onChange={handleToggleSelectAllOnPage}
-                              className="w-4 h-4 rounded border-slate-300 text-[rgb(14,145,145)] focus:ring-[rgb(14,145,145)] cursor-pointer"
+                              className="w-4 h-4 rounded border-slate-300 text-purple-600 focus:ring-purple-600 cursor-pointer"
                               title="Select all on current page"
                             />
                           </th>
@@ -1987,7 +1987,7 @@ export default function LicensesTab({
                           <th className="px-5 py-3.5 text-right">Actions</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-slate-100 dark:divide-[#2D333D]">
+                      <tbody className="divide-y divide-slate-100 dark:divide-[rgb(30, 41, 59)]">
                         {filteredContracts.length === 0 ? (
                           <tr>
                             <td colSpan={11} className="px-5 py-12 text-center text-gray-400 italic font-medium">
@@ -2009,7 +2009,7 @@ export default function LicensesTab({
                                     type="checkbox" 
                                     checked={selectedContractIds.includes(con.id)}
                                     onChange={() => handleToggleSelectContract(con.id)}
-                                    className="w-4 h-4 rounded border-slate-300 text-[rgb(14,145,145)] focus:ring-[rgb(14,145,145)] cursor-pointer"
+                                    className="w-4 h-4 rounded border-slate-300 text-purple-600 focus:ring-purple-600 cursor-pointer"
                                   />
                                 </td>
                                 <td className="px-3 py-4 text-center font-mono font-bold text-slate-500 dark:text-slate-400">
@@ -2065,7 +2065,7 @@ export default function LicensesTab({
                                         setContractEndDate(con.endDate);
                                         setIsDetailEditing(false);
                                       }}
-                                      className="px-2.5 py-1 text-slate-600 dark:text-gray-300 hover:text-white hover:bg-[rgb(14,145,145)] bg-slate-100 dark:bg-slate-800 rounded-md font-bold transition-all cursor-pointer"
+                                      className="px-2.5 py-1 text-slate-600 dark:text-gray-300 hover:text-white hover:bg-purple-600 bg-slate-100 dark:bg-slate-800 rounded-md font-bold transition-all cursor-pointer"
                                     >
                                       Open Details
                                     </button>
@@ -2084,7 +2084,7 @@ export default function LicensesTab({
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {filteredContracts.length === 0 ? (
                     <div className={`col-span-2 p-12 text-center border rounded-xl ${
-                      isDark ? 'border-[#2D333D] text-gray-400' : 'border-slate-200 text-slate-400 shadow-3xs'
+                      isDark ? 'border-[rgb(30, 41, 59)] text-gray-400' : 'border-slate-200 text-slate-400 shadow-3xs'
                     }`}>
                       <FileText className="w-8 h-8 mx-auto mb-2 text-slate-300 dark:text-slate-700" />
                       <span>No contract agreements matched your custom criteria.</span>
@@ -2115,8 +2115,8 @@ export default function LicensesTab({
                           }}
                           className={`group p-5 rounded-xl border transition-all duration-300 cursor-pointer hover:scale-101 hover:shadow-lg ${
                             isDark 
-                              ? 'bg-[#1A1D23] border-[#2D333D] hover:border-[rgb(14,145,145)]/50' 
-                              : 'bg-white border-slate-200 shadow-2xs hover:border-[rgb(14,145,145)]'
+                              ? 'bg-[#0f172a] border-[rgb(30, 41, 59)] hover:border-purple-600/50' 
+                              : 'bg-white border-slate-200 shadow-2xs hover:border-purple-600'
                           }`}
                         >
                           <div className="flex justify-between items-start gap-4">
@@ -2129,7 +2129,7 @@ export default function LicensesTab({
                                     e.stopPropagation();
                                     handleToggleSelectContract(con.id);
                                   }}
-                                  className="w-4 h-4 rounded border-slate-300 text-[rgb(14,145,145)] focus:ring-[rgb(14,145,145)] cursor-pointer"
+                                  className="w-4 h-4 rounded border-slate-300 text-purple-600 focus:ring-purple-600 cursor-pointer"
                                 />
                                 <span className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-[10px] font-mono font-bold text-slate-500 dark:text-slate-400">
                                   #{serialNumber}
@@ -2182,7 +2182,7 @@ export default function LicensesTab({
 
               {/* PAGINATION CONTROLS */}
               {filteredContracts.length > 0 && (
-                <div className={`flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t ${isDark ? 'border-[#2D333D]' : 'border-slate-200'} text-xs`}>
+                <div className={`flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t ${isDark ? 'border-[rgb(30, 41, 59)]' : 'border-slate-200'} text-xs`}>
                   <div className="text-slate-500 dark:text-gray-400 font-medium">
                     Showing <span className="font-bold text-slate-800 dark:text-white">{(safeCurrentPage - 1) * itemsPerPage + 1}</span> to <span className="font-bold text-slate-800 dark:text-white">{Math.min(safeCurrentPage * itemsPerPage, filteredContracts.length)}</span> of <span className="font-bold text-slate-800 dark:text-white">{filteredContracts.length}</span> entries
                   </div>
@@ -2194,9 +2194,9 @@ export default function LicensesTab({
                       disabled={safeCurrentPage === 1}
                       className={`p-2 px-3 rounded-lg border font-bold flex items-center gap-1.5 cursor-pointer transition-all ${
                         safeCurrentPage === 1
-                          ? 'opacity-40 cursor-not-allowed border-slate-200 text-slate-400 dark:border-[#2D333D]'
+                          ? 'opacity-40 cursor-not-allowed border-slate-200 text-slate-400 dark:border-[rgb(30, 41, 59)]'
                           : isDark 
-                            ? 'bg-[#1A1D23] border-[#2D333D] text-white hover:bg-slate-800' 
+                            ? 'bg-[#0f172a] border-[rgb(30, 41, 59)] text-white hover:bg-slate-800' 
                             : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
                       }`}
                       title="Previous Page"
@@ -2213,9 +2213,9 @@ export default function LicensesTab({
                           onClick={() => setCurrentPage(pg)}
                           className={`w-8 h-8 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                             pg === safeCurrentPage
-                              ? 'bg-[rgb(14,145,145)] text-white shadow-xs font-extrabold'
+                              ? 'bg-purple-600 text-white shadow-xs font-extrabold'
                               : isDark
-                                ? 'bg-[#1A1D23] border border-[#2D333D] text-gray-300 hover:bg-slate-800'
+                                ? 'bg-[#0f172a] border border-[rgb(30, 41, 59)] text-gray-300 hover:bg-slate-800'
                                 : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
                           }`}
                         >
@@ -2230,9 +2230,9 @@ export default function LicensesTab({
                       disabled={safeCurrentPage === totalPages}
                       className={`p-2 px-3 rounded-lg border font-bold flex items-center gap-1.5 cursor-pointer transition-all ${
                         safeCurrentPage === totalPages
-                          ? 'opacity-40 cursor-not-allowed border-slate-200 text-slate-400 dark:border-[#2D333D]'
+                          ? 'opacity-40 cursor-not-allowed border-slate-200 text-slate-400 dark:border-[rgb(30, 41, 59)]'
                           : isDark 
-                            ? 'bg-[#1A1D23] border-[#2D333D] text-white hover:bg-slate-800' 
+                            ? 'bg-[#0f172a] border-[rgb(30, 41, 59)] text-white hover:bg-slate-800' 
                             : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
                       }`}
                       title="Next Page"
@@ -2256,11 +2256,11 @@ export default function LicensesTab({
         <div className="space-y-4 animate-fade-in">
           {/* QUICK SUMMARY FOR MAPPINGS */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200'} shadow-2xs`}>
+            <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200'} shadow-2xs`}>
               <p className="text-[10px] uppercase font-mono font-bold text-slate-400">Total Customer-Product Associations</p>
-              <p className="text-2xl font-black mt-1 text-[rgb(14,145,145)]">{customerProductMappings.length}</p>
+              <p className="text-2xl font-black mt-1 text-purple-600">{customerProductMappings.length}</p>
             </div>
-            <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200'} shadow-2xs`}>
+            <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200'} shadow-2xs`}>
               <p className="text-[10px] uppercase font-mono font-bold text-slate-400">Custom Negotiated Rates Enabled</p>
               <p className="text-2xl font-black mt-1 text-amber-500">
                 {customerProductMappings.filter(m => m.customerUnitPrice !== m.productUnitPrice).length}
@@ -2277,19 +2277,19 @@ export default function LicensesTab({
               onChange={(e) => setMappingSearchQuery(e.target.value)}
               className={`w-full pl-9 pr-4 py-2 text-xs rounded-lg border outline-hidden transition-all ${
                 isDark 
-                  ? 'bg-[#0F1115] border-[#2D333D] text-white focus:border-[rgb(14,145,145)]' 
-                  : 'bg-slate-50 border-slate-200 text-slate-800 focus:border-[rgb(14,145,145)]'
+                  ? 'bg-[#020617] border-[rgb(30, 41, 59)] text-white focus:border-purple-600' 
+                  : 'bg-slate-50 border-slate-200 text-slate-800 focus:border-purple-600'
               }`}
               placeholder="Search mappings by company name, product name, SKU..."
             />
           </div>
 
           {/* MAPPING TABLE */}
-          <div className={`border rounded-xl overflow-hidden shadow-2xs ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200'}`}>
+          <div className={`border rounded-xl overflow-hidden shadow-2xs ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200'}`}>
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className={`border-b text-[10px] uppercase tracking-wider font-mono font-extrabold ${isDark ? 'bg-[#0F1115]/60 border-[#2D333D] text-gray-400' : 'bg-slate-50/70 border-slate-100 text-slate-500'}`}>
+                  <tr className={`border-b text-[10px] uppercase tracking-wider font-mono font-extrabold ${isDark ? 'bg-[#020617]/60 border-[rgb(30, 41, 59)] text-gray-400' : 'bg-slate-50/70 border-slate-100 text-slate-500'}`}>
                     <th className="px-5 py-3.5 text-center w-12">S/No.</th>
                     <th className="px-5 py-3.5">Customer (ID)</th>
                     <th className="px-5 py-3.5">Product (ID)</th>
@@ -2300,7 +2300,7 @@ export default function LicensesTab({
                     <th className="px-5 py-3.5 text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-[#2D333D] text-xs">
+                <tbody className="divide-y divide-slate-100 dark:divide-[rgb(30, 41, 59)] text-xs">
                   {filteredMappings.length === 0 ? (
                     <tr>
                       <td colSpan={8} className="px-5 py-10 text-center text-slate-400 dark:text-gray-500">
@@ -2335,7 +2335,7 @@ export default function LicensesTab({
                           <td className="px-5 py-4 font-mono text-slate-600 dark:text-slate-300">
                             ${map.productUnitPrice.toFixed(2)}
                           </td>
-                          <td className="px-5 py-4 font-mono font-bold text-[rgb(14,145,145)]">
+                          <td className="px-5 py-4 font-mono font-bold text-purple-600">
                             ${map.customerUnitPrice.toFixed(2)}
                           </td>
                           <td className="px-5 py-4">
@@ -2394,10 +2394,10 @@ export default function LicensesTab({
       {/* MODAL 1: CONTRACT MODAL */}
       {isContractModalOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-fade-in overflow-y-auto">
-          <div className={`w-full max-w-4xl rounded-2xl shadow-2xl p-6 my-8 overflow-y-auto max-h-[90vh] ${isDark ? 'bg-[#1A1D23] border border-[#2D333D] text-white' : 'bg-white border text-slate-800'}`}>
-            <div className="flex items-center justify-between border-b pb-4 mb-6 dark:border-[#2D333D] border-slate-100">
+          <div className={`w-full max-w-4xl rounded-2xl shadow-2xl p-6 my-8 overflow-y-auto max-h-[90vh] ${isDark ? 'bg-[#0f172a] border border-[rgb(30, 41, 59)] text-white' : 'bg-white border text-slate-800'}`}>
+            <div className="flex items-center justify-between border-b pb-4 mb-6 dark:border-[rgb(30, 41, 59)] border-slate-100">
               <div className="flex items-center gap-3">
-                <div className="p-2.5 rounded-xl bg-[rgb(14,145,145)]/10 text-[rgb(14,145,145)]">
+                <div className="p-2.5 rounded-xl bg-purple-600/10 text-purple-600">
                   <FileText className="w-6 h-6" />
                 </div>
                 <div>
@@ -2420,7 +2420,7 @@ export default function LicensesTab({
             <form onSubmit={handleContractFormSubmit} className="space-y-6">
               {renderContractFormContent()}
 
-              <div className="flex justify-end gap-3 border-t pt-4 dark:border-[#2D333D]">
+              <div className="flex justify-end gap-3 border-t pt-4 dark:border-[rgb(30, 41, 59)]">
                 <button 
                   type="button" 
                   onClick={() => setIsContractModalOpen(false)}
@@ -2430,7 +2430,7 @@ export default function LicensesTab({
                 </button>
                 <button 
                   type="submit" 
-                  className="px-6 py-2.5 bg-[rgb(14,145,145)] hover:bg-[rgb(12,125,125)] text-white rounded-lg cursor-pointer font-extrabold shadow-md shadow-[rgb(14,145,145)]/20 transition-all"
+                  className="px-6 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg cursor-pointer font-extrabold shadow-md shadow-purple-600/20 transition-all"
                 >
                   {editingContract ? 'Save Contract Modifications' : 'Save Customer Contract'}
                 </button>
@@ -2443,10 +2443,10 @@ export default function LicensesTab({
       {/* MODAL 2: CUSTOM MAPPING MODAL */}
       {isMappingModalOpen && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-50 p-4 animate-fade-in">
-          <div className={`w-full max-w-2xl rounded-2xl shadow-2xl p-7 border transition-all ${isDark ? 'bg-[#1A1D23] border-[#2D333D] text-white' : 'bg-white border-slate-200 text-slate-800'}`}>
-            <div className="flex items-center justify-between border-b pb-4 mb-5 dark:border-[#2D333D] border-slate-100">
+          <div className={`w-full max-w-2xl rounded-2xl shadow-2xl p-7 border transition-all ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)] text-white' : 'bg-white border-slate-200 text-slate-800'}`}>
+            <div className="flex items-center justify-between border-b pb-4 mb-5 dark:border-[rgb(30, 41, 59)] border-slate-100">
               <div className="flex items-center gap-3">
-                <div className="p-2.5 rounded-xl bg-[rgb(14,145,145)]/10 text-[rgb(14,145,145)]">
+                <div className="p-2.5 rounded-xl bg-purple-600/10 text-purple-600">
                   <Layers className="w-5 h-5" />
                 </div>
                 <div>
@@ -2493,7 +2493,7 @@ export default function LicensesTab({
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 rounded-xl border dark:border-[#2D333D] border-slate-100 bg-slate-50/50 dark:bg-[#0F1115]/30">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 rounded-xl border dark:border-[rgb(30, 41, 59)] border-slate-100 bg-slate-50/50 dark:bg-[#020617]/30">
                 <div>
                   <label className="block font-bold text-slate-500 dark:text-gray-400 text-[11px] mb-1.5">
                     Product SKU
@@ -2502,7 +2502,7 @@ export default function LicensesTab({
                     type="text" 
                     value={mapProductSku || '-'}
                     readOnly
-                    className={`w-full px-3 py-2 rounded-lg border font-mono font-bold outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D] text-slate-400' : 'bg-slate-100 border-slate-200 text-slate-600'}`}
+                    className={`w-full px-3 py-2 rounded-lg border font-mono font-bold outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)] text-slate-400' : 'bg-slate-100 border-slate-200 text-slate-600'}`}
                   />
                 </div>
 
@@ -2514,7 +2514,7 @@ export default function LicensesTab({
                     type="text" 
                     value={`$${mapProductPrice.toFixed(2)}`}
                     readOnly
-                    className={`w-full px-3 py-2 rounded-lg border font-mono font-bold outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D] text-slate-400' : 'bg-slate-100 border-slate-200 text-slate-600'}`}
+                    className={`w-full px-3 py-2 rounded-lg border font-mono font-bold outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)] text-slate-400' : 'bg-slate-100 border-slate-200 text-slate-600'}`}
                   />
                 </div>
 
@@ -2528,7 +2528,7 @@ export default function LicensesTab({
                     onChange={(e) => setMapCustomerPrice(Number(e.target.value))}
                     step="0.01"
                     min="0"
-                    className={`w-full px-3 py-2 rounded-lg border font-mono font-bold outline-hidden focus:ring-2 focus:ring-[rgb(14,145,145)]/40 ${isDark ? 'bg-[#0F1115] border-[#2D333D] text-emerald-400' : 'bg-white border-slate-300 text-emerald-700'}`}
+                    className={`w-full px-3 py-2 rounded-lg border font-mono font-bold outline-hidden focus:ring-2 focus:ring-purple-600/40 ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)] text-emerald-400' : 'bg-white border-slate-300 text-emerald-700'}`}
                     required
                   />
                 </div>
@@ -2536,7 +2536,7 @@ export default function LicensesTab({
 
               {/* Price Variance Summary Badge */}
               {mapProductPrice > 0 && (
-                <div className="flex items-center justify-between text-xs px-3.5 py-2.5 rounded-lg border dark:border-[#2D333D] border-slate-100 bg-slate-50 dark:bg-slate-900/40">
+                <div className="flex items-center justify-between text-xs px-3.5 py-2.5 rounded-lg border dark:border-[rgb(30, 41, 59)] border-slate-100 bg-slate-50 dark:bg-slate-900/40">
                   <span className="text-slate-500 dark:text-slate-400 font-semibold">Price Variance relative to List:</span>
                   <span className={`font-bold font-mono ${mapCustomerPrice < mapProductPrice ? 'text-emerald-500' : mapCustomerPrice > mapProductPrice ? 'text-amber-500' : 'text-slate-400'}`}>
                     {mapCustomerPrice < mapProductPrice 
@@ -2548,7 +2548,7 @@ export default function LicensesTab({
                 </div>
               )}
 
-              <div className="flex items-center justify-end gap-3 border-t pt-4 dark:border-[#2D333D] border-slate-100">
+              <div className="flex items-center justify-end gap-3 border-t pt-4 dark:border-[rgb(30, 41, 59)] border-slate-100">
                 <button 
                   type="button" 
                   onClick={() => setIsMappingModalOpen(false)}
@@ -2558,7 +2558,7 @@ export default function LicensesTab({
                 </button>
                 <button 
                   type="submit" 
-                  className="px-6 py-2 bg-[rgb(14,145,145)] hover:bg-[rgb(12,125,125)] text-white rounded-lg cursor-pointer font-extrabold shadow-md shadow-[rgb(14,145,145)]/20 transition-all"
+                  className="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg cursor-pointer font-extrabold shadow-md shadow-purple-600/20 transition-all"
                 >
                   {editingMapping ? 'Save Rate Modifications' : 'Save Client Association'}
                 </button>
@@ -2570,8 +2570,8 @@ export default function LicensesTab({
 
       {isDeleteConfirmOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-fade-in">
-          <div className={`w-full max-w-md rounded-2xl shadow-2xl p-6 overflow-y-auto max-h-[90vh] ${isDark ? 'bg-[#1A1D23] border border-[#2D333D] text-white' : 'bg-white border text-slate-800'}`}>
-            <div className="flex items-center gap-3 border-b pb-4 mb-4 dark:border-[#2D333D] border-slate-100">
+          <div className={`w-full max-w-md rounded-2xl shadow-2xl p-6 overflow-y-auto max-h-[90vh] ${isDark ? 'bg-[#0f172a] border border-[rgb(30, 41, 59)] text-white' : 'bg-white border text-slate-800'}`}>
+            <div className="flex items-center gap-3 border-b pb-4 mb-4 dark:border-[rgb(30, 41, 59)] border-slate-100">
               <Trash2 className="w-6 h-6 text-red-500 shrink-0" />
               <h3 className="font-extrabold text-lg text-red-500">
                 Confirm Deletion
@@ -2656,7 +2656,7 @@ function ActiveContractsDetailView({
   return (
     <div className="space-y-6 animate-fade-in text-xs">
       {/* Header */}
-      <div className={`p-6 rounded-2xl border ${isDark ? 'bg-[#1E2530] border-[#2D333D]' : 'bg-white border-slate-200 shadow-sm'} flex flex-col md:flex-row items-start md:items-center justify-between gap-4`}>
+      <div className={`p-6 rounded-2xl border ${isDark ? 'bg-[#1E2530] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200 shadow-sm'} flex flex-col md:flex-row items-start md:items-center justify-between gap-4`}>
         <div className="space-y-2">
           <button
             onClick={onBack}
@@ -2689,8 +2689,8 @@ function ActiveContractsDetailView({
             onChange={(e) => setSearchQuery(e.target.value)}
             className={`w-full pl-9 pr-4 py-2 rounded-lg border outline-hidden transition-all ${
               isDark 
-                ? 'bg-[#0F1115] border-[#2D333D] text-white focus:border-[rgb(14,145,145)]' 
-                : 'bg-slate-50 border-slate-200 text-slate-800 focus:border-[rgb(14,145,145)]'
+                ? 'bg-[#020617] border-[rgb(30, 41, 59)] text-white focus:border-purple-600' 
+                : 'bg-slate-50 border-slate-200 text-slate-800 focus:border-purple-600'
             }`}
             placeholder="Search active agreements..."
           />
@@ -2699,30 +2699,30 @@ function ActiveContractsDetailView({
 
       {/* Metrics Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-        <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200'} shadow-2xs`}>
+        <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200'} shadow-2xs`}>
           <p className="text-[10px] uppercase font-mono font-bold text-slate-400">Active Agreements</p>
           <p className="text-2xl font-black mt-1 text-emerald-500">{activeContracts.length}</p>
         </div>
-        <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200'} shadow-2xs`}>
+        <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200'} shadow-2xs`}>
           <p className="text-[10px] uppercase font-mono font-bold text-slate-400">Total Seats Committed</p>
           <p className="text-2xl font-black mt-1 text-indigo-500">{totalSeats.toLocaleString()} Seats</p>
         </div>
-        <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200'} shadow-2xs`}>
+        <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200'} shadow-2xs`}>
           <p className="text-[10px] uppercase font-mono font-bold text-slate-400">Active Value Pipeline</p>
-          <p className="text-2xl font-black mt-1 text-[rgb(14,145,145)]">${totalValue.toLocaleString()}</p>
+          <p className="text-2xl font-black mt-1 text-purple-600">${totalValue.toLocaleString()}</p>
         </div>
-        <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200'} shadow-2xs`}>
+        <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200'} shadow-2xs`}>
           <p className="text-[10px] uppercase font-mono font-bold text-slate-400">Avg. Seat Rate / Mo</p>
           <p className="text-2xl font-black mt-1 text-amber-500">${avgRate.toFixed(2)}</p>
         </div>
       </div>
 
       {/* Active Contracts Table or Cards */}
-      <div className={`border rounded-xl overflow-hidden shadow-2xs ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200'}`}>
+      <div className={`border rounded-xl overflow-hidden shadow-2xs ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200'}`}>
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
-              <tr className={`border-b text-[10px] uppercase font-mono tracking-wider font-extrabold ${isDark ? 'bg-[#0F1115]/60 border-[#2D333D] text-gray-400' : 'bg-slate-50/70 border-slate-100 text-slate-500'}`}>
+              <tr className={`border-b text-[10px] uppercase font-mono tracking-wider font-extrabold ${isDark ? 'bg-[#020617]/60 border-[rgb(30, 41, 59)] text-gray-400' : 'bg-slate-50/70 border-slate-100 text-slate-500'}`}>
                 <th className="px-5 py-3">Client Corporate</th>
                 <th className="px-5 py-3">Agreement Title</th>
                 <th className="px-5 py-3">SKU</th>
@@ -2733,7 +2733,7 @@ function ActiveContractsDetailView({
                 <th className="px-5 py-3 text-right">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-[#2D333D]">
+            <tbody className="divide-y divide-slate-100 dark:divide-[rgb(30, 41, 59)]">
               {filtered.length === 0 ? (
                 <tr>
                   <td colSpan={8} className="px-5 py-12 text-center text-gray-400 italic font-medium">
@@ -2790,7 +2790,7 @@ function ActiveContractsDetailView({
                       <td className="px-5 py-4 text-right">
                         <button
                           onClick={() => onSelectContract(con)}
-                          className="px-2.5 py-1 text-slate-600 dark:text-gray-300 hover:text-white hover:bg-[rgb(14,145,145)] bg-slate-100 dark:bg-slate-800 rounded-md font-bold transition-all cursor-pointer"
+                          className="px-2.5 py-1 text-slate-600 dark:text-gray-300 hover:text-white hover:bg-purple-600 bg-slate-100 dark:bg-slate-800 rounded-md font-bold transition-all cursor-pointer"
                         >
                           View Contract
                         </button>
@@ -2896,7 +2896,7 @@ function ContractedRevenueDetailView({
   return (
     <div className="space-y-6 animate-fade-in text-xs">
       {/* Header */}
-      <div className={`p-6 rounded-2xl border ${isDark ? 'bg-[#1E2530] border-[#2D333D]' : 'bg-white border-slate-200 shadow-sm'} flex flex-col md:flex-row items-start md:items-center justify-between gap-4`}>
+      <div className={`p-6 rounded-2xl border ${isDark ? 'bg-[#1E2530] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200 shadow-sm'} flex flex-col md:flex-row items-start md:items-center justify-between gap-4`}>
         <div className="space-y-2">
           <button
             onClick={onBack}
@@ -2911,7 +2911,7 @@ function ContractedRevenueDetailView({
           </button>
           <div>
             <h3 className={`text-lg font-black ${isDark ? 'text-white' : 'text-slate-900'} flex items-center gap-2`}>
-              <DollarSign className="w-5 h-5 text-[rgb(14,145,145)]" />
+              <DollarSign className="w-5 h-5 text-purple-600" />
               <span>Total Contracted Revenue Analysis</span>
             </h3>
             <p className="text-[11px] text-gray-500 dark:text-gray-400 font-medium">
@@ -2929,8 +2929,8 @@ function ContractedRevenueDetailView({
             onChange={(e) => setSearchQuery(e.target.value)}
             className={`w-full pl-9 pr-4 py-2 rounded-lg border outline-hidden transition-all ${
               isDark 
-                ? 'bg-[#0F1115] border-[#2D333D] text-white focus:border-[rgb(14,145,145)]' 
-                : 'bg-slate-50 border-slate-200 text-slate-800 focus:border-[rgb(14,145,145)]'
+                ? 'bg-[#020617] border-[rgb(30, 41, 59)] text-white focus:border-purple-600' 
+                : 'bg-slate-50 border-slate-200 text-slate-800 focus:border-purple-600'
             }`}
             placeholder="Search and sort by value..."
           />
@@ -2939,19 +2939,19 @@ function ContractedRevenueDetailView({
 
       {/* Financial Performance Tiles */}
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-        <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200'} shadow-2xs`}>
+        <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200'} shadow-2xs`}>
           <p className="text-[10px] uppercase font-mono font-bold text-slate-400">Cumulative Value</p>
-          <p className="text-2xl font-black mt-1 text-[rgb(14,145,145)]">${totalRevenue.toLocaleString()}</p>
+          <p className="text-2xl font-black mt-1 text-purple-600">${totalRevenue.toLocaleString()}</p>
         </div>
-        <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200'} shadow-2xs`}>
+        <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200'} shadow-2xs`}>
           <p className="text-[10px] uppercase font-mono font-bold text-slate-400">Active Contract Pipeline</p>
           <p className="text-2xl font-black mt-1 text-emerald-500">${activePipeline.toLocaleString()}</p>
         </div>
-        <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200'} shadow-2xs`}>
+        <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200'} shadow-2xs`}>
           <p className="text-[10px] uppercase font-mono font-bold text-slate-400">Expired/Archived Value</p>
           <p className="text-2xl font-black mt-1 text-rose-500">${expiredValue.toLocaleString()}</p>
         </div>
-        <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200'} shadow-2xs`}>
+        <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200'} shadow-2xs`}>
           <p className="text-[10px] uppercase font-mono font-bold text-slate-400">Active Monthly MRR Equivalent</p>
           <p className="text-2xl font-black mt-1 text-amber-500">${contractedMRR.toLocaleString()}/mo</p>
         </div>
@@ -2960,20 +2960,20 @@ function ContractedRevenueDetailView({
       {/* Revenue Breakdown Charts (Bento Layout) */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* 1. Client Contribution */}
-        <div className={`p-5 rounded-2xl border ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200'} shadow-2xs space-y-4`}>
+        <div className={`p-5 rounded-2xl border ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200'} shadow-2xs space-y-4`}>
           <h4 className="font-extrabold uppercase tracking-wider text-[10px] text-slate-400">Corporate Clients Revenue Share</h4>
           <div className="space-y-4 max-h-[300px] overflow-y-auto pr-1">
             {clientRevenue.map(client => (
               <div key={client.name} className="space-y-1">
                 <div className="flex justify-between font-bold text-slate-700 dark:text-slate-200">
                   <span>{client.name} ({client.count} agreement{client.count > 1 ? 's' : ''})</span>
-                  <span className="font-mono text-[rgb(14,145,145)] font-bold">
+                  <span className="font-mono text-purple-600 font-bold">
                     ${client.value.toLocaleString()} ({client.percentage.toFixed(1)}%)
                   </span>
                 </div>
                 <div className="h-2 w-full bg-slate-100 dark:bg-slate-900 rounded-full overflow-hidden">
                   <div 
-                    className="h-full bg-[rgb(14,145,145)] rounded-full transition-all duration-500" 
+                    className="h-full bg-purple-600 rounded-full transition-all duration-500" 
                     style={{ width: `${client.percentage}%` }}
                   />
                 </div>
@@ -2983,7 +2983,7 @@ function ContractedRevenueDetailView({
         </div>
 
         {/* 2. SKU Contribution */}
-        <div className={`p-5 rounded-2xl border ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200'} shadow-2xs space-y-4`}>
+        <div className={`p-5 rounded-2xl border ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200'} shadow-2xs space-y-4`}>
           <h4 className="font-extrabold uppercase tracking-wider text-[10px] text-slate-400">Product Module Contribution Rate</h4>
           <div className="space-y-4 max-h-[300px] overflow-y-auto pr-1">
             {moduleRevenue.map(mod => (
@@ -3007,15 +3007,15 @@ function ContractedRevenueDetailView({
       </div>
 
       {/* Contract Revenue Registry Table */}
-      <div className={`border rounded-xl overflow-hidden shadow-2xs ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-white border-slate-200'}`}>
-        <div className="p-4 border-b dark:border-gray-800 border-slate-100 flex justify-between items-center bg-slate-50/50 dark:bg-[#0F1115]/20">
+      <div className={`border rounded-xl overflow-hidden shadow-2xs ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200'}`}>
+        <div className="p-4 border-b dark:border-gray-800 border-slate-100 flex justify-between items-center bg-slate-50/50 dark:bg-[#020617]/20">
           <h4 className="font-bold text-slate-700 dark:text-slate-200">Revenue Ledger (Sorted by Value)</h4>
           <span className="text-[10px] text-slate-400 font-mono">Consolidated Database View</span>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
-              <tr className={`border-b text-[10px] uppercase font-mono tracking-wider font-extrabold ${isDark ? 'bg-[#0F1115]/60 border-[#2D333D] text-gray-400' : 'bg-slate-50/70 border-slate-100 text-slate-500'}`}>
+              <tr className={`border-b text-[10px] uppercase font-mono tracking-wider font-extrabold ${isDark ? 'bg-[#020617]/60 border-[rgb(30, 41, 59)] text-gray-400' : 'bg-slate-50/70 border-slate-100 text-slate-500'}`}>
                 <th className="px-5 py-3">Client Corporate</th>
                 <th className="px-5 py-3">Agreement Reference</th>
                 <th className="px-5 py-3 text-center">Duration</th>
@@ -3026,7 +3026,7 @@ function ContractedRevenueDetailView({
                 <th className="px-5 py-3 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-[#2D333D]">
+            <tbody className="divide-y divide-slate-100 dark:divide-[rgb(30, 41, 59)]">
               {filteredContracts.map(con => {
                 const val = con.unitPrice * con.purchasedUnits * con.termMonths;
                 const isExpired = con.endDate < today;
@@ -3048,7 +3048,7 @@ function ContractedRevenueDetailView({
                     <td className="px-5 py-4 text-center font-bold text-slate-900 dark:text-white">
                       {con.purchasedUnits} seats
                     </td>
-                    <td className="px-5 py-4 text-right font-mono font-black text-[rgb(14,145,145)]">
+                    <td className="px-5 py-4 text-right font-mono font-black text-purple-600">
                       ${val.toLocaleString()}
                     </td>
                     <td className="px-5 py-4 text-center">
@@ -3065,7 +3065,7 @@ function ContractedRevenueDetailView({
                     <td className="px-5 py-4 text-right">
                       <button
                         onClick={() => onSelectContract(con)}
-                        className="px-2.5 py-1 text-slate-600 dark:text-gray-300 hover:text-white hover:bg-[rgb(14,145,145)] bg-slate-100 dark:bg-slate-800 rounded-md font-bold transition-all cursor-pointer"
+                        className="px-2.5 py-1 text-slate-600 dark:text-gray-300 hover:text-white hover:bg-purple-600 bg-slate-100 dark:bg-slate-800 rounded-md font-bold transition-all cursor-pointer"
                       >
                         View Contract
                       </button>

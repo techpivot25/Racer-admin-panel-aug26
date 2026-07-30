@@ -89,6 +89,21 @@ export default function ProductsTab({
   const [viewingProductDetail, setViewingProductDetail] = useState<Product | null>(null);
   const [selectedProductForView, setSelectedProductForView] = useState<Product | null>(null);
   const [inactiveProductIds, setInactiveProductIds] = useState<string[]>([]);
+  const [selectedRowProductIds, setSelectedRowProductIds] = useState<string[]>([]);
+
+  const handleSelectAllRows = (allProducts: Product[]) => {
+    if (selectedRowProductIds.length === allProducts.length && allProducts.length > 0) {
+      setSelectedRowProductIds([]);
+    } else {
+      setSelectedRowProductIds(allProducts.map(p => p.id));
+    }
+  };
+
+  const toggleSelectRow = (productId: string) => {
+    setSelectedRowProductIds(prev =>
+      prev.includes(productId) ? prev.filter(id => id !== productId) : [...prev, productId]
+    );
+  };
 
   // Product Details panel editing state
   const [isDetailEditing, setIsDetailEditing] = useState(false);
@@ -408,11 +423,11 @@ export default function ProductsTab({
                   : 'border-slate-200 hover:bg-slate-50 text-slate-700'
               }`}
             >
-              <ArrowLeft className="w-4 h-4 text-[rgb(14,145,145)]" />
+              <ArrowLeft className="w-4 h-4 text-purple-600" />
               <span>Back to Product Catalog</span>
             </button>
             <span className="text-xs font-mono text-gray-500">
-              Editing Specifications: <span className="font-bold text-[rgb(14,145,145)]">{viewingProductDetail.id}</span>
+              Editing Specifications: <span className="font-bold text-purple-600">{viewingProductDetail.id}</span>
             </span>
           </div>
 
@@ -420,7 +435,7 @@ export default function ProductsTab({
             
             {/* LEFT COLUMN: PRODUCT METRICS & DETAILS PROFILE */}
             <div className={`lg:col-span-5 p-6 rounded-2xl border flex flex-col justify-between ${
-              isDark ? 'bg-[#13161C] border-[#2D333D]' : 'bg-slate-50/50 border-slate-100 shadow-3xs'
+              isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-slate-50/50 border-slate-100 shadow-3xs'
             }`}>
               <div>
                 <div className="flex items-center gap-2 mb-4">
@@ -483,12 +498,12 @@ export default function ProductsTab({
 
             {/* RIGHT COLUMN: MODIFY PRODUCT SPECIFICATIONS FORM */}
             <div className={`lg:col-span-7 p-6 rounded-2xl border ${
-              isDark ? 'bg-[#1A1D23] border-[#2D333D] text-white' : 'bg-white border-slate-200 text-slate-800 shadow-2xl'
+              isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)] text-white' : 'bg-white border-slate-200 text-slate-800 shadow-2xl'
             }`}>
               <div className="flex justify-between items-center mb-6 pb-4 border-b border-dashed border-gray-700/10">
                 <div>
-                  <span className="text-[9px] font-mono uppercase tracking-wider text-[rgb(14,145,145)] font-bold block">Enterprise SaaS Architect</span>
-                  <h3 className="font-black text-lg tracking-tight text-[rgb(14,145,145)]">Modify Product Specifications</h3>
+                  <span className="text-[9px] font-mono uppercase tracking-wider text-purple-600 font-bold block">Enterprise SaaS Architect</span>
+                  <h3 className="font-black text-lg tracking-tight text-purple-600">Modify Product Specifications</h3>
                 </div>
               </div>
 
@@ -501,7 +516,7 @@ export default function ProductsTab({
                     disabled
                     value={viewingProductDetail.id} 
                     className={`w-full p-2.5 rounded-lg border outline-hidden opacity-70 font-mono ${
-                      isDark ? 'bg-[#0F1115] border-[#2D333D] text-gray-400' : 'bg-slate-100 border-slate-200 text-slate-500'
+                      isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)] text-gray-400' : 'bg-slate-100 border-slate-200 text-slate-500'
                     }`}
                   />
                 </div>
@@ -514,7 +529,7 @@ export default function ProductsTab({
                     value={name} 
                     onChange={e => setName(e.target.value)}
                     className={`w-full p-2.5 rounded-lg border outline-hidden ${
-                      isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50 border-slate-200 focus:bg-white focus:border-[rgb(14,145,145)]'
+                      isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200 focus:bg-white focus:border-purple-600'
                     }`}
                   />
                 </div>
@@ -527,7 +542,7 @@ export default function ProductsTab({
                     value={description} 
                     onChange={e => setDescription(e.target.value)}
                     className={`w-full p-2.5 rounded-lg border outline-hidden ${
-                      isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50 border-slate-200 focus:bg-white focus:border-[rgb(14,145,145)]'
+                      isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200 focus:bg-white focus:border-purple-600'
                     }`}
                   />
                 </div>
@@ -541,7 +556,7 @@ export default function ProductsTab({
                       value={sku} 
                       onChange={e => setSku(e.target.value)}
                       className={`w-full p-2.5 rounded-lg border outline-hidden ${
-                        isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50 border-slate-200 focus:bg-white focus:border-[rgb(14,145,145)]'
+                        isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200 focus:bg-white focus:border-purple-600'
                       }`}
                     />
                   </div>
@@ -556,7 +571,7 @@ export default function ProductsTab({
                       value={unitPrice} 
                       onChange={e => setUnitPrice(parseFloat(e.target.value) || 0)}
                       className={`w-full p-2.5 rounded-lg border outline-hidden ${
-                        isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50 border-slate-200 focus:bg-white focus:border-[rgb(14,145,145)]'
+                        isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200 focus:bg-white focus:border-purple-600'
                       }`}
                     />
                   </div>
@@ -588,7 +603,7 @@ export default function ProductsTab({
                       onChange={e => setTierName(e.target.value)}
                       placeholder="e.g. Enterprise Core"
                       className={`w-full p-2.5 rounded-lg border outline-hidden ${
-                        isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50 border-slate-200 focus:bg-white focus:border-[rgb(14,145,145)]'
+                        isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200 focus:bg-white focus:border-purple-600'
                       }`}
                     />
                   </div>
@@ -602,7 +617,7 @@ export default function ProductsTab({
                     onChange={e => setNotes(e.target.value)}
                     placeholder="Technical specifications, region constraints, deployment notes..."
                     className={`w-full p-2.5 rounded-lg border outline-hidden ${
-                      isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50 border-slate-200 focus:bg-white focus:border-[rgb(14,145,145)]'
+                      isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200 focus:bg-white focus:border-purple-600'
                     }`}
                   />
                 </div>
@@ -622,7 +637,7 @@ export default function ProductsTab({
                   </button>
                   <button 
                     type="submit"
-                    className="px-5 py-2.5 bg-[rgb(14,145,145)] hover:bg-[rgb(12,125,125)] text-white rounded-lg font-bold cursor-pointer transition-all flex items-center gap-2 shadow-md shadow-[rgb(14,145,145)]/20"
+                    className="px-5 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-bold cursor-pointer transition-all flex items-center gap-2 shadow-md shadow-purple-600/20"
                   >
                     <CheckCircle2 className="w-4 h-4" />
                     <span>Save Specifications</span>
@@ -642,7 +657,7 @@ export default function ProductsTab({
           {/* 1. CUSTOMERS FILTER */}
           <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-2 w-full sm:w-auto shrink-0 relative z-30">
             <span className={`text-[11px] font-bold ${isDark ? 'text-gray-400' : 'text-slate-600'} flex items-center gap-1 shrink-0`}>
-              <Filter className="w-3.5 h-3.5 text-[rgb(14,145,145)] shrink-0" />
+              <Filter className="w-3.5 h-3.5 text-purple-600 shrink-0" />
               <span className="whitespace-nowrap">Customer Portfolio:</span>
             </span>
             <CustomSelect
@@ -668,7 +683,7 @@ export default function ProductsTab({
           {/* 2. PRODUCTS FILTER */}
           <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-2 w-full sm:w-auto shrink-0 relative z-20">
             <span className={`text-[11px] font-bold ${isDark ? 'text-gray-400' : 'text-slate-600'} flex items-center gap-1 shrink-0`}>
-              <Laptop className="w-3.5 h-3.5 text-[rgb(14,145,145)] shrink-0" />
+              <Laptop className="w-3.5 h-3.5 text-purple-600 shrink-0" />
               <span className="whitespace-nowrap">Product Selection:</span>
             </span>
             <CustomSelect
@@ -697,7 +712,7 @@ export default function ProductsTab({
               type="text" 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className={`w-full pl-9 pr-4 py-2 text-xs rounded-lg border outline-hidden transition-all ${isDark ? 'bg-[#1A1D23] border-[#2D333D] text-white focus:border-[rgb(14,145,145)]' : 'bg-white border-slate-200 text-slate-800 focus:border-[rgb(14,145,145)] shadow-2xs'}`}
+              className={`w-full pl-9 pr-4 py-2 text-xs rounded-lg border outline-hidden transition-all ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)] text-white focus:border-purple-600' : 'bg-white border-slate-200 text-slate-800 focus:border-purple-600 shadow-2xs'}`}
               placeholder="Search B&J SaaS modules..."
             />
           </div>
@@ -717,7 +732,7 @@ export default function ProductsTab({
 
         <button
           onClick={openAddModal}
-          className="px-4 py-2 bg-[rgb(14,145,145)] hover:bg-[rgb(12,125,125)] text-white rounded-lg text-xs font-bold flex items-center gap-2 shadow-md shadow-[rgb(14,145,145)]/10 transition-all cursor-pointer shrink-0"
+          className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-xs font-bold flex items-center gap-2 shadow-md shadow-purple-600/10 transition-all cursor-pointer shrink-0"
         >
           <Plus className="w-4 h-4" />
           <span>{t.addNewProduct}</span>
@@ -728,27 +743,53 @@ export default function ProductsTab({
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* PRODUCTS GRID (50% WIDTH ON DESKTOP) */}
         <div className="lg:col-span-6 space-y-4">
-          <div className={`border rounded-2xl overflow-hidden ${isDark ? 'bg-[#1A1D23] border-[#2D333D] text-white' : 'bg-white border-slate-100 shadow-3xs'}`}>
+          {selectedRowProductIds.length > 0 && (
+            <div className="flex items-center justify-between px-4 py-2 bg-purple-500/10 border border-purple-500/20 rounded-xl text-xs font-bold text-purple-600 dark:text-purple-300 animate-fadeIn">
+              <span className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-purple-500 animate-pulse"></span>
+                {selectedRowProductIds.length} product{selectedRowProductIds.length > 1 ? 's' : ''} selected
+              </span>
+              <button
+                type="button"
+                onClick={() => setSelectedRowProductIds([])}
+                className="text-[10px] font-black uppercase tracking-wider text-purple-600 dark:text-purple-400 hover:underline cursor-pointer"
+              >
+                Clear Selection
+              </button>
+            </div>
+          )}
+          <div className={`border rounded-2xl overflow-hidden ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)] text-white' : 'bg-white border-slate-100 shadow-3xs'}`}>
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm border-collapse">
                 <thead>
-                  <tr className={`font-bold ${isDark ? 'bg-[#1E232B] text-gray-200' : 'bg-slate-50 text-slate-800'} border-b ${isDark ? 'border-[#2D333D]' : 'border-slate-100'}`}>
+                  <tr className={`font-bold ${isDark ? 'bg-[#1E232B] text-gray-200' : 'bg-slate-50 text-slate-800'} border-b ${isDark ? 'border-[rgb(30, 41, 59)]' : 'border-slate-100'}`}>
+                    <th className="p-4 text-xs font-black uppercase tracking-wider text-center w-10">
+                      <input
+                        type="checkbox"
+                        checked={filteredProducts.length > 0 && selectedRowProductIds.length === filteredProducts.length}
+                        onChange={() => handleSelectAllRows(filteredProducts)}
+                        className="rounded border-slate-300 text-purple-600 focus:ring-purple-600 cursor-pointer w-4 h-4"
+                        title="Select All Products"
+                      />
+                    </th>
+                    <th className="p-4 text-xs font-black uppercase tracking-wider text-center whitespace-nowrap w-14">S.No</th>
                     <th className="p-4 text-xs font-black uppercase tracking-wider whitespace-nowrap">Product Name</th>
                     <th className="p-4 text-xs font-black uppercase tracking-wider whitespace-nowrap">Product Description</th>
                     <th className="p-4 text-xs font-black uppercase tracking-wider whitespace-nowrap">Product SKU</th>
                     <th className="p-4 text-xs font-black uppercase tracking-wider text-right whitespace-nowrap">Action</th>
                   </tr>
                 </thead>
-                <tbody className={`divide-y ${isDark ? 'divide-[#2D333D] text-gray-300' : 'divide-slate-100 text-slate-700'}`}>
+                <tbody className={`divide-y ${isDark ? 'divide-[rgb(30, 41, 59)] text-gray-300' : 'divide-slate-100 text-slate-700'}`}>
                   {filteredProducts.length === 0 ? (
                     <tr>
-                      <td colSpan={4} className="p-8 text-center text-gray-500 italic font-medium">
+                      <td colSpan={6} className="p-8 text-center text-gray-500 italic font-medium">
                         No SaaS products found matching the criteria.
                       </td>
                     </tr>
                   ) : (
-                    filteredProducts.map(product => {
+                    filteredProducts.map((product, index) => {
                       const isSelected = selectedProductForView?.id === product.id;
+                      const isChecked = selectedRowProductIds.includes(product.id);
                       const isProductActive = !inactiveProductIds.includes(product.id);
 
                       return (
@@ -756,11 +797,24 @@ export default function ProductsTab({
                           key={product.id} 
                           onClick={() => setSelectedProductForView(product)}
                           className={`transition-all cursor-pointer ${
-                            isSelected 
-                              ? 'bg-[rgb(14,145,145)]/10 dark:bg-[rgb(14,145,145)]/15 font-bold border-l-4 border-[rgb(14,145,145)]' 
-                              : 'hover:bg-[rgb(14,145,145)]/5'
+                            isChecked
+                              ? 'bg-purple-500/10 dark:bg-purple-900/20'
+                              : isSelected 
+                                ? 'bg-purple-600/10 dark:bg-purple-600/15 font-bold border-l-4 border-purple-600' 
+                                : 'hover:bg-purple-600/5'
                           }`}
                         >
+                          <td className="p-4 text-center" onClick={(e) => e.stopPropagation()}>
+                            <input
+                              type="checkbox"
+                              checked={isChecked}
+                              onChange={() => toggleSelectRow(product.id)}
+                              className="rounded border-slate-300 text-purple-600 focus:ring-purple-600 cursor-pointer w-4 h-4"
+                            />
+                          </td>
+                          <td className="p-4 text-center font-mono text-xs font-extrabold text-slate-500 dark:text-gray-400 whitespace-nowrap">
+                            {index + 1}
+                          </td>
                           <td className="p-4">
                             <div className="flex items-center gap-2 flex-wrap">
                               <button 
@@ -768,13 +822,13 @@ export default function ProductsTab({
                                   e.stopPropagation();
                                   setSelectedProductForView(product);
                                 }}
-                                className="text-sm font-extrabold tracking-tight text-left hover:underline text-[rgb(14,145,145)] cursor-pointer"
+                                className="text-sm font-extrabold tracking-tight text-left hover:underline text-purple-600 cursor-pointer"
                                 title="Click to select and load details"
                               >
                                 {product.name}
                               </button>
                               {isSelected && (
-                                <span className="text-[10px] bg-[rgb(14,145,145)] text-white px-2 py-0.5 rounded-full font-extrabold uppercase animate-pulse">
+                                <span className="text-[10px] bg-purple-600 text-white px-2 py-0.5 rounded-full font-extrabold uppercase animate-pulse">
                                   🎯 Selected
                                 </span>
                               )}
@@ -829,7 +883,7 @@ export default function ProductsTab({
                                   setTierName(product.tierName);
                                   setNotes(product.notes);
                                 }}
-                                className="p-1.5 rounded-md hover:bg-[rgb(14,145,145)]/10 text-[rgb(14,145,145)] transition-colors cursor-pointer"
+                                className="p-1.5 rounded-md hover:bg-purple-600/10 text-purple-600 transition-colors cursor-pointer"
                                 title="Modify Product Details"
                               >
                                 <Edit3 className="w-4 h-4" />
@@ -859,12 +913,12 @@ export default function ProductsTab({
         {/* READ-ONLY & EDITABLE DETAIL FORM (50% WIDTH ON DESKTOP) */}
         <div className="lg:col-span-6">
           <div className={`p-6 rounded-2xl border ${
-            isDark ? 'bg-[#1A1D23] border-[#2D333D] text-white' : 'bg-white border-slate-200 text-slate-800 shadow-3xs'
+            isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)] text-white' : 'bg-white border-slate-200 text-slate-800 shadow-3xs'
           }`}>
             <div className="flex justify-between items-center mb-6 pb-4 border-b border-dashed border-gray-700/10">
               <div>
-                <span className="text-[9px] font-mono uppercase tracking-wider text-[rgb(14,145,145)] font-bold block">Enterprise SaaS Module</span>
-                <h3 className="font-black text-lg tracking-tight text-[rgb(14,145,145)]">
+                <span className="text-[9px] font-mono uppercase tracking-wider text-purple-600 font-bold block">Enterprise SaaS Module</span>
+                <h3 className="font-black text-lg tracking-tight text-purple-600">
                   {isDetailEditing ? 'Edit Product Specifications' : 'Product Details (Read-Only)'}
                 </h3>
               </div>
@@ -892,7 +946,7 @@ export default function ProductsTab({
                     disabled
                     value={selectedProductForView.id} 
                     className={`w-full p-2.5 rounded-lg border outline-none font-mono opacity-65 ${
-                      isDark ? 'bg-[#0F1115] border-[#2D333D]/60 text-gray-400' : 'bg-slate-100 border-slate-200 text-slate-500'
+                      isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]/60 text-gray-400' : 'bg-slate-100 border-slate-200 text-slate-500'
                     }`}
                   />
                 </div>
@@ -906,8 +960,8 @@ export default function ProductsTab({
                     onChange={e => setDetailName(e.target.value)}
                     className={`w-full p-2.5 rounded-lg border outline-none transition-all ${
                       isDetailEditing 
-                        ? (isDark ? 'bg-[#0F1115] border-[rgb(14,145,145)] text-white focus:ring-1 focus:ring-[rgb(14,145,145)]' : 'bg-white border-[rgb(14,145,145)] text-slate-900 focus:ring-1 focus:ring-[rgb(14,145,145)]')
-                        : (isDark ? 'bg-[#0F1115] border-[#2D333D]/60 text-gray-300' : 'bg-slate-50 border-slate-200 text-slate-700')
+                        ? (isDark ? 'bg-[#020617] border-purple-600 text-white focus:ring-1 focus:ring-purple-600' : 'bg-white border-purple-600 text-slate-900 focus:ring-1 focus:ring-purple-600')
+                        : (isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]/60 text-gray-300' : 'bg-slate-50 border-slate-200 text-slate-700')
                     }`}
                   />
                 </div>
@@ -921,8 +975,8 @@ export default function ProductsTab({
                     onChange={e => setDetailDescription(e.target.value)}
                     className={`w-full p-2.5 rounded-lg border outline-none transition-all ${
                       isDetailEditing 
-                        ? (isDark ? 'bg-[#0F1115] border-[rgb(14,145,145)] text-white focus:ring-1 focus:ring-[rgb(14,145,145)]' : 'bg-white border-[rgb(14,145,145)] text-slate-900 focus:ring-1 focus:ring-[rgb(14,145,145)]')
-                        : (isDark ? 'bg-[#0F1115] border-[#2D333D]/60 text-gray-300' : 'bg-slate-50 border-slate-200 text-slate-700')
+                        ? (isDark ? 'bg-[#020617] border-purple-600 text-white focus:ring-1 focus:ring-purple-600' : 'bg-white border-purple-600 text-slate-900 focus:ring-1 focus:ring-purple-600')
+                        : (isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]/60 text-gray-300' : 'bg-slate-50 border-slate-200 text-slate-700')
                     }`}
                   />
                 </div>
@@ -937,8 +991,8 @@ export default function ProductsTab({
                       onChange={e => setDetailSku(e.target.value)}
                       className={`w-full p-2.5 rounded-lg border outline-none font-mono transition-all ${
                         isDetailEditing 
-                          ? (isDark ? 'bg-[#0F1115] border-[rgb(14,145,145)] text-white focus:ring-1 focus:ring-[rgb(14,145,145)]' : 'bg-white border-[rgb(14,145,145)] text-slate-900 focus:ring-1 focus:ring-[rgb(14,145,145)]')
-                          : (isDark ? 'bg-[#0F1115] border-[#2D333D]/60 text-gray-300' : 'bg-slate-50 border-slate-200 text-slate-700')
+                          ? (isDark ? 'bg-[#020617] border-purple-600 text-white focus:ring-1 focus:ring-purple-600' : 'bg-white border-purple-600 text-slate-900 focus:ring-1 focus:ring-purple-600')
+                          : (isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]/60 text-gray-300' : 'bg-slate-50 border-slate-200 text-slate-700')
                       }`}
                     />
                   </div>
@@ -959,8 +1013,8 @@ export default function ProductsTab({
                           isDetailEditing ? 'pl-7' : ''
                         } ${
                           isDetailEditing 
-                            ? (isDark ? 'bg-[#0F1115] border-[rgb(14,145,145)] text-white focus:ring-1 focus:ring-[rgb(14,145,145)]' : 'bg-white border-[rgb(14,145,145)] text-slate-900 focus:ring-1 focus:ring-[rgb(14,145,145)]')
-                            : (isDark ? 'bg-[#0F1115] border-[#2D333D]/60 text-gray-300' : 'bg-slate-50 border-slate-200 text-slate-700')
+                            ? (isDark ? 'bg-[#020617] border-purple-600 text-white focus:ring-1 focus:ring-purple-600' : 'bg-white border-purple-600 text-slate-900 focus:ring-1 focus:ring-purple-600')
+                            : (isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]/60 text-gray-300' : 'bg-slate-50 border-slate-200 text-slate-700')
                         }`}
                       />
                     </div>
@@ -977,8 +1031,8 @@ export default function ProductsTab({
                       onChange={e => setDetailFamily(e.target.value)}
                       className={`w-full p-2.5 rounded-lg border outline-none transition-all ${
                         isDetailEditing 
-                          ? (isDark ? 'bg-[#0F1115] border-[rgb(14,145,145)] text-white focus:ring-1 focus:ring-[rgb(14,145,145)]' : 'bg-white border-[rgb(14,145,145)] text-slate-900 focus:ring-1 focus:ring-[rgb(14,145,145)]')
-                          : (isDark ? 'bg-[#0F1115] border-[#2D333D]/60 text-gray-300' : 'bg-slate-50 border-slate-200 text-slate-700')
+                          ? (isDark ? 'bg-[#020617] border-purple-600 text-white focus:ring-1 focus:ring-purple-600' : 'bg-white border-purple-600 text-slate-900 focus:ring-1 focus:ring-purple-600')
+                          : (isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]/60 text-gray-300' : 'bg-slate-50 border-slate-200 text-slate-700')
                       }`}
                     />
                   </div>
@@ -992,8 +1046,8 @@ export default function ProductsTab({
                       onChange={e => setDetailTierName(e.target.value)}
                       className={`w-full p-2.5 rounded-lg border outline-none transition-all ${
                         isDetailEditing 
-                          ? (isDark ? 'bg-[#0F1115] border-[rgb(14,145,145)] text-white focus:ring-1 focus:ring-[rgb(14,145,145)]' : 'bg-white border-[rgb(14,145,145)] text-slate-900 focus:ring-1 focus:ring-[rgb(14,145,145)]')
-                          : (isDark ? 'bg-[#0F1115] border-[#2D333D]/60 text-gray-300' : 'bg-slate-50 border-slate-200 text-slate-700')
+                          ? (isDark ? 'bg-[#020617] border-purple-600 text-white focus:ring-1 focus:ring-purple-600' : 'bg-white border-purple-600 text-slate-900 focus:ring-1 focus:ring-purple-600')
+                          : (isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]/60 text-gray-300' : 'bg-slate-50 border-slate-200 text-slate-700')
                       }`}
                     />
                   </div>
@@ -1008,8 +1062,8 @@ export default function ProductsTab({
                     onChange={e => setDetailNotes(e.target.value)}
                     className={`w-full p-2.5 rounded-lg border outline-none transition-all ${
                       isDetailEditing 
-                        ? (isDark ? 'bg-[#0F1115] border-[rgb(14,145,145)] text-white focus:ring-1 focus:ring-[rgb(14,145,145)]' : 'bg-white border-[rgb(14,145,145)] text-slate-900 focus:ring-1 focus:ring-[rgb(14,145,145)]')
-                        : (isDark ? 'bg-[#0F1115] border-[#2D333D]/60 text-gray-300' : 'bg-slate-50 border-slate-200 text-slate-700')
+                        ? (isDark ? 'bg-[#020617] border-purple-600 text-white focus:ring-1 focus:ring-purple-600' : 'bg-white border-purple-600 text-slate-900 focus:ring-1 focus:ring-purple-600')
+                        : (isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]/60 text-gray-300' : 'bg-slate-50 border-slate-200 text-slate-700')
                     }`}
                     placeholder="No additional specifications recorded."
                   />
@@ -1054,7 +1108,7 @@ export default function ProductsTab({
                       <button
                         type="button"
                         onClick={requestSaveProduct}
-                        className="px-4 py-2 bg-[rgb(14,145,145)] hover:bg-[rgb(12,125,125)] text-white rounded-lg text-xs font-bold transition-all cursor-pointer shadow-md shadow-[rgb(14,145,145)]/15"
+                        className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-xs font-bold transition-all cursor-pointer shadow-md shadow-purple-600/15"
                       >
                         Save Changes
                       </button>
@@ -1075,7 +1129,7 @@ export default function ProductsTab({
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-xs" onClick={() => setIsModalOpen(false)}></div>
-          <div className={`relative w-full max-w-lg rounded-2xl p-6 border shadow-2xl ${isDark ? 'bg-[#1A1D23] border-[#2D333D] text-white' : 'bg-white border-slate-200 text-slate-800'}`}>
+          <div className={`relative w-full max-w-lg rounded-2xl p-6 border shadow-2xl ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)] text-white' : 'bg-white border-slate-200 text-slate-800'}`}>
             <div className="flex justify-between items-center mb-4">
               <h3 className="font-extrabold text-base">
                 {editingProduct ? 'Modify Product Specifications' : 'Define New SaaS Module'}
@@ -1093,7 +1147,7 @@ export default function ProductsTab({
                     type="text" 
                     disabled
                     value={editingProduct.id} 
-                    className={`w-full p-2 rounded-lg border outline-hidden opacity-70 font-mono ${isDark ? 'bg-[#0F1115] border-[#2D333D] text-gray-400' : 'bg-slate-100 border-slate-200 text-slate-500'}`}
+                    className={`w-full p-2 rounded-lg border outline-hidden opacity-70 font-mono ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)] text-gray-400' : 'bg-slate-100 border-slate-200 text-slate-500'}`}
                   />
                 </div>
               )}
@@ -1105,7 +1159,7 @@ export default function ProductsTab({
                   required
                   value={name} 
                   onChange={e => setName(e.target.value)}
-                  className={`w-full p-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50 border-slate-200'}`}
+                  className={`w-full p-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200'}`}
                   placeholder="e.g. BJ Cloud Storage Core"
                 />
               </div>
@@ -1117,7 +1171,7 @@ export default function ProductsTab({
                   value={description} 
                   onChange={e => setDescription(e.target.value)}
                   rows={2}
-                  className={`w-full p-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50 border-slate-200'}`}
+                  className={`w-full p-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200'}`}
                   placeholder="Provide detailed description of the module"
                 />
               </div>
@@ -1130,7 +1184,7 @@ export default function ProductsTab({
                     required
                     value={sku} 
                     onChange={e => setSku(e.target.value)}
-                    className={`w-full p-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50 border-slate-200'}`}
+                    className={`w-full p-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200'}`}
                   />
                 </div>
                 <div className="space-y-1">
@@ -1142,7 +1196,7 @@ export default function ProductsTab({
                     step={0.01}
                     value={unitPrice} 
                     onChange={e => setUnitPrice(parseFloat(e.target.value))}
-                    className={`w-full p-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50 border-slate-200'}`}
+                    className={`w-full p-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200'}`}
                   />
                 </div>
               </div>
@@ -1169,7 +1223,7 @@ export default function ProductsTab({
                     required
                     value={tierName} 
                     onChange={e => setTierName(e.target.value)}
-                    className={`w-full p-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50 border-slate-200'}`}
+                    className={`w-full p-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200'}`}
                   />
                 </div>
               </div>
@@ -1182,7 +1236,7 @@ export default function ProductsTab({
                   value={notes} 
                   onChange={e => setNotes(e.target.value)}
                   rows={2}
-                  className={`w-full p-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50 border-slate-200'}`}
+                  className={`w-full p-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200'}`}
                 />
               </div>
 
@@ -1196,7 +1250,7 @@ export default function ProductsTab({
                 </button>
                 <button 
                   type="submit"
-                  className="px-4 py-2 bg-[rgb(14,145,145)] hover:bg-[rgb(12,125,125)] text-white rounded-lg font-bold cursor-pointer"
+                  className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-bold cursor-pointer"
                 >
                   {t.save}
                 </button>
@@ -1212,7 +1266,7 @@ export default function ProductsTab({
       {isPortfolioModalOpen && portfolioProduct && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-xs" onClick={() => setIsPortfolioModalOpen(false)}></div>
-          <div className={`relative w-full max-w-md rounded-2xl p-6 border shadow-2xl ${isDark ? 'bg-[#1A1D23] border-[#2D333D] text-white' : 'bg-white border-slate-200 text-slate-800'}`}>
+          <div className={`relative w-full max-w-md rounded-2xl p-6 border shadow-2xl ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)] text-white' : 'bg-white border-slate-200 text-slate-800'}`}>
             <div className="flex justify-between items-center mb-4">
               <div>
                 <span className="text-[10px] font-mono text-gray-500">PORTFOLIO FAST ACTION</span>
@@ -1235,7 +1289,7 @@ export default function ProductsTab({
             <form onSubmit={handleSavePortfolio} className="space-y-4 text-xs">
               <div className="space-y-1">
                 <label className="font-bold block mb-1">Target Customer Accounts</label>
-                <div className={`p-3 rounded-lg border max-h-52 overflow-y-auto space-y-2.5 ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50 border-slate-200'}`}>
+                <div className={`p-3 rounded-lg border max-h-52 overflow-y-auto space-y-2.5 ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200'}`}>
                   {customers.length === 0 ? (
                     <p className="text-center italic text-gray-500 py-4">No customers registered</p>
                   ) : (
@@ -1247,7 +1301,7 @@ export default function ProductsTab({
                             type="checkbox" 
                             checked={isAssoc}
                             onChange={() => togglePortfolioCustomer(c.id)}
-                            className="rounded-sm border-slate-300 text-[rgb(14,145,145)] focus:ring-[rgb(14,145,145)]"
+                            className="rounded-sm border-slate-300 text-purple-600 focus:ring-purple-600"
                           />
                           <div>
                             <span className="font-bold block">{c.name}</span>
@@ -1270,7 +1324,7 @@ export default function ProductsTab({
                 </button>
                 <button 
                   type="submit"
-                  className="px-4 py-2 bg-[rgb(14,145,145)] hover:bg-[rgb(12,125,125)] text-white rounded-lg font-bold cursor-pointer"
+                  className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-bold cursor-pointer"
                 >
                   Save Portfolio Changes
                 </button>
@@ -1283,11 +1337,11 @@ export default function ProductsTab({
 
 
       {/* AUDIT LOG SECTION FOR THE PRODUCTS TAB */}
-      <div className={`mt-8 p-6 rounded-2xl border ${isDark ? 'bg-[#13161C] border-[#2D333D]' : 'bg-white border-slate-100 shadow-3xs'}`}>
+      <div className={`mt-8 p-6 rounded-2xl border ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-100 shadow-3xs'}`}>
         <div className="flex items-center justify-between mb-4 pb-2 border-b border-dashed border-gray-700/20">
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-[rgb(14,145,145)] animate-pulse"></span>
-            <h4 className="font-extrabold text-sm uppercase tracking-wider text-[rgb(14,145,145)]">SaaS Catalog Audit Trail (Product Records)</h4>
+            <span className="w-2.5 h-2.5 rounded-full bg-purple-600 animate-pulse"></span>
+            <h4 className="font-extrabold text-sm uppercase tracking-wider text-purple-600">SaaS Catalog Audit Trail (Product Records)</h4>
           </div>
           <span className="text-[10px] text-gray-500 font-mono">Status: Connected to Log Store</span>
         </div>
@@ -1300,7 +1354,7 @@ export default function ProductsTab({
                 <span className="text-gray-400 font-mono shrink-0 select-none">[{log.timestamp}]</span>
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-0.5">
-                    <span className="font-extrabold text-[rgb(14,145,145)]">{log.action}</span>
+                    <span className="font-extrabold text-purple-600">{log.action}</span>
                     <span className="text-gray-500">•</span>
                     <span className="text-gray-400 font-medium">Actor: {log.user}</span>
                   </div>
@@ -1318,8 +1372,8 @@ export default function ProductsTab({
       {/* CONFIRMATION POPUP MODAL */}
       {confirmModal?.isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-          <div className={`relative w-full max-w-md rounded-2xl p-6 border shadow-2xl ${isDark ? 'bg-[#1A1D23] border-[#2D333D] text-white' : 'bg-white border-slate-200 text-slate-800'}`}>
-            <h3 className="text-base font-extrabold mb-2 text-[rgb(14,145,145)] flex items-center gap-2">
+          <div className={`relative w-full max-w-md rounded-2xl p-6 border shadow-2xl ${isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-800'}`}>
+            <h3 className="text-base font-extrabold mb-2 text-purple-600 flex items-center gap-2">
               ⚠️ {confirmModal.title}
             </h3>
             <p className="text-xs text-gray-500 leading-relaxed mb-6">

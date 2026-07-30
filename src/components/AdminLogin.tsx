@@ -219,7 +219,7 @@ export default function AdminLogin({
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-xs" onClick={() => setIsForgotPasswordOpen(false)}></div>
           <div className={`relative w-full max-w-sm rounded-2xl p-6 border shadow-2xl transition-all ${
-            isDark ? 'bg-[#1A1D23] border-[#2D333D] text-white' : 'bg-white border-slate-200 text-slate-800'
+            isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)] text-white' : 'bg-white border-slate-200 text-slate-800'
           }`}>
             <h3 className="font-extrabold text-sm mb-2 flex items-center gap-2">
               <Info className="w-5 h-5 text-indigo-500" />
@@ -231,7 +231,7 @@ export default function AdminLogin({
             </p>
             <button
               onClick={() => setIsForgotPasswordOpen(false)}
-              className="w-full py-2 bg-[rgb(14,145,145)] hover:bg-[rgb(12,125,125)] text-white text-xs font-bold rounded-lg"
+              className="w-full py-2 bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold rounded-lg"
             >
               Back to Login
             </button>

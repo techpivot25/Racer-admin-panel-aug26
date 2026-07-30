@@ -40,7 +40,7 @@ export default function LanguageSelector({ currentLang, onChangeLang, isDark }: 
         type="button"
         className={`flex items-center gap-1.5 p-1.5 rounded-full border transition-all cursor-pointer ${
           isDark
-            ? 'bg-[#1A1D23] border-[#2D333D] hover:bg-gray-800 text-white'
+            ? 'bg-[#0f172a] border-slate-800 hover:bg-slate-800 text-white'
             : 'bg-white border-slate-200 hover:bg-slate-50 text-slate-700 shadow-3xs'
         }`}
         aria-haspopup="true"
@@ -60,7 +60,7 @@ export default function LanguageSelector({ currentLang, onChangeLang, isDark }: 
         <div
           className={`absolute right-0 mt-2 w-16 origin-top-right rounded-xl border p-1 shadow-lg focus:outline-hidden z-50 transition-all duration-100 ${
             isDark
-              ? 'bg-[#161920] border-[#2D333D] text-white shadow-black/40'
+              ? 'bg-[#0f172a] border-slate-800 text-white shadow-black/40'
               : 'bg-white border-slate-100 text-slate-800 shadow-slate-200/50'
           }`}
           role="menu"
@@ -78,8 +78,8 @@ export default function LanguageSelector({ currentLang, onChangeLang, isDark }: 
                   }}
                   className={`w-full h-11 rounded-lg flex items-center justify-center transition-all cursor-pointer text-2xl hover:scale-105 active:scale-95 ${
                     isSelected
-                      ? (isDark ? 'bg-[rgb(14,145,145)] text-white' : 'bg-slate-100 text-black')
-                      : (isDark ? 'hover:bg-[#1A1D23]' : 'hover:bg-slate-50')
+                      ? (isDark ? 'bg-purple-600 text-white' : 'bg-slate-100 text-black')
+                      : (isDark ? 'hover:bg-slate-800' : 'hover:bg-slate-50')
                   }`}
                   role="menuitem"
                   title={lang.label}

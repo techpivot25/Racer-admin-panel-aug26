@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useRef } from 'react';
 import { CustomSelect } from './CustomSelect';
+import InteractiveSchemaERD from './InteractiveSchemaERD';
 import { 
   Plus, 
   Search, 
@@ -15,7 +16,9 @@ import {
   Shield,
   Database,
   Eye,
-  EyeOff
+  EyeOff,
+  Layers,
+  BookOpen
 } from 'lucide-react';
 import { DocItem, Product, Customer, AdminUser, SupportTierInfo } from '../types';
 
@@ -44,6 +47,9 @@ export default function DocsTab({
   t,
   isDark
 }: DocsTabProps) {
+  // Navigation Sub-tab within Documentation
+  const [docSubTab, setDocSubTab] = useState<'schema' | 'assets'>('schema');
+
   // Repository search & filter states
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -230,58 +236,98 @@ Disclaimer: This is a secure, system-generated enterprise technical documentatio
   return (
     <div className="space-y-6">
       
-      {/* HEADER SECTION */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b pb-4 dark:border-[#2D333D] border-slate-200 gap-4">
+      {/* MAIN DOCUMENTATION HEADER & PRIMARY SUB-TABS */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b pb-4 dark:border-[rgb(30, 41, 59)] border-slate-200 gap-4">
         <div>
-          <h2 className="text-xl font-extrabold tracking-tight flex items-center gap-2">
-            <Database className="w-5.5 h-5.5 text-[rgb(14,145,145)]" />
+          <h2 className="text-xl font-extrabold tracking-tight flex items-center gap-2 text-slate-900 dark:text-white">
+            <Database className="w-5.5 h-5.5 text-purple-600" />
             <span>{t.documentation}</span>
           </h2>
           <p className="text-xs text-gray-500 mt-1 dark:text-gray-400">
-            Secure technical manuals, service definitions, integration guides, and audience-scoped deployment runbooks.
+            Interactive system architecture, master database schema spec, ERD diagrams, and technical manual runbooks.
           </p>
         </div>
         
-        <button
-          onClick={openAddModal}
-          className="px-4 py-2 bg-[rgb(14,145,145)] hover:bg-[rgb(12,125,125)] text-white rounded-lg text-xs font-bold flex items-center gap-2 shadow-md shadow-[rgb(14,145,145)]/10 transition-all cursor-pointer shrink-0"
-        >
-          <Plus className="w-4 h-4" />
-          <span>Publish New Doc</span>
-        </button>
+        {/* PRIMARY SUB-TAB NAVIGATION */}
+        <div className={`flex rounded-xl p-1 border shrink-0 ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-slate-100 border-slate-200'}`}>
+          <button
+            onClick={() => setDocSubTab('schema')}
+            className={`px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-2 transition-all cursor-pointer ${
+              docSubTab === 'schema' 
+                ? 'bg-purple-600 text-white shadow-xs' 
+                : (isDark ? 'text-gray-400 hover:text-white' : 'text-slate-600 hover:text-slate-900')
+            }`}
+          >
+            <Layers className="w-4 h-4" />
+            <span>Master Database Schema Spec & ERD</span>
+          </button>
+          <button
+            onClick={() => setDocSubTab('assets')}
+            className={`px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-2 transition-all cursor-pointer ${
+              docSubTab === 'assets' 
+                ? 'bg-purple-600 text-white shadow-xs' 
+                : (isDark ? 'text-gray-400 hover:text-white' : 'text-slate-600 hover:text-slate-900')
+            }`}
+          >
+            <BookOpen className="w-4 h-4" />
+            <span>Technical Manuals & Asset Library</span>
+          </button>
+        </div>
       </div>
 
-      {/* VERIFICATION BANNER */}
-      <div className={`p-4 rounded-xl border flex flex-col md:flex-row items-start md:items-center justify-between gap-4 transition-all bg-transparent ${isDark ? 'border-[rgb(14,145,145)]/30 text-white' : 'border-[rgb(14,145,145)]/20 text-slate-800'}`}>
-        <div className="flex items-center gap-3">
-          <div className={`p-2 rounded-lg shrink-0 ${isDark ? 'bg-slate-800 text-slate-300' : 'bg-slate-200 text-slate-800'}`}>
-            <Shield className="w-5 h-5" />
+      {/* RENDER SCHEMA & ERD TAB */}
+      {docSubTab === 'schema' && (
+        <InteractiveSchemaERD isDark={isDark} />
+      )}
+
+      {/* RENDER ASSETS REPOSITORY TAB */}
+      {docSubTab === 'assets' && (
+        <div className="space-y-6">
+          <div className="flex justify-between items-center">
+            <h3 className="text-sm font-extrabold uppercase tracking-wider text-slate-800 dark:text-slate-200 flex items-center gap-2">
+              <FileText className="w-4 h-4 text-purple-600" />
+              <span>Technical Manuals & Document Asset Library</span>
+            </h3>
+            <button
+              onClick={openAddModal}
+              className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-xs font-bold flex items-center gap-2 shadow-md shadow-purple-600/10 transition-all cursor-pointer shrink-0"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Publish New Doc Asset</span>
+            </button>
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className={`font-extrabold text-[10px] uppercase tracking-widest px-2 py-0.5 rounded-sm font-mono ${isDark ? 'bg-slate-800 text-slate-200 border border-slate-700' : 'bg-slate-200 text-slate-700 border border-slate-300'}`}>
-                Verified Operator Session
-              </span>
-              <span className={`text-xs font-mono ${isDark ? 'text-gray-300' : 'text-slate-500'}`}>• Active Secure Domain</span>
+
+          {/* VERIFICATION BANNER */}
+          <div className={`p-4 rounded-xl border flex flex-col md:flex-row items-start md:items-center justify-between gap-4 transition-all bg-transparent ${isDark ? 'border-purple-600/30 text-white' : 'border-purple-600/20 text-slate-800'}`}>
+            <div className="flex items-center gap-3">
+              <div className={`p-2 rounded-lg shrink-0 ${isDark ? 'bg-slate-800 text-slate-300' : 'bg-slate-200 text-slate-800'}`}>
+                <Shield className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className={`font-extrabold text-[10px] uppercase tracking-widest px-2 py-0.5 rounded-sm font-mono ${isDark ? 'bg-slate-800 text-slate-200 border border-slate-700' : 'bg-slate-200 text-slate-700 border border-slate-300'}`}>
+                    Verified Operator Session
+                  </span>
+                  <span className={`text-xs font-mono ${isDark ? 'text-gray-300' : 'text-slate-500'}`}>• Active Secure Domain</span>
+                </div>
+                <p className={`text-sm font-bold mt-1 ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                  Authenticated Workspace
+                </p>
+                <p className={`text-[11px] mt-0.5 ${isDark ? 'text-gray-400' : 'text-slate-600'}`}>
+                  Manage public or access-restricted product catalogs, system schemas, and SLA integration guidelines.
+                </p>
+              </div>
             </div>
-            <p className={`text-sm font-bold mt-1 ${isDark ? 'text-white' : 'text-slate-900'}`}>
-              Authenticated Workspace
-            </p>
-            <p className={`text-[11px] mt-0.5 ${isDark ? 'text-gray-400' : 'text-slate-600'}`}>
-              Manage public or access-restricted product catalogs, system schemas, and SLA integration guidelines.
-            </p>
+            <div className={`flex items-center gap-2 shrink-0 text-[10px] font-mono font-bold px-2.5 py-1 rounded-md ${isDark ? 'bg-black/20 text-white' : 'bg-slate-200 text-slate-800'}`}>
+              <span className={`w-2 h-2 rounded-full animate-pulse ${isDark ? 'bg-slate-400' : 'bg-slate-600'}`}></span>
+              <span>ROLE: ADMIN_DOCS_ROOT</span>
+            </div>
           </div>
-        </div>
-        <div className={`flex items-center gap-2 shrink-0 text-[10px] font-mono font-bold px-2.5 py-1 rounded-md ${isDark ? 'bg-black/20 text-white' : 'bg-slate-200 text-slate-800'}`}>
-          <span className={`w-2 h-2 rounded-full animate-pulse ${isDark ? 'bg-slate-400' : 'bg-slate-600'}`}></span>
-          <span>ROLE: ADMIN_DOCS_ROOT</span>
-        </div>
-      </div>
       
       {/* DATABASE SCHEMA ATTACHMENT EXPORTS */}
       <div className={`p-4 rounded-xl border flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 transition-all bg-transparent ${isDark ? 'border-slate-800 text-white' : 'border-slate-200 text-slate-800'}`}>
         <div className="flex items-center gap-3">
-          <div className={`p-2.5 rounded-lg shrink-0 ${isDark ? 'bg-slate-800 text-[rgb(14,145,145)]' : 'bg-slate-100 text-[rgb(14,145,145)]'}`}>
+          <div className={`p-2.5 rounded-lg shrink-0 ${isDark ? 'bg-slate-800 text-purple-600' : 'bg-slate-100 text-purple-600'}`}>
             <Database className="w-5 h-5" />
           </div>
           <div>
@@ -305,7 +351,7 @@ Disclaimer: This is a secure, system-generated enterprise technical documentatio
           <a
             href="/admin_panel_schema.json"
             download="racer_admin_panel_schema.json"
-            className="flex-1 lg:flex-none px-3.5 py-1.5 bg-[rgb(14,145,145)] hover:bg-[rgb(12,125,125)] text-white rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-xs"
+            className="flex-1 lg:flex-none px-3.5 py-1.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-xs"
           >
             <Download className="w-3.5 h-3.5" />
             <span>JSON Mapping (.json)</span>
@@ -321,8 +367,8 @@ Disclaimer: This is a secure, system-generated enterprise technical documentatio
         onClick={triggerFileClick}
         className={`p-8 rounded-xl border-2 border-dashed text-center cursor-pointer transition-all ${
           isDragging 
-            ? 'border-[rgb(14,145,145)] bg-slate-100 dark:bg-slate-800/50 scale-99' 
-            : (isDark ? 'border-gray-700 bg-gray-900/30 hover:border-gray-500 hover:bg-gray-900/50' : 'border-slate-200 bg-slate-50/50 hover:border-[rgb(14,145,145)] hover:bg-white hover:shadow-xs')
+            ? 'border-purple-600 bg-slate-100 dark:bg-slate-800/50 scale-99' 
+            : (isDark ? 'border-gray-700 bg-gray-900/30 hover:border-gray-500 hover:bg-gray-900/50' : 'border-slate-200 bg-slate-50/50 hover:border-purple-600 hover:bg-white hover:shadow-xs')
         }`}
       >
         <input 
@@ -350,22 +396,22 @@ Disclaimer: This is a secure, system-generated enterprise technical documentatio
       {/* FILTER BAR & SEARCH FIELD */}
       <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
         <div className="flex flex-wrap items-center gap-3">
-          <div className={`flex rounded-xl p-1 border ${isDark ? 'bg-[#1A1D23] border-[#2D333D]' : 'bg-slate-100 border-slate-200'}`}>
+          <div className={`flex rounded-xl p-1 border ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-slate-100 border-slate-200'}`}>
             <button
               onClick={() => setSelectedCategory('all')}
-              className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${selectedCategory === 'all' ? 'bg-[rgb(14,145,145)] text-white shadow-xs' : (isDark ? 'text-gray-400 hover:text-white' : 'text-slate-600 hover:text-slate-900')}`}
+              className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${selectedCategory === 'all' ? 'bg-purple-600 text-white shadow-xs' : (isDark ? 'text-gray-400 hover:text-white' : 'text-slate-600 hover:text-slate-900')}`}
             >
               All Docs
             </button>
             <button
               onClick={() => setSelectedCategory('Product Documentation')}
-              className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${selectedCategory === 'Product Documentation' ? 'bg-[rgb(14,145,145)] text-white shadow-xs' : (isDark ? 'text-gray-400 hover:text-white' : 'text-slate-600 hover:text-slate-900')}`}
+              className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${selectedCategory === 'Product Documentation' ? 'bg-purple-600 text-white shadow-xs' : (isDark ? 'text-gray-400 hover:text-white' : 'text-slate-600 hover:text-slate-900')}`}
             >
               Product Handbooks
             </button>
             <button
               onClick={() => setSelectedCategory('Support Documentation')}
-              className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${selectedCategory === 'Support Documentation' ? 'bg-[rgb(14,145,145)] text-white shadow-xs' : (isDark ? 'text-gray-400 hover:text-white' : 'text-slate-600 hover:text-slate-900')}`}
+              className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${selectedCategory === 'Support Documentation' ? 'bg-purple-600 text-white shadow-xs' : (isDark ? 'text-gray-400 hover:text-white' : 'text-slate-600 hover:text-slate-900')}`}
             >
               Support Manuals
             </button>
@@ -396,7 +442,7 @@ Disclaimer: This is a secure, system-generated enterprise technical documentatio
             type="text" 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className={`w-full pl-9 pr-4 py-2 text-xs rounded-lg border outline-hidden transition-all ${isDark ? 'bg-[#0F1115] border-[#2D333D] text-white focus:border-[rgb(14,145,145)]' : 'bg-slate-50 border-slate-250 text-slate-800 focus:border-[rgb(14,145,145)]'}`}
+            className={`w-full pl-9 pr-4 py-2 text-xs rounded-lg border outline-hidden transition-all ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)] text-white focus:border-purple-600' : 'bg-slate-50 border-slate-250 text-slate-800 focus:border-purple-600'}`}
             placeholder="Search documents or SKU codes..."
           />
         </div>
@@ -409,8 +455,8 @@ Disclaimer: This is a secure, system-generated enterprise technical documentatio
             key={doc.id}
             className={`group p-5 rounded-xl border flex flex-col justify-between transition-all duration-200 hover:shadow-md ${
               isDark 
-                ? 'bg-[#1A1D23] border-[#2D333D] hover:border-[rgb(14,145,145)]/40' 
-                : 'bg-white border-slate-200 shadow-3xs hover:border-[rgb(14,145,145)]'
+                ? 'bg-[#0f172a] border-[rgb(30, 41, 59)] hover:border-purple-600/40' 
+                : 'bg-white border-slate-200 shadow-3xs hover:border-purple-600'
             }`}
           >
             <div className="space-y-3">
@@ -525,12 +571,14 @@ Disclaimer: This is a secure, system-generated enterprise technical documentatio
           </div>
         )}
       </div>
+      </div>
+      )}
 
       {/* DOCUMENT EDIT/ADD DIALOG MODAL */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-xs" onClick={() => setIsModalOpen(false)}></div>
-          <div className={`relative w-full max-w-lg rounded-2xl p-6 border shadow-2xl ${isDark ? 'bg-[#1A1D23] border-[#2D333D] text-white' : 'bg-white border-slate-200 text-slate-800'}`}>
+          <div className={`relative w-full max-w-lg rounded-2xl p-6 border shadow-2xl ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)] text-white' : 'bg-white border-slate-200 text-slate-800'}`}>
             <div className="flex justify-between items-center mb-4">
               <h3 className="font-extrabold text-base">
                 {editingDoc ? 'Edit Technical Snapshot' : 'Register New Document Asset'}
@@ -548,7 +596,7 @@ Disclaimer: This is a secure, system-generated enterprise technical documentatio
                   required
                   value={title} 
                   onChange={e => setTitle(e.target.value)}
-                  className={`w-full p-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50 border-slate-200'}`}
+                  className={`w-full p-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200'}`}
                 />
               </div>
 
@@ -582,7 +630,7 @@ Disclaimer: This is a secure, system-generated enterprise technical documentatio
               {/* Tag SKUs */}
               <div className="space-y-1">
                 <label className="font-bold block mb-1">Tag Product SKUs</label>
-                <div className={`p-3 rounded-lg border max-h-32 overflow-y-auto space-y-2 ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50 border-slate-200'}`}>
+                <div className={`p-3 rounded-lg border max-h-32 overflow-y-auto space-y-2 ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200'}`}>
                   {products.map(p => {
                     const isTagged = associatedProducts.includes(p.sku);
                     return (
@@ -591,7 +639,7 @@ Disclaimer: This is a secure, system-generated enterprise technical documentatio
                           type="checkbox" 
                           checked={isTagged}
                           onChange={() => toggleProductSku(p.sku)}
-                          className="rounded-sm border-slate-300 text-[rgb(14,145,145)] focus:ring-[rgb(14,145,145)] cursor-pointer"
+                          className="rounded-sm border-slate-300 text-purple-600 focus:ring-purple-600 cursor-pointer"
                         />
                         <span>{p.name} ({p.sku})</span>
                       </label>
@@ -603,7 +651,7 @@ Disclaimer: This is a secure, system-generated enterprise technical documentatio
               {/* Tag Customers */}
               <div className="space-y-1">
                 <label className="font-bold block mb-1">Restrict Audience Scope</label>
-                <div className={`p-3 rounded-lg border max-h-32 overflow-y-auto space-y-2 ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50 border-slate-200'}`}>
+                <div className={`p-3 rounded-lg border max-h-32 overflow-y-auto space-y-2 ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200'}`}>
                   {customers.map(c => {
                     const isTargeted = targetCustomerIds.includes(c.id);
                     return (
@@ -612,7 +660,7 @@ Disclaimer: This is a secure, system-generated enterprise technical documentatio
                           type="checkbox" 
                           checked={isTargeted}
                           onChange={() => toggleTargetCustomerId(c.id)}
-                          className="rounded-sm border-slate-300 text-[rgb(14,145,145)] focus:ring-[rgb(14,145,145)] cursor-pointer"
+                          className="rounded-sm border-slate-300 text-purple-600 focus:ring-purple-600 cursor-pointer"
                         />
                         <span>{c.name} ({c.id})</span>
                       </label>
@@ -635,7 +683,7 @@ Disclaimer: This is a secure, system-generated enterprise technical documentatio
                   rows={2.5}
                   required
                   placeholder="Append technical summaries, integration hashes, or runbook guidelines here..."
-                  className={`w-full p-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#0F1115] border-[#2D333D]' : 'bg-slate-50 border-slate-200'}`}
+                  className={`w-full p-2 rounded-lg border outline-hidden ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)]' : 'bg-slate-50 border-slate-200'}`}
                 />
               </div>
 
@@ -649,7 +697,7 @@ Disclaimer: This is a secure, system-generated enterprise technical documentatio
                 </button>
                 <button 
                   type="submit"
-                  className="px-4 py-2 bg-[rgb(14,145,145)] hover:bg-[rgb(12,125,125)] text-white rounded-lg cursor-pointer"
+                  className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg cursor-pointer"
                 >
                   {t.save}
                 </button>
