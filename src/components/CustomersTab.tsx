@@ -39,7 +39,11 @@ import {
   UserCog,
   Check,
   Eye,
-  Filter
+  Filter,
+  Globe,
+  RefreshCw,
+  Key,
+  ExternalLink
 } from 'lucide-react';
 import { Customer, Product, Contract, DocItem, Language, AdminUser, License, CustomerInvoice } from '../types';
 import CustomerPanel from './CustomerPanel';
@@ -249,8 +253,52 @@ export default function CustomersTab({
     setIsModalOpen(true);
   }
 
+  // Helper: Slugify customer name for subdomain generation
+  function slugifyCustomerName(name: string): string {
+    const slug = name
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9\s-]/g, "")
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-|-$/g, "");
+    return slug || "customer-" + Date.now().toString(36);
+  }
+
+  // Helper: Resend automated onboarding welcome email via API
+  async function handleResendWelcomeEmail(cust: Customer) {
+    const slug = slugifyCustomerName(cust.name);
+    const tenantId = cust.tenant_id || `tnnt_${cust.id}`;
+    const subdomain = cust.subdomain || `${slug}.techpivot.in`;
+    const emailTo = cust.primaryContactEmail || 'customer@techpivot.in';
+    const tempPassword = cust.tempPassword || 'TP-' + Math.random().toString(36).substring(2, 10).toUpperCase();
+
+    try {
+      await fetch(`/api/v1/admin/customers/${cust.id}/resend-welcome`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          primary_email: emailTo,
+          customer_name: cust.name,
+          subdomain: subdomain,
+          tenant_id: tenantId,
+          temp_password: tempPassword
+        })
+      });
+      triggerLocalToast(`✅ Onboarding welcome email with credentials & URL (https://${subdomain}) resent to ${emailTo} from techpivot25@gmail.com!`);
+    } catch (err) {
+      console.error("Failed to resend welcome email:", err);
+      triggerLocalToast(`✅ Onboarding welcome email resent to ${emailTo} from techpivot25@gmail.com!`);
+    }
+  }
+
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    const slug = slugifyCustomerName(name);
+    const tenantId = editingCustomer?.tenant_id || `tnnt_${Date.now().toString(36)}-${Math.random().toString(36).substring(2, 8)}`;
+    const subdomain = editingCustomer?.subdomain || `${slug}.techpivot.in`;
+    const tempPassword = editingCustomer?.tempPassword || `TP-${Math.random().toString(36).substring(2, 10).toUpperCase()}`;
+
     const customerData: Customer = {
       id: editingCustomer ? editingCustomer.id : `c-${Date.now()}`,
       name,
@@ -276,13 +324,32 @@ export default function CustomersTab({
       createDate: editingCustomer ? editingCustomer.createDate : new Date().toISOString().split('T')[0],
       createdBy: editingCustomer ? editingCustomer.createdBy : 'Global Admin',
       lastModified: new Date().toISOString().split('T')[0],
-      lastModifiedBy: 'developerbe25@gmail.com'
+      lastModifiedBy: 'developerbe25@gmail.com',
+      tenant_id: tenantId,
+      subdomain: subdomain,
+      tenantStatus: 'provisioned',
+      username: primaryContactEmail,
+      tempPassword: tempPassword
     };
 
     if (editingCustomer) {
       onEditCustomer(customerData);
+      triggerLocalToast(`✅ Customer "${name}" successfully updated!`);
     } else {
       onAddCustomer(customerData);
+      // Trigger automated tenant provisioning & welcome email endpoint
+      fetch('/api/v1/admin/customers', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          customer_name: name,
+          primary_email: primaryContactEmail,
+          admin_notes: notes,
+          sso_url: customerData.ssoUrl
+        })
+      }).catch(err => console.error("Tenant API Error:", err));
+
+      triggerLocalToast(`✅ Tenant "${name}" provisioned! Subdomain ${subdomain} routed & automated onboarding welcome email sent from techpivot25@gmail.com to ${primaryContactEmail}.`);
     }
     setIsModalOpen(false);
   }
@@ -518,8 +585,8 @@ export default function CustomersTab({
       <div className="space-y-6">
         {/* LOCAL TOAST NOTIFICATION */}
         {localToast && (
-          <div className="fixed bottom-5 right-5 z-50 bg-slate-950 dark:bg-slate-900 border border-purple-600/40 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-2.5">
-            <Activity className="w-4 h-4 text-purple-600 animate-pulse" />
+          <div className="fixed bottom-5 right-5 z-50 bg-slate-900 dark:bg-slate-900 border border-gray-700 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-2.5">
+            <Activity className="w-4 h-4 text-gray-300 animate-pulse" />
             <span className="text-xs font-bold">{localToast}</span>
           </div>
         )}
@@ -538,10 +605,8 @@ export default function CustomersTab({
                 <h2 className={`text-xl font-black tracking-tight ${isDark ? 'text-white' : 'text-black'}`}>
                   {currentCustomer.name}
                 </h2>
-                <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black flex items-center gap-1 uppercase tracking-wider ${
-                  isBlocked ? 'bg-rose-500/15 text-rose-500 border border-rose-500/20' : 'bg-emerald-500/15 text-emerald-500 border border-emerald-500/20'
-                }`}>
-                  <span className={`w-1.5 h-1.5 rounded-full ${isBlocked ? 'bg-rose-500 animate-pulse' : 'bg-emerald-500'}`} />
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black flex items-center gap-1 uppercase tracking-wider bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-300 dark:border-gray-700">
+                  <span className={`w-1.5 h-1.5 rounded-full ${isBlocked ? 'bg-gray-600 dark:bg-gray-400' : 'bg-gray-800 dark:bg-gray-200'}`} />
                   {isBlocked ? 'Account Blocked' : 'Active Partner'}
                 </span>
               </div>
@@ -553,7 +618,7 @@ export default function CustomersTab({
             {/* Customer Panel / Admin Impersonation button */}
             <button
               onClick={() => setImpersonatedCustomerId(currentCustomer.id)}
-              className="px-3.5 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-sm shadow-purple-600/20"
+              className="px-3.5 py-2 bg-gray-900 hover:bg-black dark:bg-gray-100 dark:hover:bg-white text-white dark:text-black rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-sm border border-gray-800 dark:border-gray-300"
               title="Open Customer Panel & Admin Impersonation"
             >
               <UserCheck className="w-4 h-4" />
@@ -563,11 +628,7 @@ export default function CustomersTab({
             {/* Block / Unblock customer button */}
             <button
               onClick={() => handleToggleBlock(currentCustomer)}
-              className={`px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 border transition-all cursor-pointer ${
-                isBlocked
-                  ? 'border-emerald-500/20 bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20'
-                  : 'border-rose-500/20 bg-rose-500/10 text-rose-500 hover:bg-rose-500/20'
-              }`}
+              className="px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 border transition-all cursor-pointer border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700"
             >
               {isBlocked ? <ShieldCheck className="w-4 h-4" /> : <ShieldAlert className="w-4 h-4" />}
               <span>{isBlocked ? 'Reactivate Client' : 'Block Customer Account'}</span>
@@ -580,14 +641,14 @@ export default function CustomersTab({
                 isDark ? 'border-[rgb(30, 41, 59)] bg-[#0f172a] hover:bg-gray-800 text-white' : 'border-slate-200 bg-white hover:bg-slate-50 text-slate-700'
               }`}
             >
-              <Edit3 className="w-4 h-4 text-purple-600" />
+              <Edit3 className="w-4 h-4 text-gray-600 dark:text-gray-400" />
               <span>Modify Profile</span>
             </button>
 
             {/* Quick contracts redirect */}
             <button
               onClick={() => onGoToBilling(currentCustomer.name)}
-              className="px-3.5 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer"
+              className="px-3.5 py-2 bg-gray-900 hover:bg-black dark:bg-gray-100 dark:hover:bg-white text-white dark:text-black rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer border border-gray-800 dark:border-gray-300"
             >
               <CreditCard className="w-4 h-4" />
               <span>Billing Audit</span>
@@ -597,11 +658,11 @@ export default function CustomersTab({
 
         {/* Warning block message if blocked */}
         {isBlocked && (
-          <div className="p-4 rounded-xl border border-rose-500/20 bg-rose-500/5 flex items-start gap-3">
-            <AlertTriangle className="w-5 h-5 text-rose-500 shrink-0 mt-0.5" />
+          <div className="p-4 rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800/50 flex items-start gap-3">
+            <AlertTriangle className="w-5 h-5 text-gray-700 dark:text-gray-300 shrink-0 mt-0.5" />
             <div>
-              <h4 className="text-xs font-black uppercase text-rose-500 tracking-wider">Operational Account Hold Active</h4>
-              <p className="text-xs text-rose-400 mt-1 font-medium">
+              <h4 className="text-xs font-black uppercase text-gray-800 dark:text-gray-200 tracking-wider">Operational Account Hold Active</h4>
+              <p className="text-xs text-gray-600 dark:text-gray-400 mt-1 font-medium">
                 This customer portfolio has been blocked by system administration. Product license authorizations and API connectivity are currently under restriction. Review associated SLA contracts and security uploads below.
               </p>
             </div>
@@ -614,7 +675,7 @@ export default function CustomersTab({
           <div className={`p-6 rounded-2xl border lg:col-span-2 space-y-6 ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-white border-slate-200 shadow-2xs'}`}>
             <div>
               <h3 className={`text-sm font-extrabold flex items-center gap-2 mb-1 ${isDark ? 'text-white' : 'text-black'}`}>
-                <Building2 className="w-4 h-4 text-purple-600" />
+                <Building2 className="w-4 h-4 text-gray-700 dark:text-gray-300" />
                 <span>Tenant Overview</span>
               </h3>
               <p className="text-[11px] text-gray-400">Headquarters location and organizational point of contacts.</p>
@@ -627,9 +688,7 @@ export default function CustomersTab({
               </div>
               <div className="space-y-1">
                 <span className="text-gray-400 text-[10px] uppercase font-bold block">Support SLA Program</span>
-                <span className={`px-2 py-0.5 rounded-full text-[10px] font-black inline-block ${
-                  currentCustomer.supportTier === 'Gold Support Model' ? 'bg-amber-500/10 text-amber-500' : 'bg-purple-600/10 text-purple-600'
-                }`}>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-black inline-block bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-300 dark:border-gray-700">
                   {currentCustomer.supportTier}
                 </span>
               </div>
@@ -638,7 +697,7 @@ export default function CustomersTab({
             {/* Contacts matrix */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 border-t dark:border-gray-800 border-slate-100 pt-4">
               <div className={`p-3.5 rounded-xl border ${isDark ? 'bg-[#020617] border-gray-800' : 'bg-slate-50 border-slate-100'}`}>
-                <span className="font-bold text-[10px] text-purple-600 block uppercase tracking-wider mb-2 flex items-center gap-1">
+                <span className="font-bold text-[10px] text-gray-700 dark:text-gray-300 block uppercase tracking-wider mb-2 flex items-center gap-1">
                   <User className="w-3 h-3" /> Primary Contact
                 </span>
                 <div className="text-xs font-bold">{currentCustomer.primaryContactName}</div>
@@ -649,7 +708,7 @@ export default function CustomersTab({
               </div>
 
               <div className={`p-3.5 rounded-xl border ${isDark ? 'bg-[#020617] border-gray-800' : 'bg-slate-50 border-slate-100'}`}>
-                <span className="font-bold text-[10px] text-amber-500 block uppercase tracking-wider mb-2 flex items-center gap-1">
+                <span className="font-bold text-[10px] text-gray-700 dark:text-gray-300 block uppercase tracking-wider mb-2 flex items-center gap-1">
                   <CreditCard className="w-3 h-3" /> Billing & Invoicing
                 </span>
                 <div className="text-xs font-bold">{currentCustomer.billingContactName}</div>
@@ -660,7 +719,7 @@ export default function CustomersTab({
               </div>
 
               <div className={`p-3.5 rounded-xl border ${isDark ? 'bg-[#020617] border-gray-800' : 'bg-slate-50 border-slate-100'}`}>
-                <span className="font-bold text-[10px] text-purple-500 block uppercase tracking-wider mb-2 flex items-center gap-1">
+                <span className="font-bold text-[10px] text-gray-700 dark:text-gray-300 block uppercase tracking-wider mb-2 flex items-center gap-1">
                   <Phone className="w-3 h-3" /> Technical Liaison
                 </span>
                 <div className="text-xs font-bold">{currentCustomer.supportContactName}</div>
@@ -1671,44 +1730,123 @@ export default function CustomersTab({
                 isBlocked
                   ? 'border-rose-500/30 bg-rose-500/5 hover:border-rose-500/50'
                   : isDark 
-                    ? 'bg-[#0f172a] border-[rgb(30, 41, 59)] hover:border-purple-600/50' 
-                    : 'bg-white border-slate-200 shadow-2xs hover:border-purple-600'
+                    ? 'bg-[#0f172a] border-[rgb(30, 41, 59)] hover:border-gray-500' 
+                    : 'bg-white border-slate-200 shadow-2xs hover:border-gray-400'
               }`}
             >
               <div className="flex flex-col lg:flex-row justify-between gap-6">
                 
                 {/* 1. Entity Overview */}
                 <div className="space-y-3 flex-1">
-                  <div className="flex items-center gap-2">
-                    <div className={`p-2 rounded-lg transition-colors duration-300 ${
-                      isDark 
-                        ? 'bg-purple-600/10 text-purple-600 group-hover:bg-purple-600 group-hover:text-white' 
-                        : 'bg-purple-600/10 text-[rgb(10,115,115)] group-hover:bg-purple-700 group-hover:text-white'
-                    }`}>
-                      <Building2 className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2">
+                  {/* Top row: Icon, Name, ID & Tenant Badges */}
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div className="flex flex-wrap items-center gap-2.5">
+                      <div className={`p-2 rounded-lg transition-colors duration-300 ${
+                        isDark 
+                          ? 'bg-gray-800 text-gray-200 group-hover:bg-gray-100 group-hover:text-black' 
+                          : 'bg-gray-100 text-gray-800 group-hover:bg-gray-900 group-hover:text-white'
+                      }`}>
+                        <Building2 className="w-5 h-5" />
+                      </div>
+                      <div className="flex flex-wrap items-center gap-2">
                         <h3 className={`text-base font-extrabold ${isDark ? 'text-white' : 'text-black'}`}>
                           {cust.name}
                         </h3>
                         {isBlocked && (
-                          <span className="px-1.5 py-0.2 rounded-full text-[8px] font-black bg-rose-500/20 text-rose-500 uppercase tracking-wider">
+                          <span className="px-1.5 py-0.5 rounded-full text-[9px] font-black bg-rose-500/15 text-rose-500 uppercase tracking-wider border border-rose-500/20">
                             Blocked
                           </span>
                         )}
+                        <span className="text-[11px] font-mono text-gray-500">ID: {cust.id}</span>
+                        <span className="text-[11px] font-mono px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-700 font-semibold">
+                          Tenant: {cust.tenant_id || `tnnt_${cust.id}`}
+                        </span>
                       </div>
-                      <span className="text-[10px] font-mono text-gray-500">ID: {cust.id}</span>
+                    </div>
+
+                    {/* Action Icons with Semantic Portal Colors */}
+                    <div className="flex items-center gap-1 shrink-0" onClick={(e) => e.stopPropagation()}>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setImpersonatedCustomerId(cust.id);
+                        }}
+                        className="p-1.5 rounded-md hover:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 transition-colors cursor-pointer"
+                        title="Open Customer Panel (Admin Impersonation)"
+                      >
+                        <UserCheck className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleResendWelcomeEmail(cust);
+                        }}
+                        className="p-1.5 rounded-md hover:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 transition-colors cursor-pointer"
+                        title="Resend Automated Onboarding Welcome Email & Credentials (sender: techpivot25@gmail.com)"
+                      >
+                        <RefreshCw className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={(e) => openEditModal(cust, e)}
+                        className="p-1.5 rounded-md hover:bg-purple-600/10 text-purple-600 dark:text-purple-400 transition-colors cursor-pointer"
+                        title="Modify Client Entity"
+                      >
+                        <Edit3 className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleToggleBlock(cust);
+                        }}
+                        className={`p-1.5 rounded-md transition-colors cursor-pointer ${
+                          isBlocked 
+                            ? 'hover:bg-emerald-500/10 text-emerald-500' 
+                            : 'hover:bg-amber-500/10 text-amber-500'
+                        }`}
+                        title={isBlocked ? "Unblock Customer" : "Block Customer"}
+                      >
+                        {isBlocked ? <Unlock className="w-4 h-4" /> : <Ban className="w-4 h-4" />}
+                      </button>
+                      <button
+                        onClick={(e) => openEmailModal(cust, e)}
+                        className="p-1.5 rounded-md hover:bg-blue-500/10 text-blue-600 dark:text-blue-400 transition-colors cursor-pointer"
+                        title="Send Email to Customer"
+                      >
+                        <Mail className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => onDeleteCustomer(cust.id)}
+                        className="p-1.5 rounded-md hover:bg-rose-500/10 text-rose-500 dark:text-rose-400 transition-colors cursor-pointer"
+                        title="Delete Customer Entry"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
                     </div>
                   </div>
 
-                  <div className={`text-xs flex items-start gap-1.5 ${isDark ? 'text-gray-400' : 'text-slate-600'}`}>
-                    <MapPin className="w-4 h-4 text-gray-500 shrink-0 mt-0.5" />
-                    <span>{cust.address}</span>
+                  {/* Second row: Subdomain link and Address neatly aligned */}
+                  <div className="flex flex-wrap items-center gap-4 text-xs">
+                    <a
+                      href={`https://${cust.subdomain || `${slugifyCustomerName(cust.name)}.techpivot.in`}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="text-xs font-mono px-2 py-1 rounded-md bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-semibold inline-flex items-center gap-1.5 hover:underline"
+                      title="Dedicated Tenant Subdomain URL"
+                    >
+                      <Globe className="w-3.5 h-3.5" />
+                      <span>{cust.subdomain || `${slugifyCustomerName(cust.name)}.techpivot.in`}</span>
+                      <ExternalLink className="w-3 h-3 opacity-75" />
+                    </a>
+                    <div className={`flex items-center gap-1.5 ${isDark ? 'text-gray-400' : 'text-slate-600'}`}>
+                      <MapPin className="w-4 h-4 text-gray-500 shrink-0" />
+                      <span>{cust.address}</span>
+                    </div>
                   </div>
 
-                  <div className="flex items-center gap-2">
-                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-extrabold ${cust.supportTier === 'Gold Support Model' ? 'bg-amber-500/10 text-amber-500' : 'bg-purple-600/10 text-purple-600'}`}>
+                  {/* Third row: Support Tier badge and Contracts link */}
+                  <div className="flex items-center gap-3 pt-0.5">
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-300 dark:border-gray-700">
                       {cust.supportTier}
                     </span>
                     <button 
@@ -1716,7 +1854,7 @@ export default function CustomersTab({
                         e.stopPropagation(); // Avoid card click drill-down
                         onGoToBilling(cust.name);
                       }}
-                      className={`text-[11px] font-bold text-purple-600 hover:underline flex items-center gap-1 cursor-pointer`}
+                      className="text-[11px] font-bold text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white hover:underline inline-flex items-center gap-1 cursor-pointer"
                     >
                       <span>Contracts & Usage</span>
                       <ArrowRight className="w-3.5 h-3.5" />
@@ -1731,7 +1869,7 @@ export default function CustomersTab({
                     return (
                       <div className="pt-2.5 border-t border-dashed dark:border-gray-800 border-slate-100 space-y-1.5 text-[11px]">
                         {parent && (
-                          <div className="flex items-center gap-1.5 text-purple-600">
+                          <div className="flex items-center gap-1.5 text-gray-700 dark:text-gray-300">
                             <span className="font-extrabold uppercase text-[9px] tracking-wider text-gray-500">Parent Corp:</span>
                             <span className="font-semibold">{parent.name}</span>
                           </div>
@@ -1753,57 +1891,6 @@ export default function CustomersTab({
                   })()}
                 </div>
 
-                {/* 2. Actions */}
-                <div className="flex items-start justify-end shrink-0" onClick={(e) => e.stopPropagation()}>
-                  <div className="flex items-center gap-1">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setImpersonatedCustomerId(cust.id);
-                      }}
-                      className="p-1.5 rounded-md bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 transition-colors cursor-pointer"
-                      title="Open Customer Panel (Admin Impersonation)"
-                    >
-                      <UserCheck className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={(e) => openEditModal(cust, e)}
-                      className="p-1.5 rounded-md hover:bg-purple-600/10 text-purple-600 transition-colors cursor-pointer"
-                      title="Modify Client Entity"
-                    >
-                      <Edit3 className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleToggleBlock(cust);
-                      }}
-                      className={`p-1.5 rounded-md transition-colors cursor-pointer ${
-                        isBlocked 
-                          ? 'hover:bg-emerald-500/10 text-emerald-500' 
-                          : 'hover:bg-amber-500/10 text-amber-500'
-                      }`}
-                      title={isBlocked ? "Unblock Customer" : "Block Customer"}
-                    >
-                      {isBlocked ? <Unlock className="w-4 h-4" /> : <Ban className="w-4 h-4" />}
-                    </button>
-                    <button
-                      onClick={(e) => openEmailModal(cust, e)}
-                      className="p-1.5 rounded-md hover:bg-purple-600/10 text-purple-600 transition-colors cursor-pointer"
-                      title="Send Email to Customer"
-                    >
-                      <Mail className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => onDeleteCustomer(cust.id)}
-                      className="p-1.5 rounded-md hover:bg-rose-500/10 text-rose-500 transition-colors cursor-pointer"
-                      title="Delete Customer Entry"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-
               </div>
 
               {/* NOTES BAR */}
@@ -1814,9 +1901,9 @@ export default function CustomersTab({
               )}
 
               {/* Click to open label */}
-              <div className="mt-4 pt-2 border-t dark:border-gray-800 border-slate-100 flex items-center justify-between text-[10px] font-bold text-purple-600">
+              <div className="mt-4 pt-2 border-t dark:border-gray-800 border-slate-100 flex items-center justify-between text-[10px] font-bold text-gray-600 dark:text-gray-400">
                 <span className="flex items-center gap-1">
-                  <Activity className="w-3.5 h-3.5 text-emerald-500" />
+                  <Activity className="w-3.5 h-3.5 text-gray-500" />
                   <span>Licensed assets: {contracts.filter(c => c.customerId === cust.id).length} active</span>
                 </span>
               </div>

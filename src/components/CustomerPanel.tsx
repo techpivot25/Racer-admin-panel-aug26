@@ -530,11 +530,16 @@ export default function CustomerPanel({
             <UserCog className="w-6 h-6 animate-pulse" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-indigo-500/30 text-indigo-200 border border-indigo-400/30">
                 Admin Impersonation View
               </span>
-              <span className="text-xs text-indigo-300 font-mono">Tenant ID: {customer.id}</span>
+              <span className="text-xs text-indigo-300 font-mono">
+                Tenant ID: {customer.tenant_id || `tnnt_${customer.id}`}
+              </span>
+              <span className="text-xs text-indigo-300 font-mono px-2 py-0.5 rounded bg-indigo-950/60 border border-indigo-700/40">
+                URL: https://{customer.subdomain || `${customer.name.toLowerCase().trim().replace(/[^a-z0-9\s-]/g, "").replace(/\s+/g, "-")}.techpivot.in`}
+              </span>
             </div>
             <h2 className="text-lg font-black tracking-tight mt-0.5">
               Managing Portal as: <span className="text-indigo-200 underline underline-offset-4">{customer.name}</span>

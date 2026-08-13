@@ -82,6 +82,11 @@ export interface Customer {
   ssoUrl?: string;
   logoUrl?: string;
   registeredMobile?: string;
+  tenant_id?: string; // Unique immutable UUID/alphanumeric tenant identifier e.g. "tnnt_9c8b7a6f..."
+  subdomain?: string; // Provisioned dedicated routing subdomain e.g. "wayne.techpivot.in"
+  tenantStatus?: 'provisioned' | 'pending' | 'suspended';
+  username?: string; // Login identifier e.g. primary contact email
+  tempPassword?: string; // Programmatically generated secure temporary hash password
 }
 
 export interface ContractProductLineItem {

@@ -804,7 +804,7 @@ export default function UsersTab({
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
-              <tr className={`border-b font-black uppercase text-[10px] tracking-wider ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)] text-gray-400' : 'bg-slate-50 border-slate-200 text-slate-500'}`}>
+              <tr className={`border-b font-semibold text-xs ${isDark ? 'bg-[#020617] border-[rgb(30, 41, 59)] text-gray-300' : 'bg-slate-50 border-slate-200 text-slate-600'}`}>
                 <th className="p-4 w-10 text-center">
                   <input
                     type="checkbox"

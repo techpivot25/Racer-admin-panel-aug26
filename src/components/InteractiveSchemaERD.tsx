@@ -583,15 +583,15 @@ COMMENT ON TABLE "${table.name}" IS '${table.description.replace(/'/g, "''")}';`
     <div className="space-y-5 font-sans">
       
       {/* NAVIGATION TABS FOR SCHEMA VIEW */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b pb-4 dark:border-[rgb(30, 41, 59)] border-slate-200">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b pb-3 dark:border-[rgb(30, 41, 59)] border-slate-200">
         <div className="flex items-center gap-2">
-          <div className="p-2.5 rounded-xl bg-purple-600/10 text-purple-600">
-            <Database className="w-5 h-5" />
+          <div className="p-2 rounded-xl bg-purple-600/10 text-purple-600 dark:text-purple-400">
+            <Database className="w-4.5 h-4.5" />
           </div>
           <div>
             <h2 className="text-base font-extrabold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
               <span>Master Database Schema Spec & ERD</span>
-              <span className="text-[10px] font-mono font-bold uppercase px-2 py-0.5 rounded-md bg-purple-600 text-white">
+              <span className="text-[10px] font-mono font-bold uppercase px-1.5 py-0.5 rounded-md bg-purple-600/60 text-white">
                 v2.4
               </span>
             </h2>
@@ -605,9 +605,9 @@ COMMENT ON TABLE "${table.name}" IS '${table.description.replace(/'/g, "''")}';`
         <div className={`flex rounded-xl p-1 border ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-slate-100 border-slate-200'}`}>
           <button
             onClick={() => setActiveTab('erd')}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-2 transition-all cursor-pointer ${
+            className={`px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
               activeTab === 'erd' 
-                ? 'bg-purple-600 text-white shadow-xs' 
+                ? 'bg-purple-600/60 text-white shadow-xs' 
                 : (isDark ? 'text-gray-400 hover:text-white' : 'text-slate-600 hover:text-slate-900')
             }`}
           >
@@ -616,9 +616,9 @@ COMMENT ON TABLE "${table.name}" IS '${table.description.replace(/'/g, "''")}';`
           </button>
           <button
             onClick={() => setActiveTab('dictionary')}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-2 transition-all cursor-pointer ${
+            className={`px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
               activeTab === 'dictionary' 
-                ? 'bg-purple-600 text-white shadow-xs' 
+                ? 'bg-purple-600/60 text-white shadow-xs' 
                 : (isDark ? 'text-gray-400 hover:text-white' : 'text-slate-600 hover:text-slate-900')
             }`}
           >
@@ -627,9 +627,9 @@ COMMENT ON TABLE "${table.name}" IS '${table.description.replace(/'/g, "''")}';`
           </button>
           <button
             onClick={() => setActiveTab('ddl')}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-2 transition-all cursor-pointer ${
+            className={`px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
               activeTab === 'ddl' 
-                ? 'bg-purple-600 text-white shadow-xs' 
+                ? 'bg-purple-600/60 text-white shadow-xs' 
                 : (isDark ? 'text-gray-400 hover:text-white' : 'text-slate-600 hover:text-slate-900')
             }`}
           >
@@ -727,7 +727,7 @@ COMMENT ON TABLE "${table.name}" IS '${table.description.replace(/'/g, "''")}';`
 
               <button
                 onClick={handleDownloadSchemaJson}
-                className="px-3 py-1.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-2xs transition-all"
+                className="px-2.5 py-1 bg-purple-600/60 hover:bg-purple-600/80 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-xs transition-all"
               >
                 <Download className="w-3.5 h-3.5" />
                 <span>Export Schema</span>
@@ -1195,7 +1195,7 @@ COMMENT ON TABLE "${table.name}" IS '${table.description.replace(/'/g, "''")}';`
                   <button
                     onClick={() => setSelectedSqlDialect('postgres')}
                     className={`px-3 py-1 rounded-md text-xs font-bold transition-all cursor-pointer ${
-                      selectedSqlDialect === 'postgres' ? 'bg-purple-600 text-white shadow-2xs' : 'text-slate-400 hover:text-slate-200'
+                      selectedSqlDialect === 'postgres' ? 'bg-purple-600/60 text-white shadow-2xs' : 'text-slate-400 hover:text-slate-200'
                     }`}
                   >
                     PostgreSQL
@@ -1203,7 +1203,7 @@ COMMENT ON TABLE "${table.name}" IS '${table.description.replace(/'/g, "''")}';`
                   <button
                     onClick={() => setSelectedSqlDialect('mysql')}
                     className={`px-3 py-1 rounded-md text-xs font-bold transition-all cursor-pointer ${
-                      selectedSqlDialect === 'mysql' ? 'bg-purple-600 text-white shadow-2xs' : 'text-slate-400 hover:text-slate-200'
+                      selectedSqlDialect === 'mysql' ? 'bg-purple-600/60 text-white shadow-2xs' : 'text-slate-400 hover:text-slate-200'
                     }`}
                   >
                     MySQL
@@ -1211,7 +1211,7 @@ COMMENT ON TABLE "${table.name}" IS '${table.description.replace(/'/g, "''")}';`
                   <button
                     onClick={() => setSelectedSqlDialect('drizzle')}
                     className={`px-3 py-1 rounded-md text-xs font-bold transition-all cursor-pointer ${
-                      selectedSqlDialect === 'drizzle' ? 'bg-purple-600 text-white shadow-2xs' : 'text-slate-400 hover:text-slate-200'
+                      selectedSqlDialect === 'drizzle' ? 'bg-purple-600/60 text-white shadow-2xs' : 'text-slate-400 hover:text-slate-200'
                     }`}
                   >
                     Drizzle ORM

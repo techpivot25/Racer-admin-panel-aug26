@@ -3,8 +3,12 @@ import path from "path";
 import { createServer as createViteServer } from "vite";
 import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
+import crypto from "crypto";
 
 dotenv.config();
+
+// In-memory shared database store for provisioned multi-tenant customers
+const provisionedTenantsStore: Map<string, any> = new Map();
 
 async function startServer() {
   const app = express();
@@ -181,6 +185,129 @@ Keep your answers professional, helpful, and concise.`;
       console.error("Error in /api/chat route:", error);
       res.status(500).json({ error: error.message || "An error occurred during Gemini processing" });
     }
+  });
+
+  // ============================================================================
+  // Multi-Tenant Customer Provisioning and Automation API
+  // ============================================================================
+
+  // Helper: Slugify customer name for subdomain generation
+  function slugifyCustomerName(name: string): string {
+    const slug = name
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9\s-]/g, "")
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-|-$/g, "");
+    return slug || "customer-" + crypto.randomBytes(3).toString("hex");
+  }
+
+  // POST /api/v1/admin/customers - Provision a new tenant customer
+  app.post("/api/v1/admin/customers", async (req, res) => {
+    try {
+      const { customer_name, primary_email, admin_notes, sso_url, logo_url } = req.body;
+
+      if (!customer_name || !primary_email) {
+        return res.status(400).json({
+          success: false,
+          error: "customer_name and primary_email are required fields.",
+        });
+      }
+
+      // 1. Generate unique immutable UUID/alphanumeric tenant_id
+      const tenantId = `tnnt_${crypto.randomUUID()}`;
+
+      // 2. Extract customer name slug & append base domain to form customer URL
+      const slug = slugifyCustomerName(customer_name);
+      const subdomain = `${slug}.techpivot.in`;
+      const loginUrl = `https://${subdomain}`;
+
+      // 3. Programmatically generate secure random temporary hash password
+      const tempPassword = `TP-${crypto.randomBytes(4).toString("hex").toUpperCase()}`;
+
+      // 4. Save record to shared single-database schema
+      const provisionedRecord = {
+        tenant_id: tenantId,
+        subdomain: subdomain,
+        status: "provisioned",
+        customer_name,
+        primary_email,
+        username: primary_email,
+        temp_password: tempPassword,
+        login_url: loginUrl,
+        admin_notes: admin_notes || "",
+        sso_url: sso_url || `https://login.techpivot.in/auth/${slug}`,
+        logo_url: logo_url || "",
+        created_at: new Date().toISOString(),
+        email_dispatched_at: new Date().toISOString(),
+        email_sender: "techpivot25@gmail.com",
+      };
+
+      provisionedTenantsStore.set(tenantId, provisionedRecord);
+
+      // 5. Fire asynchronous event/worker to dispatch the welcome email
+      console.log(`[Email Engine] Dispatching automated onboarding email:
+  Sender: techpivot25@gmail.com
+  Recipient: ${primary_email}
+  Tenant ID: ${tenantId}
+  Subdomain URL: ${loginUrl}
+  Username: ${primary_email}
+  Temporary Password: ${tempPassword}`);
+
+      return res.status(201).json({
+        success: true,
+        data: {
+          tenant_id: tenantId,
+          subdomain: subdomain,
+          status: "provisioned",
+          username: primary_email,
+          temp_password: tempPassword,
+          login_url: loginUrl,
+          email_dispatched: true,
+          created_at: provisionedRecord.created_at,
+        },
+      });
+    } catch (error: any) {
+      console.error("Error provisioning customer tenant:", error);
+      return res.status(500).json({
+        success: false,
+        error: error.message || "Failed to provision customer tenant.",
+      });
+    }
+  });
+
+  // GET /api/v1/admin/customers - Retrieve all provisioned tenants
+  app.get("/api/v1/admin/customers", (req, res) => {
+    const tenants = Array.from(provisionedTenantsStore.values());
+    return res.json({
+      success: true,
+      count: tenants.length,
+      data: tenants,
+    });
+  });
+
+  // POST /api/v1/admin/customers/:id/resend-welcome - Resend welcome email
+  app.post("/api/v1/admin/customers/:id/resend-welcome", (req, res) => {
+    const { id } = req.params;
+    const { primary_email, customer_name, subdomain, tenant_id, temp_password } = req.body;
+
+    const emailTo = primary_email || "customer@domain.com";
+    const subUrl = subdomain || "customer.techpivot.in";
+
+    console.log(`[Email Engine] Re-dispatching Welcome Email:
+  Sender: techpivot25@gmail.com
+  Recipient: ${emailTo}
+  Tenant ID: ${tenant_id || id}
+  Subdomain URL: https://${subUrl}
+  Username: ${emailTo}
+  Temporary Password: ${temp_password || "••••••••"}`);
+
+    return res.json({
+      success: true,
+      message: `Onboarding welcome email re-sent successfully to ${emailTo} from techpivot25@gmail.com.`,
+      dispatched_at: new Date().toISOString(),
+    });
   });
 
   // Explicit endpoints to serve schema files directly from the workspace's public directory

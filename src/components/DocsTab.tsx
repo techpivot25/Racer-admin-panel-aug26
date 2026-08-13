@@ -240,7 +240,7 @@ Disclaimer: This is a secure, system-generated enterprise technical documentatio
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b pb-4 dark:border-[rgb(30, 41, 59)] border-slate-200 gap-4">
         <div>
           <h2 className="text-xl font-extrabold tracking-tight flex items-center gap-2 text-slate-900 dark:text-white">
-            <Database className="w-5.5 h-5.5 text-purple-600" />
+            <Database className="w-5.5 h-5.5 text-purple-600 dark:text-purple-400" />
             <span>{t.documentation}</span>
           </h2>
           <p className="text-xs text-gray-500 mt-1 dark:text-gray-400">
@@ -252,24 +252,24 @@ Disclaimer: This is a secure, system-generated enterprise technical documentatio
         <div className={`flex rounded-xl p-1 border shrink-0 ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-slate-100 border-slate-200'}`}>
           <button
             onClick={() => setDocSubTab('schema')}
-            className={`px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-2 transition-all cursor-pointer ${
+            className={`px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
               docSubTab === 'schema' 
-                ? 'bg-purple-600 text-white shadow-xs' 
+                ? 'bg-purple-600/60 text-white shadow-xs' 
                 : (isDark ? 'text-gray-400 hover:text-white' : 'text-slate-600 hover:text-slate-900')
             }`}
           >
-            <Layers className="w-4 h-4" />
+            <Layers className="w-3.5 h-3.5" />
             <span>Master Database Schema Spec & ERD</span>
           </button>
           <button
             onClick={() => setDocSubTab('assets')}
-            className={`px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-2 transition-all cursor-pointer ${
+            className={`px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
               docSubTab === 'assets' 
-                ? 'bg-purple-600 text-white shadow-xs' 
+                ? 'bg-purple-600/60 text-white shadow-xs' 
                 : (isDark ? 'text-gray-400 hover:text-white' : 'text-slate-600 hover:text-slate-900')
             }`}
           >
-            <BookOpen className="w-4 h-4" />
+            <BookOpen className="w-3.5 h-3.5" />
             <span>Technical Manuals & Asset Library</span>
           </button>
         </div>
@@ -285,20 +285,20 @@ Disclaimer: This is a secure, system-generated enterprise technical documentatio
         <div className="space-y-6">
           <div className="flex justify-between items-center">
             <h3 className="text-sm font-extrabold uppercase tracking-wider text-slate-800 dark:text-slate-200 flex items-center gap-2">
-              <FileText className="w-4 h-4 text-purple-600" />
+              <FileText className="w-4 h-4 text-purple-600 dark:text-purple-400" />
               <span>Technical Manuals & Document Asset Library</span>
             </h3>
             <button
               onClick={openAddModal}
-              className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-xs font-bold flex items-center gap-2 shadow-md shadow-purple-600/10 transition-all cursor-pointer shrink-0"
+              className="px-3 py-1.5 bg-purple-600/60 hover:bg-purple-600/80 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-xs transition-all cursor-pointer shrink-0"
             >
-              <Plus className="w-4 h-4" />
+              <Plus className="w-3.5 h-3.5" />
               <span>Publish New Doc Asset</span>
             </button>
           </div>
 
           {/* VERIFICATION BANNER */}
-          <div className={`p-4 rounded-xl border flex flex-col md:flex-row items-start md:items-center justify-between gap-4 transition-all bg-transparent ${isDark ? 'border-purple-600/30 text-white' : 'border-purple-600/20 text-slate-800'}`}>
+          <div className={`p-4 rounded-xl border flex flex-col md:flex-row items-start md:items-center justify-between gap-4 transition-all bg-transparent ${isDark ? 'border-gray-700 text-white' : 'border-gray-300 text-slate-800'}`}>
             <div className="flex items-center gap-3">
               <div className={`p-2 rounded-lg shrink-0 ${isDark ? 'bg-slate-800 text-slate-300' : 'bg-slate-200 text-slate-800'}`}>
                 <Shield className="w-5 h-5" />
@@ -327,7 +327,7 @@ Disclaimer: This is a secure, system-generated enterprise technical documentatio
       {/* DATABASE SCHEMA ATTACHMENT EXPORTS */}
       <div className={`p-4 rounded-xl border flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 transition-all bg-transparent ${isDark ? 'border-slate-800 text-white' : 'border-slate-200 text-slate-800'}`}>
         <div className="flex items-center gap-3">
-          <div className={`p-2.5 rounded-lg shrink-0 ${isDark ? 'bg-slate-800 text-purple-600' : 'bg-slate-100 text-purple-600'}`}>
+          <div className={`p-2.5 rounded-lg shrink-0 ${isDark ? 'bg-slate-800 text-purple-400' : 'bg-slate-100 text-purple-600'}`}>
             <Database className="w-5 h-5" />
           </div>
           <div>
@@ -343,7 +343,7 @@ Disclaimer: This is a secure, system-generated enterprise technical documentatio
           <a
             href="/admin_panel_schema.md"
             download="racer_admin_panel_schema.md"
-            className="flex-1 lg:flex-none px-3.5 py-1.5 bg-slate-800 hover:bg-slate-750 text-slate-200 border border-slate-700 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+            className="flex-1 lg:flex-none px-3 py-1 bg-slate-800 hover:bg-slate-750 text-slate-200 border border-slate-700 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer"
           >
             <Download className="w-3.5 h-3.5" />
             <span>Markdown Spec (.md)</span>
@@ -351,7 +351,7 @@ Disclaimer: This is a secure, system-generated enterprise technical documentatio
           <a
             href="/admin_panel_schema.json"
             download="racer_admin_panel_schema.json"
-            className="flex-1 lg:flex-none px-3.5 py-1.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-xs"
+            className="flex-1 lg:flex-none px-3 py-1 bg-purple-600/60 hover:bg-purple-600/80 text-white rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-xs"
           >
             <Download className="w-3.5 h-3.5" />
             <span>JSON Mapping (.json)</span>
@@ -365,10 +365,10 @@ Disclaimer: This is a secure, system-generated enterprise technical documentatio
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         onClick={triggerFileClick}
-        className={`p-8 rounded-xl border-2 border-dashed text-center cursor-pointer transition-all ${
+        className={`p-6 rounded-xl border-2 border-dashed text-center cursor-pointer transition-all ${
           isDragging 
-            ? 'border-purple-600 bg-slate-100 dark:bg-slate-800/50 scale-99' 
-            : (isDark ? 'border-gray-700 bg-gray-900/30 hover:border-gray-500 hover:bg-gray-900/50' : 'border-slate-200 bg-slate-50/50 hover:border-purple-600 hover:bg-white hover:shadow-xs')
+            ? 'border-gray-500 bg-slate-100 dark:bg-slate-800/50 scale-99' 
+            : (isDark ? 'border-gray-700 bg-gray-900/30 hover:border-gray-500 hover:bg-gray-900/50' : 'border-slate-300 bg-slate-50/50 hover:border-slate-500 hover:bg-white hover:shadow-xs')
         }`}
       >
         <input 
@@ -399,19 +399,19 @@ Disclaimer: This is a secure, system-generated enterprise technical documentatio
           <div className={`flex rounded-xl p-1 border ${isDark ? 'bg-[#0f172a] border-[rgb(30, 41, 59)]' : 'bg-slate-100 border-slate-200'}`}>
             <button
               onClick={() => setSelectedCategory('all')}
-              className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${selectedCategory === 'all' ? 'bg-purple-600 text-white shadow-xs' : (isDark ? 'text-gray-400 hover:text-white' : 'text-slate-600 hover:text-slate-900')}`}
+              className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${selectedCategory === 'all' ? 'bg-purple-600/60 text-white shadow-xs' : (isDark ? 'text-gray-400 hover:text-white' : 'text-slate-600 hover:text-slate-900')}`}
             >
               All Docs
             </button>
             <button
               onClick={() => setSelectedCategory('Product Documentation')}
-              className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${selectedCategory === 'Product Documentation' ? 'bg-purple-600 text-white shadow-xs' : (isDark ? 'text-gray-400 hover:text-white' : 'text-slate-600 hover:text-slate-900')}`}
+              className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${selectedCategory === 'Product Documentation' ? 'bg-purple-600/60 text-white shadow-xs' : (isDark ? 'text-gray-400 hover:text-white' : 'text-slate-600 hover:text-slate-900')}`}
             >
               Product Handbooks
             </button>
             <button
               onClick={() => setSelectedCategory('Support Documentation')}
-              className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${selectedCategory === 'Support Documentation' ? 'bg-purple-600 text-white shadow-xs' : (isDark ? 'text-gray-400 hover:text-white' : 'text-slate-600 hover:text-slate-900')}`}
+              className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${selectedCategory === 'Support Documentation' ? 'bg-purple-600/60 text-white shadow-xs' : (isDark ? 'text-gray-400 hover:text-white' : 'text-slate-600 hover:text-slate-900')}`}
             >
               Support Manuals
             </button>
@@ -687,17 +687,17 @@ Disclaimer: This is a secure, system-generated enterprise technical documentatio
                 />
               </div>
 
-              <div className="pt-4 flex justify-end gap-3 text-xs font-bold">
+              <div className="pt-4 flex justify-end gap-2.5 text-xs font-bold">
                 <button 
                   type="button" 
                   onClick={() => setIsModalOpen(false)}
-                  className={`px-4 py-2 rounded-lg border cursor-pointer ${isDark ? 'border-gray-700 hover:bg-gray-800' : 'border-slate-250 hover:bg-slate-50'}`}
+                  className={`px-3 py-1.5 rounded-lg border cursor-pointer ${isDark ? 'border-gray-700 hover:bg-gray-800' : 'border-slate-300 hover:bg-slate-100'}`}
                 >
                   {t.cancel}
                 </button>
                 <button 
                   type="submit"
-                  className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg cursor-pointer"
+                  className="px-3 py-1.5 bg-purple-600/60 hover:bg-purple-600/80 text-white rounded-lg cursor-pointer font-bold shadow-xs transition-all"
                 >
                   {t.save}
                 </button>

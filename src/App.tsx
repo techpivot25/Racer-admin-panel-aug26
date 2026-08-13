@@ -579,12 +579,12 @@ export default function App() {
     const isActive = activeTab === tab;
     if (isActive) {
       return theme === 'dark'
-        ? 'relative text-purple-200 bg-purple-950/70 font-bold border-l-4 border-purple-500 rounded-r-xl shadow-2xs'
-        : 'relative text-purple-900 bg-purple-100/70 font-bold border-l-4 border-purple-700 rounded-r-xl shadow-2xs';
+        ? 'relative text-white/90 bg-gray-800 font-bold border-l-4 border-gray-400 rounded-r-xl shadow-2xs'
+        : 'relative text-black/80 bg-gray-200/80 font-bold border-l-4 border-black/80 rounded-r-xl shadow-2xs';
     }
     return theme === 'dark' 
-      ? 'relative text-slate-300 hover:text-purple-200 hover:bg-purple-950/40 hover:border-l-4 hover:border-purple-600 rounded-r-xl border-l-4 border-transparent' 
-      : 'relative text-purple-900 hover:text-purple-950 hover:bg-purple-50 hover:border-l-4 hover:border-purple-600 rounded-r-xl border-l-4 border-transparent';
+      ? 'relative text-white/80 hover:text-white hover:bg-gray-800/40 hover:border-l-4 hover:border-gray-500 rounded-r-xl border-l-4 border-transparent font-medium' 
+      : 'relative text-black/80 hover:text-black hover:bg-gray-100 hover:border-l-4 hover:border-black/80 rounded-r-xl border-l-4 border-transparent font-medium';
   };
 
 
@@ -618,15 +618,15 @@ export default function App() {
           {/* Header / Brand Mark */}
           <div className="p-5 flex items-center justify-between border-b border-slate-100 dark:border-slate-800">
             <div className="flex items-center gap-2.5 cursor-pointer" onClick={() => setActiveTab('home')}>
-              <div className="w-8 h-8 rounded-xl bg-purple-600 flex items-center justify-center shrink-0 shadow-md shadow-purple-600/20">
-                <svg className="w-4.5 h-4.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+              <div className="w-8 h-8 rounded-xl bg-gray-800 dark:bg-gray-100 flex items-center justify-center shrink-0 shadow-md">
+                <svg className="w-4.5 h-4.5 text-white dark:text-black" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="12" cy="12" r="10" />
                   <path d="M8 12h8" />
                   <path d="M12 8v8" />
                 </svg>
               </div>
               <div>
-                <h1 className="font-extrabold text-[19px] tracking-tight text-slate-900 dark:text-white leading-none">RACER</h1>
+                <h1 className="font-extrabold text-[19px] tracking-tight text-black/80 dark:text-white/80 leading-none">RACER</h1>
               </div>
             </div>
             <button className="lg:hidden p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 transition-colors" onClick={() => setIsSidebarOpen(false)}>
@@ -639,7 +639,7 @@ export default function App() {
             
             {/* SECTION: Overview & Monitoring */}
             <div className="space-y-1">
-              <span className={`text-[10px] font-bold uppercase tracking-wider block px-3 mb-2 ${theme === 'dark' ? 'text-gray-500' : 'text-slate-400'}`}>
+              <span className={`text-[10px] font-bold uppercase tracking-wider block px-3 mb-2 ${theme === 'dark' ? 'text-white/80' : 'text-black/80'}`}>
                 Overview & Monitoring
               </span>
               <nav className="space-y-1">
@@ -647,7 +647,7 @@ export default function App() {
                   onClick={() => handleNavigation('home')}
                   className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${getSidebarLinkClass('home')}`}
                 >
-                  <Home className="w-4 h-4 shrink-0 transition-colors text-purple-700 dark:text-purple-400" />
+                  <Home className="w-4 h-4 shrink-0 transition-colors text-black/70 dark:text-white/70" />
                   <span>{t.home}</span>
                 </button>
 
@@ -655,7 +655,7 @@ export default function App() {
                   onClick={() => handleNavigation('dashboard')}
                   className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${getSidebarLinkClass('dashboard')}`}
                 >
-                  <LayoutDashboard className="w-4 h-4 shrink-0 transition-colors text-purple-700 dark:text-purple-400" />
+                  <LayoutDashboard className="w-4 h-4 shrink-0 transition-colors text-black/70 dark:text-white/70" />
                   <span>{t.dashboard}</span>
                 </button>
               </nav>
@@ -663,7 +663,7 @@ export default function App() {
 
             {/* SECTION: Enterprise Admin */}
             <div className="space-y-1">
-              <span className={`text-[10px] font-bold uppercase tracking-wider block px-3 mb-2 ${theme === 'dark' ? 'text-gray-500' : 'text-slate-400'}`}>
+              <span className={`text-[10px] font-bold uppercase tracking-wider block px-3 mb-2 ${theme === 'dark' ? 'text-white/80' : 'text-black/80'}`}>
                 {t.management || 'Enterprise Admin'}
               </span>
               <nav className="space-y-1">
@@ -671,7 +671,7 @@ export default function App() {
                   onClick={() => handleNavigation('users')}
                   className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${getSidebarLinkClass('users')}`}
                 >
-                  <UsersIcon className="w-4 h-4 shrink-0 transition-colors text-purple-700 dark:text-purple-400" />
+                  <UsersIcon className="w-4 h-4 shrink-0 transition-colors text-black/70 dark:text-white/70" />
                   <span>{t.users}</span>
                 </button>
 
@@ -679,7 +679,7 @@ export default function App() {
                   onClick={() => handleNavigation('products')}
                   className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${getSidebarLinkClass('products')}`}
                 >
-                  <Laptop className="w-4 h-4 shrink-0 transition-colors text-purple-700 dark:text-purple-400" />
+                  <Laptop className="w-4 h-4 shrink-0 transition-colors text-black/70 dark:text-white/70" />
                   <span>{t.products}</span>
                 </button>
 
@@ -687,7 +687,7 @@ export default function App() {
                   onClick={() => handleNavigation('licenses')}
                   className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${getSidebarLinkClass('licenses')}`}
                 >
-                  <Key className="w-4 h-4 shrink-0 transition-colors text-purple-700 dark:text-purple-400" />
+                  <Key className="w-4 h-4 shrink-0 transition-colors text-black/70 dark:text-white/70" />
                   <span>{t.contracts || 'Licensing'}</span>
                 </button>
 
@@ -695,7 +695,7 @@ export default function App() {
                   onClick={() => handleNavigation('customers')}
                   className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${getSidebarLinkClass('customers')}`}
                 >
-                  <Building2 className="w-4 h-4 shrink-0 transition-colors text-purple-700 dark:text-purple-400" />
+                  <Building2 className="w-4 h-4 shrink-0 transition-colors text-black/70 dark:text-white/70" />
                   <span>{t.customers}</span>
                 </button>
 
@@ -703,7 +703,7 @@ export default function App() {
                   onClick={() => handleNavigation('billing')}
                   className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${getSidebarLinkClass('billing')}`}
                 >
-                  <CircleDollarSign className="w-4 h-4 shrink-0 transition-colors text-purple-700 dark:text-purple-400" />
+                  <CircleDollarSign className="w-4 h-4 shrink-0 transition-colors text-black/70 dark:text-white/70" />
                   <span>{t.billing || 'Audits'}</span>
                 </button>
               </nav>
@@ -711,7 +711,7 @@ export default function App() {
 
             {/* SECTION: Support & Assets */}
             <div className="space-y-1">
-              <span className={`text-[10px] font-bold uppercase tracking-wider block px-3 mb-2 ${theme === 'dark' ? 'text-gray-500' : 'text-slate-400'}`}>
+              <span className={`text-[10px] font-bold uppercase tracking-wider block px-3 mb-2 ${theme === 'dark' ? 'text-white/80' : 'text-black/80'}`}>
                 Support & Assets
               </span>
               <nav className="space-y-1">
@@ -719,7 +719,7 @@ export default function App() {
                   onClick={() => handleNavigation('documentation')}
                   className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${getSidebarLinkClass('documentation')}`}
                 >
-                  <BookOpen className="w-4 h-4 shrink-0 transition-colors text-purple-700 dark:text-purple-400" />
+                  <BookOpen className="w-4 h-4 shrink-0 transition-colors text-black/70 dark:text-white/70" />
                   <span>{t.documentation}</span>
                 </button>
 
@@ -727,7 +727,7 @@ export default function App() {
                   onClick={() => handleNavigation('support')}
                   className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${getSidebarLinkClass('support')}`}
                 >
-                  <ShieldAlert className="w-4 h-4 shrink-0 transition-colors text-purple-700 dark:text-purple-400" />
+                  <ShieldAlert className="w-4 h-4 shrink-0 transition-colors text-black/70 dark:text-white/70" />
                   <span>Product Support</span>
                 </button>
 
@@ -735,7 +735,7 @@ export default function App() {
                   onClick={() => handleNavigation('sitemap')}
                   className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${getSidebarLinkClass('sitemap')}`}
                 >
-                  <Globe className="w-4 h-4 shrink-0 transition-colors text-purple-700 dark:text-purple-400" />
+                  <Globe className="w-4 h-4 shrink-0 transition-colors text-black/70 dark:text-white/70" />
                   <span>{t.sitemap}</span>
                 </button>
               </nav>
@@ -754,7 +754,7 @@ export default function App() {
                   {profilePhoto ? (
                     <img src={profilePhoto} alt={profileName} className="w-full h-full object-cover rounded-full" referrerPolicy="no-referrer" />
                   ) : (
-                    <div className="w-full h-full bg-purple-600 text-white flex items-center justify-center font-black text-xs">
+                    <div className="w-full h-full bg-gray-800 dark:bg-gray-100 text-white dark:text-black flex items-center justify-center font-black text-xs">
                       {profileName.split(' ').filter(Boolean).map(n => n[0]).join('').toUpperCase() || 'AG'}
                     </div>
                   )}
@@ -764,7 +764,7 @@ export default function App() {
               <div className="min-w-0 flex-1">
                 <div 
                   onClick={() => setIsProfileModalOpen(true)}
-                  className="text-xs font-bold truncate cursor-pointer hover:underline text-slate-800 dark:text-white leading-tight"
+                  className="text-xs font-bold truncate cursor-pointer hover:underline text-black/80 dark:text-white/80 leading-tight"
                 >
                   {profileName}
                 </div>
